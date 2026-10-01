@@ -4,3 +4,15 @@
 
 /.vs
 /temp
+
+# Roadium local build outputs and signing material
+/out/
+/RoadiumBuild/
+/AndroidSdk/
+/.roadium-local/
+*.keystore
+*.jks
+*.apk
+*.aab
+/tools/roadium/fixtures/*.wav
+/tools/roadium/fixtures/*.mp4

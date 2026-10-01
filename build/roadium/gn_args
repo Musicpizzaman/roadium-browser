@@ -1,0 +1,4 @@
+# Roadium overrides follow the unchanged pinned Cromite arguments.
+chrome_public_manifest_package = "io.github.musicpizzaman.roadium"
+# Upstream already targets API 36; verify this in the resulting APK/AAB.
+# Cromite core dependencies remain compiled; the Roadium patch disables extension use.

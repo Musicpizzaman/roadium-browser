@@ -1,0 +1,11 @@
+{
+  "chromium_version": "153.0.8010.37",
+  "cromite_commit": "11507ac1061b5ea227806f5e84db5a57df6ccf6a",
+  "baseline_source_tree": "56400c5406d8f83533c151e122b19f3f745c0892",
+  "patches": [
+    {
+      "path": "build/roadium/patches/0001-roadium-aaos-foundation.patch",
+      "sha256": "0e9ba5d59eacce4daeb9cb01ac6d8aaf3d40b1b9a4f6ba614b6b73bb16f061ae"
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Roadium Test Fixture</title>
+<style>
+body { font-family: sans-serif; background: #111; color: #eee; padding: 20px; }
+.warn { color: #ff4444; border: 1px solid #ff4444; padding: 10px; margin-bottom: 10px; }
+.ctrl { margin: 10px 0; }
+button { padding: 15px 25px; font-size: 16px; cursor: pointer; margin-right: 5px; }
+#status { background: #222; padding: 10px; font-family: monospace; white-space: pre-wrap; }
+video { width: 320px; display: block; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class='warn'>WARNING: Tones/Video are for parked/emulator tests only.</div>
+<div class='ctrl'>
+<button id='btn-audio'>Audio Play/Pause</button>
+<button id='btn-video'>Video Play/Pause</button>
+<button id='btn-web'>WebAudio Play/Pause</button>
+<button id='btn-retry'>Auto-Retry: OFF</button>
+<button id='btn-speak'>Speak</button>
+<button id='btn-cancel'>Cancel Speech</button>
+</div>
+<div id='status'>Initializing...</div>
+<video id='v-el' src='bear.mp4' loop controls playsinline></video>
+<audio id='a-el' src='tone.wav' loop></audio>
+
+<script>
+const log = (type, data) => {
+  const payload = JSON.stringify({ type, data, ts: Date.now() });
+  navigator.sendBeacon('/events', payload);
+};
+
+const a = document.getElementById('a-el');
+const v = document.getElementById('v-el');
+let ctx, osc, retryInterval = null;
+const speech = window.speechSynthesis;
+let voiceCount = speech ? speech.getVoices().length : 0;
+
+const updateUI = () => {
+  const s = document.getElementById('status');
+  const ctxState = ctx ? ctx.state : 'inactive';
+  s.textContent = `Audio: ${a.paused ? 'Paused' : 'Playing'} (${a.currentTime.toFixed(2)}s)\n` +
+                  `Video: ${v.paused ? 'Paused' : 'Playing'} (${v.currentTime.toFixed(2)}s)\n` +
+                  `WebAudio: ${ctxState}\n` +
+                  `Visibility: ${document.visibilityState}\n` +
+                  `Speech: ${speech ? (speech.speaking ? 'Speaking' : 'Idle') : 'Unavailable'}, voices: ${voiceCount}\n` +
+                  `Time: ${new Date().toLocaleTimeString()}`;
+};
+
+const toggleWeb = () => {
+  if (!ctx) {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    gain.gain.value = 0.03;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    ctx.onstatechange = () => { log('context-state', ctx.state); updateUI(); };
+    osc.start();
+    log('webaudio', 'started');
+  } else if (ctx.state === 'running') {
+    ctx.suspend();
+    log('webaudio', 'suspended');
+  } else {
+    ctx.resume();
+    log('webaudio', 'resumed');
+  }
+  updateUI();
+};
+
+const toggleRetry = () => {
+  const btn = document.getElementById('btn-retry');
+  if (retryInterval) {
+    clearInterval(retryInterval);
+    retryInterval = null;
+    btn.textContent = 'Auto-Retry: OFF';
+    log('retry', 'disabled');
+  } else {
+    btn.textContent = 'Auto-Retry: ON';
+    log('retry', 'enabled');
+    retryInterval = setInterval(() => {
+      a.play().catch(()=>{});
+      v.play().catch(()=>{});
+      if (ctx) ctx.resume().catch(()=>{});
+      updateUI();
+    }, 2000);
+  }
+};
+
+['a-el', 'v-el'].forEach(id => {
+  const el = document.getElementById(id);
+  el.onplay = () => log('play', { id: el.tagName });
+  el.onpause = () => log('pause', { id: el.tagName });
+});
+
+if (speech) {
+  const updateVoices = () => {
+    voiceCount = speech.getVoices().length;
+    log('speech-voices', voiceCount);
+    updateUI();
+  };
+  speech.addEventListener('voiceschanged', updateVoices);
+  updateVoices();
+} else {
+  document.getElementById('btn-speak').disabled = true;
+  document.getElementById('btn-cancel').disabled = true;
+}
+
+document.getElementById('btn-speak').onclick = () => {
+  speech.cancel();
+  const utterance = new SpeechSynthesisUtterance(
+    'Roadium parked speech test. Drive restrictions should stop this speech. '.repeat(20));
+  utterance.rate = 0.8;
+  utterance.onstart = () => { log('speech-start', null); updateUI(); };
+  utterance.onend = () => { log('speech-end', null); updateUI(); };
+  utterance.onerror = e => { log('speech-error', e.error); updateUI(); };
+  log('speech-request', { voices: voiceCount });
+  speech.speak(utterance);
+};
+
+document.getElementById('btn-cancel').onclick = () => {
+  speech.cancel();
+  log('speech-cancel', null);
+  updateUI();
+};
+
+if ('mediaSession' in navigator) {
+  navigator.mediaSession.setActionHandler('play', () => {
+    log('media-session-play', null);
+    a.play().catch(e => log('error', e.message));
+    v.play().catch(e => log('error', e.message));
+    updateUI();
+  });
+  navigator.mediaSession.setActionHandler('pause', () => {
+    log('media-session-pause', null);
+    a.pause();
+    v.pause();
+    updateUI();
+  });
+}
+
+document.getElementById('btn-audio').onclick = () => {
+  a.paused ? a.play().catch(e => log('error', e.message)) : a.pause();
+  updateUI();
+};
+document.getElementById('btn-video').onclick = () => {
+  v.paused ? v.play().catch(e => log('error', e.message)) : v.pause();
+  updateUI();
+};
+document.getElementById('btn-web').onclick = toggleWeb;
+document.getElementById('btn-retry').onclick = toggleRetry;
+
+document.addEventListener('visibilitychange', () => {
+  log('visibility', document.visibilityState);
+  updateUI();
+});
+
+setInterval(updateUI, 500);
+</script>
+</body>
+</html>

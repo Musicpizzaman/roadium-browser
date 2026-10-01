@@ -1,3 +1,11 @@
+# Roadium Browser
+
+Parked-only Android Automotive browser based on Cromite. See [Roadium development notes](ROADIUM.md) and [build instructions](build/roadium/README.md).
+
+The upstream Cromite documentation follows.
+
+---
+
 <a href="https://github.com/uazo/cromite/releases/latest">
   <img src="https://img.shields.io/github/v/release/uazo/cromite" alt="current Cromite release" title="current Cromite release" />
 </a>
