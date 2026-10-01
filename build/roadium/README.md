@@ -48,9 +48,22 @@ The retained container and named output volume preserve incremental work. If Doc
 
 Outputs are `out/ARCH/apks/ChromePublic.apk` and `ChromePublic.aab`; the inherited filenames do not determine the Roadium app label or package. Verify package, label, SDK levels, ABI, ZIP integrity and bundletool validation. Record checksums and the exact source patch with each artifact set.
 
+Run the verifier inside the prepared container after a successful build:
+
+```sh
+python3 "$WORKSPACE/roadium/tools/roadium/verify-artifacts.py" --arch arm64
+```
+
+Use `--arch x64` for the emulator build. `--workspace` can override `WORKSPACE`. The verifier checks the pinned source tree and overlay, all bundle module manifests, APK metadata, native libraries in both archives, ZIP integrity, the APK signature and bundletool validation. It derives architecture-specific version codes from Chromium's generator (ARM64 801003702; x64 801003708 for this baseline).
+
+The resulting `roadium-ARCH-build-manifest.json` records artifact hashes, ABI and the verified APK certificate SHA256. AAB signing entries are recorded separately; their presence does not prove a valid signature. The current development AAB is unsigned and needs upload-key signing before Play distribution. Playback unit tests and runtime restrictions are separate checks.
+
+
 ## Focused playback tests
 
 ```sh
+cd "$WORKSPACE/chromium/src"
+export PATH="$WORKSPACE/depot_tools:$PATH"
 python3 "$WORKSPACE/depot_tools/siso.py" ninja -C out/arm64 --offline --local_jobs=12 roadium_media_junit_tests
 vpython3 out/arm64/bin/run_roadium_media_junit_tests --json-results-file out/arm64/roadium-media-tests.json
 python3 "$WORKSPACE/roadium/tools/roadium/test-apply-overlay.py"
