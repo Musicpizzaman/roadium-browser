@@ -60,6 +60,27 @@ index e43f410c2c..c5a5434348 100644
          {% block extra_application_definitions %}
          {% endblock %}
        {% endmacro %}
+diff --git a/chrome/android/java/res/layout/fre_tosanduma.xml b/chrome/android/java/res/layout/fre_tosanduma.xml
+index d29d5146f9..fa5362d900 100644
+--- a/chrome/android/java/res/layout/fre_tosanduma.xml
++++ b/chrome/android/java/res/layout/fre_tosanduma.xml
+@@ -33,7 +33,7 @@ found in the LICENSE file.
+                 android:layout_marginHorizontal="@dimen/fre_vertical_spacing"
+                 android:layout_marginBottom="@dimen/fre_image_bottom_margin"
+                 android:importantForAccessibility="no"
+-                android:src="@drawable/fre_product_logo" />
++                android:src="@drawable/ic_launcher" />
+ 
+             <LinearLayout
+                 android:id="@+id/fre_title_and_content"
+@@ -87,6 +87,7 @@ found in the LICENSE file.
+ 
+                     <CheckBox
+                         android:id="@+id/auto_updater_checkbox"
++                        android:visibility="gone"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:lineSpacingMultiplier="1.4"
 diff --git a/chrome/android/java/res/xml/legal_information_preferences.xml b/chrome/android/java/res/xml/legal_information_preferences.xml
 index 8998689617..67e5e89860 100644
 --- a/chrome/android/java/res/xml/legal_information_preferences.xml
@@ -170,6 +191,48 @@ index 528db3efcf..b57b6d85cc 100644
 +    <string name="search_widget_title" translatable="false">Roadium search</string>
 +    <string name="quick_action_search_widget_title" translatable="false">Roadium quick action search</string>
  </resources>
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
+index a1abacea50..34ec0c997c 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
+@@ -92,6 +92,7 @@ public class ToSAndUMAFirstRunFragment
+         mProgressSpinner.setVisibility(View.GONE);
+         mAcceptButton = (Button) view.findViewById(R.id.terms_accept);
+         mAutoUpdaterCheckBox = (CheckBox) view.findViewById(R.id.auto_updater_checkbox);
++        mAutoUpdaterCheckBox.setVisibility(View.GONE);
+         mTosAndPrivacy = (TextView) view.findViewById(R.id.tos_and_privacy);
+ 
+         // Register event listeners.
+@@ -201,10 +202,6 @@ public class ToSAndUMAFirstRunFragment
+ 
+         spans.add(buildPrivacyPolicyLink("2", R.string.privacy_link2));
+ 
+-        spans.add(buildPrivacyPolicyLink("3", R.string.privacy_link3));
+-
+-        spans.add(buildPrivacyPolicyLink("4", R.string.privacy_link4));
+-
+         String tosString = getString(R.string.bromite_fre_footer_privacy_policy);
+ 
+         mTosAndPrivacy.setText(SpanApplier.applySpans(tosString, spans.toArray(new SpanInfo[0])));
+@@ -241,7 +238,7 @@ public class ToSAndUMAFirstRunFragment
+ 
+         // save updater configuration only on button click
+         SharedPreferences.Editor sharedPreferenceEditor = OmahaPrefUtils.getSharedPreferences().edit();
+-        sharedPreferenceEditor.putBoolean(OmahaPrefUtils.PREF_ALLOW_INLINE_UPDATE, mAutoUpdaterChecked);
++        sharedPreferenceEditor.putBoolean(OmahaPrefUtils.PREF_ALLOW_INLINE_UPDATE, false);
+         sharedPreferenceEditor.apply();
+ 
+         tryMarkTermsAccepted(true);
+@@ -295,7 +292,8 @@ public class ToSAndUMAFirstRunFragment
+ 
+         mAcceptButton.setVisibility(visibility);
+         mTosAndPrivacy.setVisibility(visibility);
+-        mAutoUpdaterCheckBox.setVisibility(visibility);
++        // App delivery is managed by Google Play; the inline updater is disabled.
++        mAutoUpdaterCheckBox.setVisibility(View.GONE);
+     }
+ 
+     protected View getToSAndPrivacyText() {
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
 index ec8ddc12a6..5018c3f41a 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
@@ -737,6 +800,31 @@ index ca6a1dd498..1f7c049b8c 100644
  }
  
  GURL GetExtensionsPageUrl(const ExtensionId& extension_id) {
+diff --git a/chrome/browser/ui/android/extensions/java/src/org/chromium/chrome/browser/ui/extensions/ExtensionUiBackendImpl.java b/chrome/browser/ui/android/extensions/java/src/org/chromium/chrome/browser/ui/extensions/ExtensionUiBackendImpl.java
+index 3b26ce12a0..85323f8b0b 100644
+--- a/chrome/browser/ui/android/extensions/java/src/org/chromium/chrome/browser/ui/extensions/ExtensionUiBackendImpl.java
++++ b/chrome/browser/ui/android/extensions/java/src/org/chromium/chrome/browser/ui/extensions/ExtensionUiBackendImpl.java
+@@ -20,7 +20,7 @@ public class ExtensionUiBackendImpl implements ExtensionUiBackend {
+ 
+     @Override
+     public boolean isEnabled(Profile profile) {
+-        return true;
++        return false;
+     }
+ 
+     @Override
+diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp
+index 6d3f2380b1..0501fa73ad 100644
+--- a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp
++++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp
+@@ -9,7 +9,6 @@
+ 
+     <message name="IDS_BROMITE_FRE_FOOTER_PRIVACY_POLICY" desc="Message explaining the privacy policy of the file hosting service provider for adblock updates and Bromite app automatic updates">
+         <ph name="BEGIN_PRIVACY_LINK1">&lt;PRIVACY_LINK1&gt;</ph>Automatic ad block filters updates<ph name="END_PRIVACY_LINK1">&lt;/PRIVACY_LINK1&gt;</ph> are subject to the <ph name="BEGIN_PRIVACY_LINK2">&lt;PRIVACY_LINK2&gt;</ph>Cromite Privacy statement<ph name="END_PRIVACY_LINK2">&lt;/PRIVACY_LINK2&gt;</ph>.
+-The following checkbox controls instead <ph name="BEGIN_PRIVACY_LINK3">&lt;PRIVACY_LINK3&gt;</ph>automatic app updates<ph name="END_PRIVACY_LINK3">&lt;/PRIVACY_LINK3&gt;</ph> which are subject to the <ph name="BEGIN_PRIVACY_LINK4">&lt;PRIVACY_LINK4&gt;</ph>GitHub Privacy statement<ph name="END_PRIVACY_LINK4">&lt;/PRIVACY_LINK4&gt;</ph>.
+     </message>
+ 
+     <message name="IDS_PRIVACY_LINK1" desc="URL for Bromite wiki page about ad blocking" translateable="false">
 diff --git a/components/policy/core/common/policy_loader_command_line.cc b/components/policy/core/common/policy_loader_command_line.cc
 index fa15119483..93f60e937a 100644
 --- a/components/policy/core/common/policy_loader_command_line.cc
@@ -769,6 +857,38 @@ index fa15119483..93f60e937a 100644
    return bundle;
  }
  
+diff --git a/content/browser/media/media_web_contents_observer.cc b/content/browser/media/media_web_contents_observer.cc
+index 792dce24b1..ef1e41286c 100644
+--- a/content/browser/media/media_web_contents_observer.cc
++++ b/content/browser/media/media_web_contents_observer.cc
+@@ -808,6 +808,12 @@ void MediaWebContentsObserver::SuspendAllMediaPlayers() {
+   }
+ }
+ 
++void MediaWebContentsObserver::PauseAllMediaPlayers() {
++  for (auto& media_player_remote : media_player_remotes_) {
++    media_player_remote.second->RequestPause(/*triggered_by_user=*/false);
++  }
++}
++
+ void MediaWebContentsObserver::OnExperimentStateChanged(MediaPlayerId id,
+                                                         bool is_starting) {
+   use_after_free_checker_.check();
+diff --git a/content/browser/media/media_web_contents_observer.h b/content/browser/media/media_web_contents_observer.h
+index e6395d6e82..db6698218b 100644
+--- a/content/browser/media/media_web_contents_observer.h
++++ b/content/browser/media/media_web_contents_observer.h
+@@ -185,6 +185,10 @@ class CONTENT_EXPORT MediaWebContentsObserver
+   // be suspended.
+   void SuspendAllMediaPlayers();
+ 
++  // Pauses every player without freezing its frame. Playback can be explicitly
++  // restarted once the caller's playback restrictions are lifted.
++  void PauseAllMediaPlayers();
++
+  protected:
+   MediaSessionControllersManager* session_controllers_manager() {
+     return session_controllers_manager_.get();
 diff --git a/content/browser/speech/tts_android.cc b/content/browser/speech/tts_android.cc
 index f11dc9f505..2b5020b9de 100644
 --- a/content/browser/speech/tts_android.cc
@@ -784,6 +904,33 @@ index f11dc9f505..2b5020b9de 100644
  }  // namespace content
  
  DEFINE_JNI(TtsPlatformImpl)
+diff --git a/content/browser/web_contents/web_contents_android.cc b/content/browser/web_contents/web_contents_android.cc
+index b38173b072..71cc6c9d88 100644
+--- a/content/browser/web_contents/web_contents_android.cc
++++ b/content/browser/web_contents/web_contents_android.cc
+@@ -513,6 +513,10 @@ void WebContentsAndroid::SuspendAllMediaPlayers(JNIEnv* env) {
+   web_contents_->media_web_contents_observer()->SuspendAllMediaPlayers();
+ }
+ 
++void WebContentsAndroid::PauseMediaPlayersForRoadium(JNIEnv* env) {
++  web_contents_->media_web_contents_observer()->PauseAllMediaPlayers();
++}
++
+ void WebContentsAndroid::SetAudioMuted(JNIEnv* env, bool mute) {
+   web_contents_->SetAudioMuted(mute);
+ }
+diff --git a/content/browser/web_contents/web_contents_android.h b/content/browser/web_contents/web_contents_android.h
+index 3e8e8ddefe..4c7be41939 100644
+--- a/content/browser/web_contents/web_contents_android.h
++++ b/content/browser/web_contents/web_contents_android.h
+@@ -104,6 +104,7 @@ class CONTENT_EXPORT WebContentsAndroid {
+                                 int32_t main_frame_importance,
+                                 int32_t subframe_importance);
+   void SuspendAllMediaPlayers(JNIEnv* env);
++  void PauseMediaPlayersForRoadium(JNIEnv* env);
+   void SetAudioMuted(JNIEnv* env, bool mute);
+   bool IsAudioMuted(JNIEnv* env);
+ 
 diff --git a/content/public/android/BUILD.gn b/content/public/android/BUILD.gn
 index 216971b1ab..3289f4280d 100644
 --- a/content/public/android/BUILD.gn
@@ -1090,7 +1237,7 @@ index 8bab77b969..d1b5b5250b 100644
  
          void onEndEvent(long nativeTtsPlatformImplAndroid, int utteranceId);
 diff --git a/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java b/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java
-index 223822e17c..7269e7e038 100644
+index 223822e17c..2c32b674c0 100644
 --- a/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/webcontents/WebContentsImpl.java
 @@ -7,6 +7,7 @@ package org.chromium.content.browser.webcontents;
@@ -1128,7 +1275,7 @@ index 223822e17c..7269e7e038 100644
  
  import java.util.ArrayList;
  import java.util.Arrays;
-@@ -102,6 +105,78 @@ public class WebContentsImpl
+@@ -102,6 +105,84 @@ public class WebContentsImpl
      // ScopedGlobalRef tables are finite.
      private static final LongSparseArray<WebContentsImpl> sWebContentsMap = new LongSparseArray<>();
  
@@ -1164,7 +1311,7 @@ index 223822e17c..7269e7e038 100644
 +                mRoadiumSavedMute = isAudioMuted();
 +                mRoadiumGuardActive = true;
 +                WebContentsImplJni.get().setAudioMuted(mNativeWebContentsAndroid, true);
-+                suspendAllMediaPlayers();
++                pauseRoadiumMediaPlayers();
 +            } else if (!blocked && mRoadiumGuardActive) {
 +                mRoadiumGuardActive = false;
 +                WebContentsImplJni.get()
@@ -1183,8 +1330,14 @@ index 223822e17c..7269e7e038 100644
 +            if (isRoadiumMediaPlaybackBlocked() && mNativeWebContentsAndroid != 0) {
 +                applyRestrictions();
 +                // Catch script/renderer restarts as well as media-session commands.
-+                suspendAllMediaPlayers();
++                pauseRoadiumMediaPlayers();
 +            }
++        }
++    }
++
++    private void pauseRoadiumMediaPlayers() {
++        if (mNativeWebContentsAndroid != 0) {
++            WebContentsImplJni.get().pauseMediaPlayersForRoadium(mNativeWebContentsAndroid);
 +        }
 +    }
 +
@@ -1197,7 +1350,7 @@ index 223822e17c..7269e7e038 100644
 +                mRoadiumGuardActive = true;
 +            }
 +            WebContentsImplJni.get().setAudioMuted(mNativeWebContentsAndroid, true);
-+            suspendAllMediaPlayers();
++            pauseRoadiumMediaPlayers();
 +            ThreadUtils.postOnUiThreadDelayed(this::initializeRoadiumMediaPolicy, 100);
 +            return;
 +        }
@@ -1207,7 +1360,7 @@ index 223822e17c..7269e7e038 100644
      private static final String PARCEL_VERSION_KEY = "version";
      private static final String PARCEL_WEBCONTENTS_KEY = "webcontents";
      private static final String PARCEL_PROCESS_GUARD_KEY = "processguard";
-@@ -111,8 +186,8 @@ public class WebContentsImpl
+@@ -111,8 +192,8 @@ public class WebContentsImpl
      private static UUID sParcelableUUID = UUID.randomUUID();
  
      /**
@@ -1218,7 +1371,7 @@ index 223822e17c..7269e7e038 100644
       */
      public static void invalidateSerializedWebContentsForTesting() {
          sParcelableUUID = UUID.randomUUID();
-@@ -219,6 +294,10 @@ public class WebContentsImpl
+@@ -219,6 +300,10 @@ public class WebContentsImpl
          mNavigationController = navigationController;
          assert sWebContentsMap.get(mNativeWebContentsAndroid) == null;
          sWebContentsMap.put(mNativeWebContentsAndroid, this);
@@ -1229,7 +1382,7 @@ index 223822e17c..7269e7e038 100644
      }
  
      @CalledByNative
-@@ -303,6 +382,10 @@ public class WebContentsImpl
+@@ -303,6 +388,10 @@ public class WebContentsImpl
          mNativeDestroyThrowable = new RuntimeException("clearNativePtr");
          long nativeWebContentsAndroid = mNativeWebContentsAndroid;
          assert nativeWebContentsAndroid != 0;
@@ -1240,7 +1393,7 @@ index 223822e17c..7269e7e038 100644
          mNativeWebContentsAndroid = 0;
          clearJavaWebContentsObservers();
          UserDataHost userDataHost = getUserDataHost();
-@@ -659,6 +742,11 @@ public class WebContentsImpl
+@@ -659,6 +748,11 @@ public class WebContentsImpl
      @Override
      public void setAudioMuted(boolean mute) {
          checkNotDestroyed();
@@ -1252,7 +1405,7 @@ index 223822e17c..7269e7e038 100644
          WebContentsImplJni.get().setAudioMuted(mNativeWebContentsAndroid, mute);
      }
  
-@@ -872,10 +960,11 @@ public class WebContentsImpl
+@@ -872,10 +966,11 @@ public class WebContentsImpl
      }
  
      /**
@@ -1268,7 +1421,7 @@ index 223822e17c..7269e7e038 100644
       */
      public void requestAccessibilitySnapshot(ViewStructure root, Runnable doneCallback) {
          checkNotDestroyed();
-@@ -1133,8 +1222,8 @@ public class WebContentsImpl
+@@ -1133,8 +1228,8 @@ public class WebContentsImpl
      }
  
      /**
@@ -1279,7 +1432,7 @@ index 223822e17c..7269e7e038 100644
       */
      private @Nullable UserDataHost getUserDataHost() {
          if (mInternalsHolder == null) return null;
-@@ -1340,7 +1429,8 @@ public class WebContentsImpl
+@@ -1340,7 +1435,8 @@ public class WebContentsImpl
                  .getDocumentPictureInPictureOpener(mNativeWebContentsAndroid);
      }
  
@@ -1289,6 +1442,15 @@ index 223822e17c..7269e7e038 100644
          return mObserverProxy;
      }
  
+@@ -1420,6 +1516,8 @@ public class WebContentsImpl
+ 
+         void suspendAllMediaPlayers(long nativeWebContentsAndroid);
+ 
++        void pauseMediaPlayersForRoadium(long nativeWebContentsAndroid);
++
+         void setAudioMuted(long nativeWebContentsAndroid, boolean mute);
+ 
+         boolean isAudioMuted(long nativeWebContentsAndroid);
 diff --git a/content/public/android/junit/src/org/chromium/content/browser/TtsPlatformImplTest.java b/content/public/android/junit/src/org/chromium/content/browser/TtsPlatformImplTest.java
 new file mode 100755
 index 0000000000..6aaae116eb
@@ -1421,7 +1583,7 @@ index 0000000000..6aaae116eb
 +    }
 +}
 diff --git a/content/public/android/junit/src/org/chromium/content/browser/webcontents/WebContentsImplTest.java b/content/public/android/junit/src/org/chromium/content/browser/webcontents/WebContentsImplTest.java
-index 3b0ad0b530..dd7eb5d84c 100644
+index 3b0ad0b530..009c3ca8c0 100644
 --- a/content/public/android/junit/src/org/chromium/content/browser/webcontents/WebContentsImplTest.java
 +++ b/content/public/android/junit/src/org/chromium/content/browser/webcontents/WebContentsImplTest.java
 @@ -5,14 +5,33 @@
@@ -1494,7 +1656,7 @@ index 3b0ad0b530..dd7eb5d84c 100644
      }
  
      @Test
-@@ -88,4 +110,100 @@ public class WebContentsImplTest {
+@@ -88,4 +110,105 @@ public class WebContentsImplTest {
          assertEquals(eventForwarder, mWebContentsImpl.getEventForwarder());
          verify(eventForwarder).setStylusWritingDelegate(any());
      }
@@ -1542,7 +1704,12 @@ index 3b0ad0b530..dd7eb5d84c 100644
 +        assertFalse(mActualMute.get());
 +        setActivityState(ActivityState.PAUSED);
 +        assertTrue(mActualMute.get());
-+        verify(mWebContentsJniMock, times(2)).suspendAllMediaPlayers(mNativeWebContentsAndroid);
++        verify(mWebContentsJniMock, times(2)).pauseMediaPlayersForRoadium(mNativeWebContentsAndroid);
++        setActivityState(ActivityState.RESUMED);
++        assertFalse(mActualMute.get());
++        verify(mWebContentsJniMock, times(2)).pauseMediaPlayersForRoadium(mNativeWebContentsAndroid);
++        // Closing-frame suspension would keep players frozen after returning to Park.
++        verify(mWebContentsJniMock, never()).suspendAllMediaPlayers(anyLong());
 +    }
 +
 +    @Test
@@ -1571,16 +1738,16 @@ index 3b0ad0b530..dd7eb5d84c 100644
 +        WebContentsImpl background = WebContentsImpl.create(2L, mNavigationController);
 +        ShadowLooper.idleMainLooper();
 +        verify(mWebContentsJniMock).setAudioMuted(2L, true);
-+        verify(mWebContentsJniMock).suspendAllMediaPlayers(2L);
++        verify(mWebContentsJniMock).pauseMediaPlayersForRoadium(2L);
 +        background.clearNativePtr();
 +    }
 +
 +    @Test
 +    @Feature({"Roadium Automotive"})
-+    public void testAutomotiveRendererPlaybackRestartIsSuspended() {
++    public void testAutomotiveRendererPlaybackRestartIsPaused() {
 +        createAutomotiveContents();
 +        mWebContentsImpl.getWebContentsObserverProxy().mediaStartedPlaying(77, true, true);
-+        verify(mWebContentsJniMock, times(2)).suspendAllMediaPlayers(mNativeWebContentsAndroid);
++        verify(mWebContentsJniMock, times(2)).pauseMediaPlayersForRoadium(mNativeWebContentsAndroid);
 +        assertTrue(mActualMute.get());
 +    }
 +
@@ -1627,16 +1794,31 @@ index 22ee51c294..5b4953595c 100644
  
  }  // namespace extensions_features
 diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
-index 46b1b31bc8..2f78ea2ef2 100755
+index 46b1b31bc8..63daf81772 100755
 --- a/tools/grit/grit/grd_reader.py
 +++ b/tools/grit/grit/grd_reader.py
-@@ -160,9 +160,10 @@ class GrdContentHandler(xml.sax.handler.ContentHandler):
+@@ -139,7 +139,12 @@ class GrdContentHandler(xml.sax.handler.ContentHandler):
+   def characters(self, content):
+     if self.ignore_depth == 0:
+       if self.stack[-1]:
+-        content = self.replace_browser(content)
++        # This message describes Cromite's filter service, not Roadium's policy.
++        upstream_filter_policy = any(
++            node and node.attrs.get('name') == 'IDS_BROMITE_FRE_FOOTER_PRIVACY_POLICY'
++            for node in self.stack)
++        if not upstream_filter_policy:
++          content = self.replace_browser(content)
+         self.stack[-1].AppendContent(content)
+ 
+   def ignorableWhitespace(self, whitespace):
+@@ -160,9 +165,11 @@ class GrdContentHandler(xml.sax.handler.ContentHandler):
      content = content.replace("chromeos", "zzzyyyyxxxxA")
  
      content = content.replace("google chrome", "cromite")
 -    content = content.replace("Chrome", "Cromite")
 -    content = content.replace("Chromium", "Cromite")
 -    content = content.replace("Bromite", "Cromite")
++    content = content.replace("Google Chrome", "Roadium")
 +    content = content.replace("Chrome", "Roadium")
 +    content = content.replace("Chromium", "Roadium")
 +    content = content.replace("Bromite", "Roadium")

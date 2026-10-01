@@ -5,7 +5,7 @@
   "patches": [
     {
       "path": "build/roadium/patches/0001-roadium-aaos-foundation.patch",
-      "sha256": "0e9ba5d59eacce4daeb9cb01ac6d8aaf3d40b1b9a4f6ba614b6b73bb16f061ae"
+      "sha256": "889b7306ffad691af81dcd06df2c00cd5e6e927a2244279e0e3526109de4e196"
     }
   ]
 }

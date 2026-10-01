@@ -82,19 +82,28 @@ adb shell cmd car_service inject-vhal-event 0x11600207 0
 adb shell cmd car_service inject-vhal-event 0x11400400 4
 ```
 
-Launch Roadium, verify ordinary browsing, and start media. Then simulate Drive:
+Use a freshly booted emulator for this bounded injection recipe. Launch Roadium, verify ordinary browsing, and start media. Then simulate Moving for a 60-second capture window:
 
 ```sh
 adb shell cmd car_service inject-vhal-event 0x11400400 8
 adb shell cmd car_service inject-vhal-event 0x11200402 false
-adb shell cmd car_service inject-vhal-event 0x11600207 30
+adb shell cmd car_service inject-vhal-event 0x11600207 30 -t 60
 adb shell cmd media_session dispatch play
 adb shell dumpsys car_service --services CarDrivingStateService CarUxRestrictionsManagerService
 adb shell dumpsys activity activities
 adb shell dumpsys media_session
 ```
 
-Confirm that the OS blocks the browser UI and no resumed Roadium activity remains, playback stops, external play commands cannot restore restricted output, and returning to Park restores browsing. Verify audio, video, WebAudio and platform speech synthesis separately. Use a parked positive audio signal to validate any PCM capture measurement. Launcher/start-command success alone is insufficient evidence.
+Confirm that the OS blocks the browser UI and no resumed Roadium activity remains, playback stops, external play commands cannot restore restricted output, and returning to Park restores browsing. Verify audio, video and WebAudio separately. Cromite disables website speech synthesis and voice enumeration in the pinned baseline; Roadium preserves that default. Record speech as disabled, rather than counting silence as a speech restriction pass. Use a parked positive audio signal to validate any PCM capture measurement. Launcher/start-command success alone is insufficient evidence.
+
+Restore Park after the capture:
+
+```sh
+adb shell cmd car_service inject-vhal-event 0x11400400 4
+adb shell cmd car_service inject-vhal-event 0x11600207 0 -t 60
+```
+
+Confirm state 0 and DO false, and verify Roadium's own activity is resumed. Use an explicit play action on the same audio/video element and verify its clock advances and speaker output returns without reloading the page. Park does not automatically restart HTML playback. Ordinary speed injections can be overwritten by recurring zero-speed events in the fake HAL. The `-t 60` argument future-dates the event by 60 seconds; it is an emulator testing mechanism. Android 13's `emulate-driving-state drive` command uses a much longer future timestamp, so reboot before using this bounded recipe if that command was used. See [CarShellCommand](https://android.googlesource.com/platform/packages/services/Car/+/refs/heads/android13-release/service/src/com/android/car/CarShellCommand.java) and [VehicleHal](https://android.googlesource.com/platform/packages/services/Car/+/refs/heads/android13-release/service/src/com/android/car/hal/VehicleHal.java).
 
 Generate the local fixture assets from the prepared Chromium source:
 
@@ -108,7 +117,7 @@ Copy that fixtures directory to the host when running the HTTP server outside Do
 python3 tools/roadium/serve-fixtures.py /path/to/local/fixtures --events /path/to/local/fixture-events.jsonl
 ~~~
 
-The development fixture in tools/roadium/fixtures/index.html provides audio, video, WebAudio, speech and MediaSession controls. It uses a generated tone.wav and Chromium's media/test/data/bear.mp4. Keep media assets in a local runtime directory, then run tools/roadium/serve-fixtures.py with that directory and a local --events log path. The server binds only to 127.0.0.1. `adb reverse tcp:8765 tcp:8765` connects the emulator to it. Tests must not infer app driving permissions from raw gear or speed values; those values are injected only into the emulator's system service.
+The development fixture in tools/roadium/fixtures/index.html provides audio, video, WebAudio, speech and MediaSession controls. Retained Cromite privacy patches can prevent beacon event reporting; page state and measured speaker output remain the verification evidence. A speech button is not proof that the baseline supports website speech. It uses a generated tone.wav and Chromium's media/test/data/bear.mp4. Keep media assets in a local runtime directory, then run tools/roadium/serve-fixtures.py with that directory and a local --events log path. The server binds only to 127.0.0.1. `adb reverse tcp:8765 tcp:8765` connects the emulator to it. Tests must not infer app driving permissions from raw gear or speed values; those values are injected only into the emulator's system service.
 
 For repeatable fixture actions, forward Roadium's active DevTools socket to host TCP port 9222 and load exactly one tab at `http://127.0.0.1:8765/`. The Node 24 helper selects that exact page and checks its address again during evaluation:
 

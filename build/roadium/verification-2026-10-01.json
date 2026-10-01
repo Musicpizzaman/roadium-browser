@@ -1,0 +1,227 @@
+{
+  "checked_utc": "2026-10-01T22:51:17.6289451Z",
+  "version": "153.0.8010.37",
+  "package": "io.github.musicpizzaman.roadium",
+  "source_patch_sha256": "889b7306ffad691af81dcd06df2c00cd5e6e927a2244279e0e3526109de4e196",
+  "unit_tests": {
+    "passed": 26,
+    "sdk_versions": [
+      29,
+      36
+    ],
+    "reviewed_recovery_diff": true
+  },
+  "overlay_tests": {
+    "windows_passed": 8,
+    "linux_passed": 8
+  },
+  "builds": [
+    {
+      "architecture": "x64",
+      "attempt": "run.a7Veqjfl",
+      "compiler_exit": 0,
+      "version_code": 801003708,
+      "packaged_abi": "x86_64",
+      "bundletool_validation": "passed",
+      "artifacts": [
+        {
+          "file": "ChromePublic.apk",
+          "native_abis": [
+            "x86_64"
+          ],
+          "native_library_count": 7,
+          "apk_signature_verification": "passed",
+          "apk_signature_v2": true,
+          "certificate_sha256": "32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0",
+          "min_sdk": 31,
+          "target_sdk": 36,
+          "bytes": 349342425,
+          "sha256": "0c6374b113c582f17d22e5280a3c180576189afad76d6b7e1b2f68ff95690219",
+          "zip_crc": "passed"
+        },
+        {
+          "file": "ChromePublic.aab",
+          "native_abis": [
+            "x86_64"
+          ],
+          "native_library_count": 7,
+          "jar_signing_entries": [],
+          "jar_signature_status": "unsigned",
+          "bytes": 151108693,
+          "sha256": "53d3e28cdedbc148b6ef1f68f7145fabbde914180dc31ff2652fd49e670eadcd",
+          "zip_crc": "passed"
+        }
+      ]
+    },
+    {
+      "architecture": "arm64",
+      "attempt": "run.NNqyjdwk",
+      "compiler_exit": 0,
+      "version_code": 801003702,
+      "packaged_abi": "arm64-v8a",
+      "bundletool_validation": "passed",
+      "artifacts": [
+        {
+          "file": "ChromePublic.apk",
+          "native_abis": [
+            "arm64-v8a"
+          ],
+          "native_library_count": 7,
+          "apk_signature_verification": "passed",
+          "apk_signature_v2": true,
+          "certificate_sha256": "32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0",
+          "min_sdk": 31,
+          "target_sdk": 36,
+          "bytes": 323092499,
+          "sha256": "66bda5e1dab6f960a4119ebfac19680b1b30f309ddec869e7b0d45c16a222311",
+          "zip_crc": "passed"
+        },
+        {
+          "file": "ChromePublic.aab",
+          "native_abis": [
+            "arm64-v8a"
+          ],
+          "native_library_count": 7,
+          "jar_signing_entries": [],
+          "jar_signature_status": "unsigned",
+          "bytes": 140217396,
+          "sha256": "06b6acacbad56e5f9e8af30d489e599f986c44c8b0157304e3c7e77abc18ac70",
+          "zip_crc": "passed"
+        }
+      ]
+    }
+  ],
+  "emulator": {
+    "api": 33,
+    "image": "Google APIs Automotive x86_64",
+    "installed_apk_sha256": "0c6374b113c582f17d22e5280a3c180576189afad76d6b7e1b2f68ff95690219",
+    "matrix": "Park, Moving, return to Park",
+    "moving_state": 2,
+    "distraction_optimization_required": true,
+    "moving_restrictions": 255,
+    "fixture_reloaded_during_matrix": false,
+    "capture_reference": "Separate finite AudioTrack amplitude <=2; not part of Roadium",
+    "reference_baseline": {
+      "packets": 186,
+      "sample_count": 192460,
+      "peak": 2,
+      "rms": 0.6016966554824339,
+      "seconds_requested": 2.0
+    },
+    "cases": [
+      {
+        "case": "audio-park",
+        "positive_expected": true,
+        "metrics": {
+          "packets": 277,
+          "sample_count": 288232,
+          "peak": 2500,
+          "rms": 1609.0822035674794,
+          "seconds_requested": 3.0
+        }
+      },
+      {
+        "case": "audio-moving-external-play",
+        "positive_expected": false,
+        "metrics": {
+          "packets": 465,
+          "sample_count": 480132,
+          "peak": 2,
+          "rms": 0.6016924247865106,
+          "seconds_requested": 5.0
+        }
+      },
+      {
+        "case": "audio-return-park",
+        "positive_expected": true,
+        "metrics": {
+          "packets": 186,
+          "sample_count": 192120,
+          "peak": 2498,
+          "rms": 1765.5253910150846,
+          "seconds_requested": 2.0
+        }
+      },
+      {
+        "case": "video-park",
+        "positive_expected": true,
+        "metrics": {
+          "packets": 261,
+          "sample_count": 269816,
+          "peak": 1606,
+          "rms": 230.62240144746698,
+          "seconds_requested": 3.0
+        }
+      },
+      {
+        "case": "video-moving-external-play",
+        "positive_expected": false,
+        "metrics": {
+          "packets": 463,
+          "sample_count": 480140,
+          "peak": 2,
+          "rms": 0.6023585639357997,
+          "seconds_requested": 5.0
+        }
+      },
+      {
+        "case": "video-return-park",
+        "positive_expected": true,
+        "metrics": {
+          "packets": 175,
+          "sample_count": 183876,
+          "peak": 1608,
+          "rms": 253.04934551040162,
+          "seconds_requested": 2.0
+        }
+      },
+      {
+        "case": "web-park",
+        "positive_expected": true,
+        "metrics": {
+          "packets": 276,
+          "sample_count": 288252,
+          "peak": 984,
+          "rms": 695.2818343550953,
+          "seconds_requested": 3.0
+        }
+      },
+      {
+        "case": "web-moving-external-play",
+        "positive_expected": false,
+        "metrics": {
+          "packets": 463,
+          "sample_count": 480922,
+          "peak": 2,
+          "rms": 0.6013467321758249,
+          "seconds_requested": 5.0
+        }
+      },
+      {
+        "case": "repeated-media-starts-moving",
+        "positive_expected": false,
+        "metrics": {
+          "packets": 731,
+          "sample_count": 761226,
+          "peak": 2,
+          "rms": 0.6007118497702788,
+          "seconds_requested": 8.0
+        }
+      },
+      {
+        "case": "web-return-park",
+        "positive_expected": true,
+        "metrics": {
+          "packets": 187,
+          "sample_count": 192364,
+          "peak": 984,
+          "rms": 695.4636670609524,
+          "seconds_requested": 2.0
+        }
+      }
+    ],
+    "speech": "Disabled by retained Cromite privacy default; no audible speech test"
+  },
+  "physical_car_verification": "pending: 2024 Chevrolet Blazer EV, Android 12",
+  "distribution": "Diagnostic APKs and unsigned AABs; no Play upload"
+}
