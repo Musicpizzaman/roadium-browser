@@ -110,6 +110,16 @@ python3 tools/roadium/serve-fixtures.py /path/to/local/fixtures --events /path/t
 
 The development fixture in tools/roadium/fixtures/index.html provides audio, video, WebAudio, speech and MediaSession controls. It uses a generated tone.wav and Chromium's media/test/data/bear.mp4. Keep media assets in a local runtime directory, then run tools/roadium/serve-fixtures.py with that directory and a local --events log path. The server binds only to 127.0.0.1. `adb reverse tcp:8765 tcp:8765` connects the emulator to it. Tests must not infer app driving permissions from raw gear or speed values; those values are injected only into the emulator's system service.
 
+For repeatable fixture actions, forward Roadium's active DevTools socket to host TCP port 9222 and load exactly one tab at `http://127.0.0.1:8765/`. The Node 24 helper selects that exact page and checks its address again during evaluation:
+
+```sh
+node tools/roadium/control-fixture.mjs status
+node tools/roadium/control-fixture.mjs audio
+node tools/roadium/control-fixture.mjs stop
+```
+
+Actions are `status`, `audio`, `video`, `web`, `speech`, `cancel`, `retry` and `stop`. The playback actions toggle the existing fixture buttons. `stop` also turns off auto-retry, pauses both media elements, suspends WebAudio and cancels speech. Each invocation has a ten-second deadline and prints page state as JSON. These states supplement speaker measurements; they do not prove inaudibility under driving restrictions.
+
 An API 33 emulator result does not establish compatibility or Play eligibility on the Android 12 Blazer EV. The car test remains a separate step.
 
 The inherited Cromite patch-check workflow skips ordinary fork pushes because it resolves commit IDs against uazo/cromite. It remains available by manual dispatch with a valid upstream reference. Roadium overlay checks run locally using the commands above.
