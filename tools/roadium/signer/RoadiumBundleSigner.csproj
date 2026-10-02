@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ApplicationIcon>roadium.ico</ApplicationIcon>
+    <AssemblyName>RoadiumBundleSigner</AssemblyName>
+    <Version>1.0.0</Version>
+    <Company>Roadium</Company>
+    <Product>Roadium Bundle Signer</Product>
+    <Description>Sign and verify Roadium Android App Bundles using your existing upload key.</Description>
+    <PublishSingleFile>false</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="sign-bundle.sh" LogicalName="RoadiumBundleSigner.sign-bundle.sh" />
+    <EmbeddedResource Include="../../../assets/branding/roadium-wordmark.png" LogicalName="Roadium.Wordmark" />
+    <EmbeddedResource Include="roadium.ico" LogicalName="Roadium.Icon" />
+    <None Update="signer-settings.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

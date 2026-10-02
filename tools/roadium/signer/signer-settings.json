@@ -1,0 +1,9 @@
+{
+  "Container": "roadium-baseline-153",
+  "User": "lg",
+  "KeyPath": "/home/lg/working_dir/roadium-signing-private/roadium-upload.p12",
+  "Alias": "roadium-upload",
+  "JdkBin": "/home/lg/working_dir/chromium/src/third_party/jdk/current/bin",
+  "Bundletool": "/home/lg/working_dir/chromium/src/third_party/android_build_tools/bundletool/cipd/bundletool.jar",
+  "ExpectedPackage": "io.github.musicpizzaman.roadium"
+}

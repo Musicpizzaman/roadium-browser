@@ -1,0 +1,6 @@
+bin/
+obj/
+*.aab
+*.p12
+*.pfx
+*.jks
