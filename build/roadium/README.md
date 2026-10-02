@@ -54,9 +54,9 @@ Run the verifier inside the prepared container after a successful build:
 python3 "$WORKSPACE/roadium/tools/roadium/verify-artifacts.py" --arch arm64
 ```
 
-Use `--arch x64` for the emulator build. `--workspace` can override `WORKSPACE`. The verifier checks the pinned source tree and overlay, all bundle module manifests, APK metadata, native libraries in both archives, ZIP integrity, the APK signature and bundletool validation. It derives architecture-specific version codes from Chromium's generator (ARM64 801003702; x64 801003708 for this baseline).
+Use `--arch x64` for the emulator build. `--workspace` can override `WORKSPACE`. The verifier checks the pinned source tree and overlay, all bundle module manifests, APK metadata, native libraries in both archives, ZIP integrity, the APK signature and bundletool validation. It derives architecture-specific version codes from Chromium's generator plus the validated `roadium_version_code_offset` in baseline.json (ARM64 801003712; x64 801003718 with the current Roadium offset of 10).
 
-The resulting `roadium-ARCH-build-manifest.json` records artifact hashes, ABI and the verified APK certificate SHA256. AAB signing entries are recorded separately; their presence does not prove a valid signature. The current development AAB is unsigned and needs upload-key signing before Play distribution. Playback unit tests and runtime restrictions are separate checks.
+The resulting `$WORKSPACE/roadium-ARCH-build-manifest.json` (outside `out/ARCH`) records artifact hashes, ABI and the verified APK certificate SHA256. AAB signing entries are recorded separately; their presence does not prove a valid signature. The current development AAB is unsigned and needs upload-key signing before Play distribution. Playback unit tests and runtime restrictions are separate checks; see the [design verification record](verification-design-2026-10-02.json).
 
 
 ## Focused playback tests
@@ -70,6 +70,17 @@ python3 "$WORKSPACE/roadium/tools/roadium/test-apply-overlay.py"
 ```
 
 Run these inside the prepared container with depot_tools on PATH. The focused target avoids existing selection-menu test compile errors in Cromite's broader content_junit_tests target.
+
+## Focused website-theme tests
+
+```sh
+cd "$WORKSPACE/chromium/src"
+export PATH="$WORKSPACE/depot_tools:$PATH"
+python3 "$WORKSPACE/depot_tools/siso.py" ninja -C out/arm64 --offline --local_jobs=12 roadium_theme_junit_tests
+vpython3 out/arm64/bin/run_roadium_theme_junit_tests --json-results-file out/arm64/roadium-theme-tests.json
+```
+
+This binary owns the two existing theme test classes directly. They contain 17 controller tests and 15 renderer-preference tests, run across API 29 and API 36 (64 passing executions for the design update), including inherited defaults, explicit Light/Dark in both system appearances and clearing exceptions. Native rendering, saved choices, authored dark styles and automatic darkening require separate runtime checks. Use the local fixtures `theme-native.html` and `theme-light.html`, and `tools/roadium/theme-fixture.mjs` after forwarding the browser's DevTools socket to localhost port 9222. The probe refuses non-fixture pages and never emulates CSS media preferences.
 
 ## Emulator restrictions
 

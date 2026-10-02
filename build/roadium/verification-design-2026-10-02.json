@@ -1,0 +1,211 @@
+{
+  "project": "Roadium Browser",
+  "checked_utc": "2026-10-02T09:59:34.371907+00:00",
+  "source_patch_sha256": "3f0fedee04363332ccfe8fb2bbd2ba1f4ed8127e187f04c5bd2104a33debd0df",
+  "chromium_version": "153.0.8010.37",
+  "cromite_commit": "11507ac1061b5ea227806f5e84db5a57df6ccf6a",
+  "clean_pinned_image_overlay_application": "passed",
+  "artifacts": {
+    "arm64": {
+      "version_code": 801003712,
+      "min_sdk": 31,
+      "target_sdk": 36,
+      "abi": "arm64-v8a",
+      "bundletool": "passed",
+      "compiler_exit": 0,
+      "build_attempt": "run.JKO6tdvU",
+      "files": [
+        {
+          "file": "ChromePublic.apk",
+          "native_abis": [
+            "arm64-v8a"
+          ],
+          "native_library_count": 7,
+          "apk_signature_verification": "passed",
+          "apk_signature_v2": true,
+          "certificate_sha256": "32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0",
+          "min_sdk": 31,
+          "target_sdk": 36,
+          "bytes": 323062627,
+          "sha256": "2ed55f280cec80e438a875e7ef5d06bb4b1f291689250ec6492649c3257a87b9",
+          "zip_crc": "passed"
+        },
+        {
+          "file": "ChromePublic.aab",
+          "native_abis": [
+            "arm64-v8a"
+          ],
+          "native_library_count": 7,
+          "jar_signing_entries": [],
+          "jar_signature_status": "unsigned",
+          "bytes": 140208217,
+          "sha256": "82026426a07d31bd96c7ad27864b72b9739a64fb369693b5bda8857f01964700",
+          "zip_crc": "passed"
+        }
+      ]
+    },
+    "x64": {
+      "version_code": 801003718,
+      "min_sdk": 31,
+      "target_sdk": 36,
+      "abi": "x86_64",
+      "bundletool": "passed",
+      "compiler_exit": 0,
+      "build_attempt": "run.Rm6eT1Rq",
+      "files": [
+        {
+          "file": "ChromePublic.apk",
+          "native_abis": [
+            "x86_64"
+          ],
+          "native_library_count": 7,
+          "apk_signature_verification": "passed",
+          "apk_signature_v2": true,
+          "certificate_sha256": "32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0",
+          "min_sdk": 31,
+          "target_sdk": 36,
+          "bytes": 349312558,
+          "sha256": "8b197a8d0cb24dc2cb1848762936efadef2b7184eeb201c7994da55edad87227",
+          "zip_crc": "passed"
+        },
+        {
+          "file": "ChromePublic.aab",
+          "native_abis": [
+            "x86_64"
+          ],
+          "native_library_count": 7,
+          "jar_signing_entries": [],
+          "jar_signature_status": "unsigned",
+          "bytes": 151099554,
+          "sha256": "fe60ec6212a727768fc995d92959484a883289aa1f1815bdc7fb493de38c9008",
+          "zip_crc": "passed"
+        }
+      ]
+    }
+  },
+  "unit_tests": {
+    "theme": {
+      "executions": 64,
+      "android_sdks": [
+        29,
+        36
+      ],
+      "status": "passed",
+      "results": "design-results/theme-junit.json"
+    },
+    "media": {
+      "executions": 26,
+      "android_sdks": [
+        29,
+        36
+      ],
+      "status": "passed",
+      "results": "design-results/media-junit.json"
+    }
+  },
+  "overlay_tool_tests": {
+    "executions": 8,
+    "status": "passed"
+  },
+  "emulator": {
+    "image": "API33 Google APIs Automotive x86_64",
+    "user": 10,
+    "apk_sha256": "8b197a8d0cb24dc2cb1848762936efadef2b7184eeb201c7994da55edad87227",
+    "installed_apk_hash_match": true,
+    "website_theme_cases": 15,
+    "website_theme_status": "passed",
+    "results": "design-results/website-themes-runtime.json",
+    "automatic_darkening_paint_cases": 4,
+    "paint_status": "passed",
+    "paint_results": "design-results/website-themes-paint.json",
+    "emulated_css_media": false,
+    "persistence": "Light and Dark overrides survived browser restarts; Follow system cleared the exceptions",
+    "browser_palette": "Warm white/navy in Light; deep navy/warm white/bright teal in Dark, visually verified",
+    "fresh_profile": "First-run Roadium wordmark and default system appearance verified in Light and Dark after resetting only the emulator fixture profile",
+    "playback_cases": 10,
+    "playback_status": "passed",
+    "playback_results": "design-results/emulator-media.json",
+    "restricted_audio_peak": 2,
+    "quiet_reference_peak": 2,
+    "parked_audio_peaks": [
+      2500,
+      2501,
+      1612,
+      1594,
+      983,
+      983
+    ],
+    "park_recovery": "Existing HTML audio/video and WebAudio recovered in Park; no fixture reload during matrix",
+    "speech": "Disabled by retained Cromite privacy default; not a positive audible speech restriction test",
+    "cleanup": "Park, system Light, no browser media playing"
+  },
+  "reference_artwork_sha256": {
+    "roadium-logo-reference.jpg": "c67a9f37f0b2c23fcb13fb34a373915c04ae91b9648714f05e1b9b222dee773e",
+    "roadium-style-reference.jpg": "5b04e874f208155743647604c57717e87db5cf4826fa006b0a9902fe34a5279c",
+    "roadium-asset-reference.jpg": "694e1753a0c536ffabd51fa3f55ac18da156df63b0c5187cf0290beb652ec19f"
+  },
+  "independent_local_reviews": {
+    "model": "gemma-4-12b-qat:latest",
+    "status": "No remaining concrete findings after proposal correction and verification"
+  },
+  "physical_car": {
+    "previous_foundation": "User reported successful Play installation and operation on 2024 Chevrolet Blazer EV / Android12",
+    "this_design_update": "pending manual signing, Play update and car test"
+  },
+  "play_upload_this_update": "not uploaded by agent",
+  "upload_key_signing": "unsigned bundle; user reuses existing upload key manually",
+  "limitations": [
+    "Automatic website darkening varies with authored content. Light requests a light scheme and disables browser darkening; websites can retain their own fixed styles.",
+    "Emulator results do not establish this design update on the physical car."
+  ],
+  "screenshots": [
+    {
+      "file": "design-screenshots/design-dark-override-system-light.png",
+      "sha256": "ffd919e3c5d1d7b46e46dc3c6d779f5d3f3bbca7fad37a8366103b9f3190320c"
+    },
+    {
+      "file": "design-screenshots/design-first-run-dark.png",
+      "sha256": "bc8a5ab20d4bd2f22e50607917648df5b78e6fc13fc0399929994705b4c7a098"
+    },
+    {
+      "file": "design-screenshots/design-first-run-light.png",
+      "sha256": "a47b60376dc86cdee165e0a249bd7a18845a8e79df981424c4ef13d5c63b80ac"
+    },
+    {
+      "file": "design-screenshots/design-follow-system-dark.png",
+      "sha256": "dc4dc75edc84c807fc28c8683b8c27ac3e1fe2b31571a7fb21dae6cb6aeef8db"
+    },
+    {
+      "file": "design-screenshots/design-follow-system-light.png",
+      "sha256": "31c14fe8cf66d0007c10a6d120d1c853bfc42e87c48cbba7ab194827e203ab19"
+    },
+    {
+      "file": "design-screenshots/design-light-only-authored-light.png",
+      "sha256": "8903075f7af72b572a1565c6c66467f9e82a7e6641ce7de269ae6f934dacf517"
+    },
+    {
+      "file": "design-screenshots/design-light-only-explicit-light-system-dark.png",
+      "sha256": "395a1505cd1cf708c720cbe591eb2268ad3c93943efe8867a6ce77e012814ad6"
+    },
+    {
+      "file": "design-screenshots/design-light-only-follow-system-dark.png",
+      "sha256": "db41c604907707984807a0140eefd0923900dc6e4b34f4ccf0e366b088220fc3"
+    },
+    {
+      "file": "design-screenshots/design-light-only-forced-dark.png",
+      "sha256": "0d8ce0002923f307a804bb41ccab09007b7ab418a33f3dce89b6a1c18b8c60b9"
+    },
+    {
+      "file": "design-screenshots/design-light-override-system-dark.png",
+      "sha256": "31c14fe8cf66d0007c10a6d120d1c853bfc42e87c48cbba7ab194827e203ab19"
+    },
+    {
+      "file": "design-screenshots/design-ui-dark-ready.png",
+      "sha256": "3a9a5f1ee097a0eeb8b241f2d9abf122d4018114f3b362c01f0784f1c847d1d8"
+    },
+    {
+      "file": "design-screenshots/design-ui-light-ready.png",
+      "sha256": "77f9af9add6e1eebd0ef9710e16fd4fa215f19b15727edcb1b8208f6d8d8cef2"
+    }
+  ]
+}

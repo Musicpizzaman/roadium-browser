@@ -1,2 +1,4 @@
 * text eol=lf
 patches/*.patch -text whitespace=-blank-at-eol
+# Keep captured PNG evidence byte-for-byte.
+design-screenshots/*.png binary

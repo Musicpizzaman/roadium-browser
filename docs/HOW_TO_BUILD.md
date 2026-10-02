@@ -1,3 +1,7 @@
+# Roadium build
+
+For this fork, use the [pinned Roadium build instructions](../build/roadium/README.md). Its upstream compiler image is built locally from the pinned Cromite Docker contexts. The inherited instructions below describe upstream Cromite.
+
 # How to build
 
 Please refer to [official Chromium build documentation](https://www.chromium.org/developers/how-tos/get-the-code) to get started on how to build Chromium.

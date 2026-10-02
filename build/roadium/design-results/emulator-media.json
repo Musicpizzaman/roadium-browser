@@ -1,0 +1,666 @@
+{
+  "checked_utc": "2026-10-02T09:49:01.2668770Z",
+  "apk_sha256": "8b197a8d0cb24dc2cb1848762936efadef2b7184eeb201c7994da55edad87227",
+  "source_patch_sha256": "3f0fedee04363332ccfe8fb2bbd2ba1f4ed8127e187f04c5bd2104a33debd0df",
+  "fixture_target": "6",
+  "fixture_reload_during_matrix": false,
+  "status": "passed",
+  "capture_reference": "Separate finite AudioTrack amplitude <=2; not part of Roadium",
+  "reference_baseline": {
+    "packets": 277,
+    "sample_count": 287758,
+    "peak": 2,
+    "rms": 0.6030564795920568,
+    "seconds_requested": 3.0
+  },
+  "emulator": "API33 Google APIs Automotive x86_64 user10",
+  "results": [
+    {
+      "case": "audio-park",
+      "positive_expected": true,
+      "metrics": {
+        "packets": 276,
+        "sample_count": 287788,
+        "peak": 2500,
+        "rms": 1765.9294752154758,
+        "seconds_requested": 3.0
+      },
+      "page_before": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": false,
+          "currentTime": 0.037708,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "page_after": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": false,
+          "currentTime": 3.393599,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "clock_check": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": false,
+          "currentTime": 0.106092,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      }
+    },
+    {
+      "case": "audio-moving-external-play",
+      "positive_expected": false,
+      "metrics": {
+        "packets": 461,
+        "sample_count": 479368,
+        "peak": 2,
+        "rms": 0.6020816345712646,
+        "seconds_requested": 5.0
+      },
+      "page_before": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 3.785071,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "page_after": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 3.785071,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "clock_check": null
+    },
+    {
+      "case": "audio-return-park",
+      "positive_expected": true,
+      "metrics": {
+        "packets": 187,
+        "sample_count": 193212,
+        "peak": 2501,
+        "rms": 1528.027040342021,
+        "seconds_requested": 2.0
+      },
+      "page_before": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": false,
+          "currentTime": 4.282439,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "page_after": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": false,
+          "currentTime": 0.93851,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "clock_check": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": false,
+          "currentTime": 4.332365,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      }
+    },
+    {
+      "case": "video-park",
+      "positive_expected": true,
+      "metrics": {
+        "packets": 258,
+        "sample_count": 267530,
+        "peak": 1612,
+        "rms": 232.03211192500453,
+        "seconds_requested": 3.0
+      },
+      "page_before": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": false,
+          "currentTime": 0,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "page_after": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": false,
+          "currentTime": 0.256336,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "clock_check": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": false,
+          "currentTime": 0.020571,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      }
+    },
+    {
+      "case": "video-moving-external-play",
+      "positive_expected": false,
+      "metrics": {
+        "packets": 462,
+        "sample_count": 479278,
+        "peak": 2,
+        "rms": 0.6024326239955177,
+        "seconds_requested": 5.0
+      },
+      "page_before": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0.604675,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "page_after": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0.604675,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "clock_check": null
+    },
+    {
+      "case": "video-return-park",
+      "positive_expected": true,
+      "metrics": {
+        "packets": 167,
+        "sample_count": 173994,
+        "peak": 1594,
+        "rms": 213.68960639701424,
+        "seconds_requested": 2.0
+      },
+      "page_before": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": false,
+          "currentTime": 0.708196,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "page_after": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": false,
+          "currentTime": 0.137028,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "clock_check": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": false,
+          "currentTime": 0.785603,
+          "muted": false
+        },
+        "webAudio": "inactive",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      }
+    },
+    {
+      "case": "web-park",
+      "positive_expected": true,
+      "metrics": {
+        "packets": 279,
+        "sample_count": 288018,
+        "peak": 983,
+        "rms": 695.0358674162427,
+        "seconds_requested": 3.0
+      },
+      "page_before": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0.300041,
+          "muted": false
+        },
+        "webAudio": "running",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "page_after": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0.300041,
+          "muted": false
+        },
+        "webAudio": "running",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "clock_check": null
+    },
+    {
+      "case": "web-moving-external-play",
+      "positive_expected": false,
+      "metrics": {
+        "packets": 462,
+        "sample_count": 479606,
+        "peak": 2,
+        "rms": 0.6010135876670982,
+        "seconds_requested": 5.0
+      },
+      "page_before": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0.300041,
+          "muted": false
+        },
+        "webAudio": "running",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "page_after": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0.300041,
+          "muted": false
+        },
+        "webAudio": "running",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "clock_check": null
+    },
+    {
+      "case": "repeated-media-starts-moving",
+      "positive_expected": false,
+      "metrics": {
+        "packets": 742,
+        "sample_count": 767448,
+        "peak": 2,
+        "rms": 0.601700983333402,
+        "seconds_requested": 8.0
+      },
+      "page_before": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075249,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0.300041,
+          "muted": false
+        },
+        "webAudio": "running",
+        "retry": true,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "page_after": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075278,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0.510839,
+          "muted": false
+        },
+        "webAudio": "running",
+        "retry": true,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "clock_check": null
+    },
+    {
+      "case": "web-return-park",
+      "positive_expected": true,
+      "metrics": {
+        "packets": 186,
+        "sample_count": 192066,
+        "peak": 983,
+        "rms": 694.480683715194,
+        "seconds_requested": 2.0
+      },
+      "page_before": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075278,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0.510839,
+          "muted": false
+        },
+        "webAudio": "running",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "page_after": {
+        "url": "http://127.0.0.1:8765/",
+        "visibility": "visible",
+        "audio": {
+          "paused": true,
+          "currentTime": 1.075278,
+          "muted": false
+        },
+        "video": {
+          "paused": true,
+          "currentTime": 0.510839,
+          "muted": false
+        },
+        "webAudio": "running",
+        "retry": false,
+        "speech": {
+          "speaking": false,
+          "pending": false,
+          "paused": false,
+          "voices": 0
+        }
+      },
+      "clock_check": null
+    }
+  ],
+  "speech": "Disabled by retained Cromite privacy default; not a positive speech restriction test",
+  "physical_car": "pending",
+  "play_upload": "not uploaded"
+}

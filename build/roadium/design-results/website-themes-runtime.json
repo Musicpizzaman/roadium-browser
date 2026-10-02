@@ -1,0 +1,145 @@
+[
+  {
+    "case": "design-follow-system-light",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-native.html",
+    "dark": false,
+    "light": true,
+    "authoredBackground": "rgb(244, 241, 232)",
+    "visibility": "visible",
+    "output": "design-screenshots/design-follow-system-light.png"
+  },
+  {
+    "case": "design-follow-system-dark",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-native.html",
+    "dark": true,
+    "light": false,
+    "authoredBackground": "rgb(13, 27, 42)",
+    "visibility": "visible",
+    "output": "design-screenshots/design-follow-system-dark.png"
+  },
+  {
+    "case": "design-light-override-system-dark",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-native.html",
+    "dark": false,
+    "light": true,
+    "authoredBackground": "rgb(244, 241, 232)",
+    "visibility": "visible",
+    "output": "design-screenshots/design-light-override-system-dark.png"
+  },
+  {
+    "case": "design-light-persists-restart-system-dark",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-native.html",
+    "dark": false,
+    "light": true,
+    "authoredBackground": "rgb(244, 241, 232)",
+    "visibility": "visible"
+  },
+  {
+    "case": "design-light-override-system-light",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-native.html",
+    "dark": false,
+    "light": true,
+    "authoredBackground": "rgb(244, 241, 232)",
+    "visibility": "visible"
+  },
+  {
+    "case": "design-dark-override-system-light",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-native.html",
+    "dark": true,
+    "light": false,
+    "authoredBackground": "rgb(13, 27, 42)",
+    "visibility": "visible",
+    "output": "design-screenshots/design-dark-override-system-light.png"
+  },
+  {
+    "case": "design-dark-persists-restart-system-light",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-native.html",
+    "dark": true,
+    "light": false,
+    "authoredBackground": "rgb(13, 27, 42)",
+    "visibility": "visible"
+  },
+  {
+    "case": "design-clear-override-system-light",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-native.html",
+    "dark": false,
+    "light": true,
+    "authoredBackground": "rgb(244, 241, 232)",
+    "visibility": "visible"
+  },
+  {
+    "case": "design-light-only-authored-light",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-light.html",
+    "dark": false,
+    "light": true,
+    "authoredBackground": "rgb(255, 255, 255)",
+    "visibility": "visible",
+    "output": "design-screenshots/design-light-only-authored-light.png"
+  },
+  {
+    "case": "design-light-only-forced-dark",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-light.html",
+    "dark": true,
+    "light": false,
+    "authoredBackground": "rgb(255, 255, 255)",
+    "visibility": "visible",
+    "output": "design-screenshots/design-light-only-forced-dark.png"
+  },
+  {
+    "case": "design-light-only-dark-persists",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-light.html",
+    "dark": true,
+    "light": false,
+    "authoredBackground": "rgb(255, 255, 255)",
+    "visibility": "visible"
+  },
+  {
+    "case": "design-light-only-reset-light",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-light.html",
+    "dark": false,
+    "light": true,
+    "authoredBackground": "rgb(255, 255, 255)",
+    "visibility": "visible"
+  },
+  {
+    "case": "design-light-only-follow-system-dark",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-light.html",
+    "dark": true,
+    "light": false,
+    "authoredBackground": "rgb(255, 255, 255)",
+    "visibility": "visible",
+    "output": "design-screenshots/design-light-only-follow-system-dark.png"
+  },
+  {
+    "case": "design-light-only-explicit-light-system-dark",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-light.html",
+    "dark": false,
+    "light": true,
+    "authoredBackground": "rgb(255, 255, 255)",
+    "visibility": "visible",
+    "output": "design-screenshots/design-light-only-explicit-light-system-dark.png"
+  },
+  {
+    "case": "design-final-follow-system-light",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/theme-light.html",
+    "dark": false,
+    "light": true,
+    "authoredBackground": "rgb(255, 255, 255)",
+    "visibility": "visible"
+  }
+]

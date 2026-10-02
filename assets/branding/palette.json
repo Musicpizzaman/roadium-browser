@@ -1,0 +1,32 @@
+{
+  "brand": {
+    "navy": "#193E74",
+    "teal": "#3C9FA0",
+    "orange": "#F4A04A",
+    "warm_white": "#F4F1E8"
+  },
+  "light": {
+    "surface": "#F4F1E8",
+    "primary": "#193E74",
+    "text": "#193E74",
+    "accent": "#3C9FA0",
+    "highlight": "#F4A04A"
+  },
+  "dark": {
+    "surface": "#0D1B2A",
+    "surface_container": "#172A40",
+    "primary": "#76CECB",
+    "text": "#F4F1E8",
+    "accent": "#3C9FA0",
+    "highlight": "#F4A04A"
+  },
+  "website_default": "follow_system",
+  "wordmark_fonts": {
+    "title": "League Spartan Bold",
+    "subtitle": "Montserrat Medium"
+  },
+  "font_sources": [
+    "https://github.com/google/fonts/tree/main/ofl/leaguespartan",
+    "https://github.com/google/fonts/tree/main/ofl/montserrat"
+  ]
+}

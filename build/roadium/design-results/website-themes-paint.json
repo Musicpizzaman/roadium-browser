@@ -1,0 +1,42 @@
+[
+  {
+    "case": "design-light-only-authored-light",
+    "painted_background_rgb": [
+      255,
+      255,
+      255
+    ],
+    "expected_light": true,
+    "passed": true
+  },
+  {
+    "case": "design-light-only-forced-dark",
+    "painted_background_rgb": [
+      18,
+      18,
+      18
+    ],
+    "expected_light": false,
+    "passed": true
+  },
+  {
+    "case": "design-light-only-follow-system-dark",
+    "painted_background_rgb": [
+      18,
+      18,
+      18
+    ],
+    "expected_light": false,
+    "passed": true
+  },
+  {
+    "case": "design-light-only-explicit-light-system-dark",
+    "painted_background_rgb": [
+      255,
+      255,
+      255
+    ],
+    "expected_light": true,
+    "passed": true
+  }
+]

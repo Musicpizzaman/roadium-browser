@@ -1,3 +1,7 @@
+# Roadium appearance override
+
+Roadium follows the system appearance by default, offers browser Light/Dark settings, and provides saved per-site Follow system/Light/Dark choices. The inherited Cromite feature list below describes upstream behavior; its night-mode policy is superseded by Roadium.
+
 # Features
 
 #### Anti fingerprinting

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Roadium Browser app icon">
+<title>Roadium Browser app icon</title>
+<rect width="512" height="512" fill="#F4F1E8"/>
+<g transform="translate(7 -8) scale(4)"><path fill="#3C9FA0" d="M27,18 H85 Q95,18 95,28 V33 H41 Q28,33 28,46 V99 H26 Q16,99 16,89 V29 Q16,18 27,18 Z"/>
+<path fill="#F4A04A" d="M23.6,25 A3.4,3.4 0,1 0 30.4,25 A3.4,3.4 0,1 0 23.6,25 Z"/>
+<path fill="#F4F1E8" d="M33.6,25 A3.4,3.4 0,1 0 40.4,25 A3.4,3.4 0,1 0 33.6,25 Z"/>
+<path fill="#83BBB8" d="M43.6,25 A3.4,3.4 0,1 0 50.4,25 A3.4,3.4 0,1 0 43.6,25 Z"/>
+<path fill="#193E74" d="M41,35 H94 Q109,35 109,50 V65 Q109,85 90,87 H86 Q82,87 84,91 L107,114 Q111,120 104,120 H41 Q30,120 30,109 V46 Q30,35 41,35 Z" stroke="#F4F1E8" stroke-width="5" stroke-linejoin="round"/>
+<path fill="#F4F1E8" d="M44,52 H76 Q83,52 88,58 Q90,60 96,60 H99 Q104,60 104,65 Q104,81 87,81 H69 Q63,81 63,87 V109 Q63,114 58,114 H44 Q37,114 37,107 V61 Q37,52 44,52 Z"/>
+<path fill="#F4A04A" d="M36.6,44 A3.4,3.4 0,1 0 43.4,44 A3.4,3.4 0,1 0 36.6,44 Z"/>
+<path fill="#F4F1E8" d="M46.6,44 A3.4,3.4 0,1 0 53.4,44 A3.4,3.4 0,1 0 46.6,44 Z"/>
+<path fill="#3C9FA0" d="M56.6,44 A3.4,3.4 0,1 0 63.4,44 A3.4,3.4 0,1 0 56.6,44 Z"/></g>
+</svg>

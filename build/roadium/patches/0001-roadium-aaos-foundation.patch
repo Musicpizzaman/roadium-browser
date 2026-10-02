@@ -1,3 +1,27 @@
+diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
+index 7de41a8d99..ef2c052636 100644
+--- a/chrome/android/BUILD.gn
++++ b/chrome/android/BUILD.gn
+@@ -147,6 +147,10 @@ if (_is_default_toolchain) {
+       "java/res_base/font/chrome_google_sans_text_medium.xml",
+       "java/res_base/values/values.xml",
+       "java/res_base/xml/network_security_config.xml",
++      "java/res_base/values-night/roadium_brand_colors.xml",
++      "java/res_base/values/roadium_brand_colors.xml",
++      "java/res_chromium_base/drawable/roadium_launcher_foreground.xml",
++      "java/res_chromium_base/drawable/roadium_wordmark.xml",
+       "java/res_chromium_base/drawable/themed_app_icon.xml",
+       "java/res_chromium_base/mipmap-hdpi/app_icon.png",
+       "java/res_chromium_base/mipmap-hdpi/layered_app_icon.png",
+@@ -1804,6 +1808,8 @@ if (_is_default_toolchain) {
+   android_resources("chrome_public_apk_base_module_resources") {
+     resource_overlay = true
+     sources = [
++      "java/res_chromium_base/drawable/roadium_launcher_foreground.xml",
++      "java/res_chromium_base/drawable/roadium_wordmark.xml",
+       "java/res_chromium_base/drawable/themed_app_icon.xml",
+       "java/res_chromium_base/mipmap-hdpi/app_icon.png",
+       "java/res_chromium_base/mipmap-hdpi/layered_app_icon.png",
 diff --git a/chrome/android/chrome_public_apk_tmpl.gni b/chrome/android/chrome_public_apk_tmpl.gni
 index 5eed44a5c6..6a6ca75ae4 100644
 --- a/chrome/android/chrome_public_apk_tmpl.gni
@@ -61,7 +85,7 @@ index e43f410c2c..c5a5434348 100644
          {% endblock %}
        {% endmacro %}
 diff --git a/chrome/android/java/res/layout/fre_tosanduma.xml b/chrome/android/java/res/layout/fre_tosanduma.xml
-index d29d5146f9..fa5362d900 100644
+index d29d5146f9..f26f3fa5d1 100644
 --- a/chrome/android/java/res/layout/fre_tosanduma.xml
 +++ b/chrome/android/java/res/layout/fre_tosanduma.xml
 @@ -33,7 +33,7 @@ found in the LICENSE file.
@@ -69,7 +93,7 @@ index d29d5146f9..fa5362d900 100644
                  android:layout_marginBottom="@dimen/fre_image_bottom_margin"
                  android:importantForAccessibility="no"
 -                android:src="@drawable/fre_product_logo" />
-+                android:src="@drawable/ic_launcher" />
++                android:src="@drawable/roadium_wordmark" />
  
              <LinearLayout
                  android:id="@+id/fre_title_and_content"
@@ -98,7 +122,7 @@ index 8998689617..67e5e89860 100644
          android:key="open_source_license"
          android:title="@string/open_source_license_title"
 diff --git a/chrome/android/java/res_base/drawable/ic_launcher.xml b/chrome/android/java/res_base/drawable/ic_launcher.xml
-index e5a868e458..0a32e2a364 100644
+index e5a868e458..64bc87d054 100644
 --- a/chrome/android/java/res_base/drawable/ic_launcher.xml
 +++ b/chrome/android/java/res_base/drawable/ic_launcher.xml
 @@ -6,7 +6,7 @@ found in the LICENSE file.
@@ -107,12 +131,12 @@ index e5a868e458..0a32e2a364 100644
  <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android" >
 -    <background android:drawable="@android:color/white"/>
 -    <foreground android:drawable="@mipmap/layered_app_icon"/>
-+    <background android:drawable="@android:color/holo_blue_dark"/>
-+    <foreground android:drawable="@drawable/themed_app_icon"/>
++    <background android:drawable="@color/roadium_launcher_background"/>
++    <foreground android:drawable="@drawable/roadium_launcher_foreground"/>
      <monochrome android:drawable="@drawable/themed_app_icon"/>
  </adaptive-icon>
 diff --git a/chrome/android/java/res_base/drawable/ic_launcher_round.xml b/chrome/android/java/res_base/drawable/ic_launcher_round.xml
-index 2159da0bd9..0a32e2a364 100644
+index 2159da0bd9..64bc87d054 100644
 --- a/chrome/android/java/res_base/drawable/ic_launcher_round.xml
 +++ b/chrome/android/java/res_base/drawable/ic_launcher_round.xml
 @@ -6,7 +6,7 @@ found in the LICENSE file.
@@ -121,12 +145,94 @@ index 2159da0bd9..0a32e2a364 100644
  <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android" >
 -    <background android:drawable="@mipmap/layered_app_icon_background"/>
 -    <foreground android:drawable="@mipmap/layered_app_icon_foreground"/>
-+    <background android:drawable="@android:color/holo_blue_dark"/>
-+    <foreground android:drawable="@drawable/themed_app_icon"/>
++    <background android:drawable="@color/roadium_launcher_background"/>
++    <foreground android:drawable="@drawable/roadium_launcher_foreground"/>
      <monochrome android:drawable="@drawable/themed_app_icon"/>
  </adaptive-icon>
+diff --git a/chrome/android/java/res_base/values-night/roadium_brand_colors.xml b/chrome/android/java/res_base/values-night/roadium_brand_colors.xml
+new file mode 100644
+index 0000000000..2af07c0a7d
+--- /dev/null
++++ b/chrome/android/java/res_base/values-night/roadium_brand_colors.xml
+@@ -0,0 +1,4 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <color name="roadium_wordmark_text">#F4F1E8</color>
++</resources>
+diff --git a/chrome/android/java/res_base/values/roadium_brand_colors.xml b/chrome/android/java/res_base/values/roadium_brand_colors.xml
+new file mode 100644
+index 0000000000..a6611000b0
+--- /dev/null
++++ b/chrome/android/java/res_base/values/roadium_brand_colors.xml
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <color name="roadium_launcher_background">#F4F1E8</color>
++    <color name="roadium_wordmark_text">#193E74</color>
++</resources>
+diff --git a/chrome/android/java/res_chromium_base/drawable/roadium_launcher_foreground.xml b/chrome/android/java/res_chromium_base/drawable/roadium_launcher_foreground.xml
+new file mode 100644
+index 0000000000..c854edd5d4
+--- /dev/null
++++ b/chrome/android/java/res_chromium_base/drawable/roadium_launcher_foreground.xml
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Roadium artwork derived from the owner-supplied references. -->
++<vector xmlns:android="http://schemas.android.com/apk/res/android"
++    android:width="108dp" android:height="108dp"
++    android:viewportWidth="108" android:viewportHeight="108">
++  <group android:scaleX=".44" android:scaleY=".44"
++      android:translateX="26.06" android:translateY="23.64">
++    <path android:fillColor="#3C9FA0" android:pathData="M27,18 H85 Q95,18 95,28 V33 H41 Q28,33 28,46 V99 H26 Q16,99 16,89 V29 Q16,18 27,18 Z" />
++    <path android:fillColor="#F4A04A" android:pathData="M23.6,25 A3.4,3.4 0,1 0 30.4,25 A3.4,3.4 0,1 0 23.6,25 Z" />
++    <path android:fillColor="#F4F1E8" android:pathData="M33.6,25 A3.4,3.4 0,1 0 40.4,25 A3.4,3.4 0,1 0 33.6,25 Z" />
++    <path android:fillColor="#83BBB8" android:pathData="M43.6,25 A3.4,3.4 0,1 0 50.4,25 A3.4,3.4 0,1 0 43.6,25 Z" />
++    <path android:fillColor="#193E74" android:pathData="M41,35 H94 Q109,35 109,50 V65 Q109,85 90,87 H86 Q82,87 84,91 L107,114 Q111,120 104,120 H41 Q30,120 30,109 V46 Q30,35 41,35 Z" android:strokeColor="#F4F1E8" android:strokeWidth="5" android:strokeLineJoin="round" />
++    <path android:fillColor="#F4F1E8" android:pathData="M44,52 H76 Q83,52 88,58 Q90,60 96,60 H99 Q104,60 104,65 Q104,81 87,81 H69 Q63,81 63,87 V109 Q63,114 58,114 H44 Q37,114 37,107 V61 Q37,52 44,52 Z" />
++    <path android:fillColor="#F4A04A" android:pathData="M36.6,44 A3.4,3.4 0,1 0 43.4,44 A3.4,3.4 0,1 0 36.6,44 Z" />
++    <path android:fillColor="#F4F1E8" android:pathData="M46.6,44 A3.4,3.4 0,1 0 53.4,44 A3.4,3.4 0,1 0 46.6,44 Z" />
++    <path android:fillColor="#3C9FA0" android:pathData="M56.6,44 A3.4,3.4 0,1 0 63.4,44 A3.4,3.4 0,1 0 56.6,44 Z" />
++  </group>
++</vector>
+diff --git a/chrome/android/java/res_chromium_base/drawable/roadium_wordmark.xml b/chrome/android/java/res_chromium_base/drawable/roadium_wordmark.xml
+new file mode 100644
+index 0000000000..c3077a7cfd
+--- /dev/null
++++ b/chrome/android/java/res_chromium_base/drawable/roadium_wordmark.xml
+@@ -0,0 +1,31 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Roadium artwork derived from the owner-supplied references. -->
++<vector xmlns:android="http://schemas.android.com/apk/res/android"
++    android:width="280dp" android:height="72dp"
++    android:viewportWidth="700" android:viewportHeight="186">
++  <group android:scaleX="1.35" android:scaleY="1.35" android:translateX="3" android:translateY="-3">
++    <path android:fillColor="#3C9FA0" android:pathData="M27,18 H85 Q95,18 95,28 V33 H41 Q28,33 28,46 V99 H26 Q16,99 16,89 V29 Q16,18 27,18 Z" />
++    <path android:fillColor="#F4A04A" android:pathData="M23.6,25 A3.4,3.4 0,1 0 30.4,25 A3.4,3.4 0,1 0 23.6,25 Z" />
++    <path android:fillColor="#F4F1E8" android:pathData="M33.6,25 A3.4,3.4 0,1 0 40.4,25 A3.4,3.4 0,1 0 33.6,25 Z" />
++    <path android:fillColor="#83BBB8" android:pathData="M43.6,25 A3.4,3.4 0,1 0 50.4,25 A3.4,3.4 0,1 0 43.6,25 Z" />
++    <path android:fillColor="#193E74" android:pathData="M41,35 H94 Q109,35 109,50 V65 Q109,85 90,87 H86 Q82,87 84,91 L107,114 Q111,120 104,120 H41 Q30,120 30,109 V46 Q30,35 41,35 Z" android:strokeColor="#F4F1E8" android:strokeWidth="5" android:strokeLineJoin="round" />
++    <path android:fillColor="#F4F1E8" android:pathData="M44,52 H76 Q83,52 88,58 Q90,60 96,60 H99 Q104,60 104,65 Q104,81 87,81 H69 Q63,81 63,87 V109 Q63,114 58,114 H44 Q37,114 37,107 V61 Q37,52 44,52 Z" />
++    <path android:fillColor="#F4A04A" android:pathData="M36.6,44 A3.4,3.4 0,1 0 43.4,44 A3.4,3.4 0,1 0 36.6,44 Z" />
++    <path android:fillColor="#F4F1E8" android:pathData="M46.6,44 A3.4,3.4 0,1 0 53.4,44 A3.4,3.4 0,1 0 46.6,44 Z" />
++    <path android:fillColor="#3C9FA0" android:pathData="M56.6,44 A3.4,3.4 0,1 0 63.4,44 A3.4,3.4 0,1 0 56.6,44 Z" />
++  </group>
++    <path android:fillColor="@color/roadium_wordmark_text" android:pathData="M214.076 38.04H242.619Q248.69 38.04 253.472 40.586Q258.254 43.133 261.017 47.915Q263.781 52.697 263.781 59.365Q263.781 65.995 261.429 70.192Q259.078 74.388 255.787 76.484Q252.497 78.58 249.697 79.004L266.691 108H248.892L233.739 80.218H229.928V108H214.076ZM229.928 69.252H236.934Q241.145 69.252 244.329 67.19Q247.514 65.128 247.514 59.866Q247.514 54.605 244.387 52.586Q241.26 50.568 237.049 50.568H229.928Z" />
++    <path android:fillColor="@color/roadium_wordmark_text" android:pathData="M291.355 72.967Q291.355 78.941 293.82 83.805Q296.284 88.669 300.662 91.531Q305.039 94.393 310.792 94.393Q316.597 94.393 320.967 91.531Q325.337 88.669 327.787 83.805Q330.237 78.941 330.237 72.967Q330.237 66.993 327.787 62.155Q325.337 57.318 320.967 54.444Q316.597 51.57 310.792 51.57Q305.039 51.57 300.662 54.444Q296.284 57.318 293.82 62.155Q291.355 66.993 291.355 72.967ZM274.858 72.967Q274.858 65.335 277.575 58.737Q280.292 52.138 285.166 47.209Q290.04 42.28 296.6 39.524Q303.16 36.768 310.792 36.768Q318.554 36.768 325.099 39.524Q331.645 42.28 336.499 47.209Q341.353 52.138 344.025 58.737Q346.697 65.335 346.697 72.967Q346.697 80.652 344.083 87.251Q341.469 93.849 336.653 98.805Q331.837 103.76 325.273 106.516Q318.708 109.272 310.792 109.272Q302.736 109.272 296.137 106.516Q289.539 103.76 284.781 98.805Q280.023 93.849 277.44 87.251Q274.858 80.652 274.858 72.967Z" />
++    <path android:fillColor="@color/roadium_wordmark_text" android:pathData="M378.444 38.04H394.166L421.784 108H404.896L399.793 93.941H372.893L367.723 108H350.782ZM378.15 80.064H394.551L386.423 57.125H386.264Z" />
++    <path android:fillColor="@color/roadium_wordmark_text" android:pathData="M427.507 38.04H448.539Q459.722 38.04 467.074 42.519Q474.427 46.997 478.081 54.894Q481.736 62.791 481.736 72.967Q481.736 83.196 478.089 91.093Q474.441 98.99 467.089 103.495Q459.736 108 448.539 108H427.507ZM443.306 52.109V93.931H447.132Q453.106 93.931 457.038 91.213Q460.969 88.496 462.942 83.764Q464.915 79.033 464.93 73.073Q464.944 67.074 462.998 62.336Q461.051 57.597 457.086 54.853Q453.121 52.109 447.132 52.109Z" />
++    <path android:fillColor="@color/roadium_wordmark_text" android:pathData="M491.579 38.04H507.422V108H491.579Z" />
++    <path android:fillColor="@color/roadium_wordmark_text" android:pathData="M560.113 38.04H575.941V81.023Q575.941 89.662 572.559 96.003Q569.176 102.343 562.879 105.808Q556.582 109.272 547.803 109.272Q539.024 109.272 532.674 105.808Q526.323 102.343 522.941 96.003Q519.558 89.662 519.558 81.023V38.04H535.372V80.17Q535.372 84.964 536.89 88.238Q538.408 91.512 541.195 93.184Q543.982 94.856 547.803 94.856Q551.585 94.856 554.338 93.184Q557.092 91.512 558.602 88.238Q560.113 84.964 560.113 80.17Z" />
++    <path android:fillColor="@color/roadium_wordmark_text" android:pathData="M661.662 38.04V108H645.848V66.8L646.537 55.116L643.853 68.535L632.097 102.372H616.563L604.846 68.535L602.176 55.116L602.865 66.8V108H587.037V38.04H609.317L623.386 84.718L624.349 90.274L625.313 84.718L639.411 38.04Z" />
++    <path android:fillColor="#3C9FA0" android:pathData="M305.93 163V138.5H316.926Q321.149 138.5 323.431 140.191Q325.712 141.881 325.712 144.843Q325.712 146.814 324.806 148.191Q323.9 149.568 322.401 150.292Q320.903 151.016 319.16 151.016L319.784 149.97Q321.88 149.97 323.501 150.702Q325.123 151.434 326.053 152.864Q326.983 154.294 326.983 156.388Q326.983 159.527 324.633 161.264Q322.283 163 317.626 163ZM309.409 160.148H317.47Q320.385 160.148 321.93 159.179Q323.475 158.21 323.475 156.093Q323.475 153.975 321.93 152.994Q320.385 152.013 317.47 152.013H309.115V149.161H316.593Q319.265 149.161 320.735 148.19Q322.204 147.218 322.204 145.257Q322.204 143.295 320.735 142.324Q319.265 141.352 316.593 141.352H309.409Z" />
++    <path android:fillColor="#3C9FA0" android:pathData="M346.425 163V138.5H355.991Q360.743 138.5 363.475 140.765Q366.207 143.031 366.207 147.052Q366.207 149.691 364.978 151.597Q363.749 153.503 361.464 154.524Q359.178 155.546 355.991 155.546H348.347L349.904 153.93V163ZM362.815 163 356.558 154.11H360.33L366.616 163ZM349.904 154.274 348.347 152.575H355.884Q359.243 152.575 360.971 151.121Q362.699 149.666 362.699 147.052Q362.699 144.404 360.971 142.967Q359.243 141.53 355.884 141.53H348.347L349.904 139.801Z" />
++    <path android:fillColor="#3C9FA0" android:pathData="M396.916 163.282Q394.109 163.282 391.721 162.34Q389.334 161.398 387.577 159.703Q385.82 158.008 384.846 155.731Q383.871 153.454 383.871 150.75Q383.871 148.046 384.846 145.769Q385.82 143.492 387.581 141.793Q389.341 140.094 391.719 139.156Q394.096 138.218 396.909 138.218Q399.722 138.218 402.091 139.15Q404.46 140.083 406.214 141.773Q407.968 143.462 408.943 145.75Q409.918 148.037 409.918 150.753Q409.918 153.469 408.943 155.753Q407.968 158.038 406.214 159.727Q404.46 161.417 402.091 162.35Q399.722 163.282 396.916 163.282ZM396.909 160.164Q398.956 160.164 400.685 159.462Q402.414 158.76 403.697 157.482Q404.979 156.204 405.694 154.492Q406.41 152.779 406.41 150.741Q406.41 148.703 405.698 147.002Q404.986 145.301 403.702 144.021Q402.418 142.742 400.687 142.039Q398.956 141.336 396.909 141.336Q394.862 141.336 393.125 142.04Q391.387 142.744 390.098 144.025Q388.809 145.306 388.094 147.01Q387.379 148.713 387.379 150.74Q387.379 152.768 388.093 154.48Q388.806 156.193 390.093 157.481Q391.379 158.769 393.121 159.466Q394.862 160.164 396.909 160.164Z" />
++    <path android:fillColor="#3C9FA0" android:pathData="M434.915 163 426.722 138.5H430.33L437.84 161.11H436.036L443.815 138.5H447.057L454.659 161.11H452.92L460.548 138.5H463.885L455.691 163H452.006L444.864 142.048H445.831L438.63 163Z" />
++    <path android:fillColor="#3C9FA0" android:pathData="M489.818 163.282Q487.01 163.282 484.455 162.421Q481.901 161.559 480.439 160.202L481.727 157.471Q483.119 158.688 485.292 159.5Q487.464 160.312 489.812 160.312Q491.94 160.312 493.268 159.813Q494.596 159.315 495.227 158.457Q495.857 157.598 495.857 156.537Q495.857 155.26 495.047 154.488Q494.236 153.716 492.925 153.251Q491.614 152.786 490.028 152.428Q488.442 152.07 486.853 151.606Q485.265 151.141 483.953 150.4Q482.642 149.658 481.832 148.424Q481.021 147.189 481.021 145.235Q481.021 143.329 482.026 141.737Q483.032 140.145 485.115 139.181Q487.198 138.218 490.423 138.218Q492.56 138.218 494.66 138.786Q496.76 139.354 498.296 140.399L497.143 143.175Q495.555 142.149 493.799 141.669Q492.044 141.188 490.399 141.188Q488.346 141.188 487.021 141.719Q485.696 142.25 485.083 143.123Q484.47 143.996 484.47 145.092Q484.47 146.375 485.28 147.147Q486.091 147.919 487.402 148.369Q488.714 148.819 490.302 149.192Q491.891 149.565 493.477 150.017Q495.063 150.469 496.374 151.196Q497.685 151.923 498.496 153.152Q499.306 154.381 499.306 156.3Q499.306 158.176 498.283 159.768Q497.26 161.36 495.154 162.321Q493.048 163.282 489.818 163.282Z" />
++    <path android:fillColor="#3C9FA0" android:pathData="M518.415 163V138.5H535.708V141.53H521.894V159.97H536.203V163ZM521.6 152.043V149.072H534.192V152.043Z" />
++    <path android:fillColor="#3C9FA0" android:pathData="M555.865 163V138.5H565.431Q570.183 138.5 572.915 140.765Q575.647 143.031 575.647 147.052Q575.647 149.691 574.418 151.597Q573.189 153.503 570.904 154.524Q568.618 155.546 565.431 155.546H557.787L559.344 153.93V163ZM572.255 163 565.998 154.11H569.77L576.056 163ZM559.344 154.274 557.787 152.575H565.324Q568.683 152.575 570.411 151.121Q572.139 149.666 572.139 147.052Q572.139 144.404 570.411 142.967Q568.683 141.53 565.324 141.53H557.787L559.344 139.801Z" />
++</vector>
 diff --git a/chrome/android/java/res_chromium_base/drawable/themed_app_icon.xml b/chrome/android/java/res_chromium_base/drawable/themed_app_icon.xml
-index 906e1dff45..132afd53e1 100644
+index 906e1dff45..e56b4b8fb4 100644
 --- a/chrome/android/java/res_chromium_base/drawable/themed_app_icon.xml
 +++ b/chrome/android/java/res_chromium_base/drawable/themed_app_icon.xml
 @@ -1,35 +1,11 @@
@@ -164,15 +270,15 @@ index 906e1dff45..132afd53e1 100644
 -            android:fillColor="#000"
 -            android:strokeWidth="1"/>
 -    </group>
-+<!-- Roadium launcher artwork. Copyright 2026 Roadium contributors.
-+     Licensed under GPL-3.0-or-later; upstream resource licenses are preserved. -->
++<!-- Roadium artwork derived from the owner-supplied references. -->
 +<vector xmlns:android="http://schemas.android.com/apk/res/android"
 +    android:width="108dp" android:height="108dp"
 +    android:viewportWidth="108" android:viewportHeight="108">
-+    <!-- A divided road, distinct from the upstream Chromium/Cromite circle. -->
-+    <path android:fillColor="#FFFFFF" android:pathData="M38,24 L48,24 L38,84 L24,84 Z" />
-+    <path android:fillColor="#FFFFFF" android:pathData="M60,24 L70,24 L84,84 L70,84 Z" />
-+    <path android:fillColor="#FFFFFF" android:pathData="M52,29 L56,29 L57,43 L51,43 Z M50,51 L58,51 L59,64 L49,64 Z M48,72 L60,72 L61,84 L47,84 Z" />
++  <group android:scaleX=".44" android:scaleY=".44"
++      android:translateX="26.06" android:translateY="23.64">
++    <path android:fillColor="#FFFFFF" android:pathData="M27,18 H85 Q95,18 95,28 V33 H41 Q28,33 28,46 V99 H26 Q16,99 16,89 V29 Q16,18 27,18 Z" />
++    <path android:fillColor="#FFFFFF" android:fillType="evenOdd" android:pathData="M41,35 H94 Q109,35 109,50 V65 Q109,85 90,87 H86 Q82,87 84,91 L107,114 Q111,120 104,120 H41 Q30,120 30,109 V46 Q30,35 41,35 Z M44,52 H76 Q83,52 88,58 Q90,60 96,60 H99 Q104,60 104,65 Q104,81 87,81 H69 Q63,81 63,87 V109 Q63,114 58,114 H44 Q37,114 37,107 V61 Q37,52 44,52 Z" />
++  </group>
  </vector>
 diff --git a/chrome/android/java/res_chromium_base/values/channel_constants.xml b/chrome/android/java/res_chromium_base/values/channel_constants.xml
 index 528db3efcf..b57b6d85cc 100644
@@ -191,6 +297,180 @@ index 528db3efcf..b57b6d85cc 100644
 +    <string name="search_widget_title" translatable="false">Roadium search</string>
 +    <string name="quick_action_search_widget_title" translatable="false">Roadium quick action search</string>
  </resources>
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeBaseAppCompatActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeBaseAppCompatActivity.java
+index 8f3a84d198..1c48ae364b 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeBaseAppCompatActivity.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeBaseAppCompatActivity.java
+@@ -858,7 +858,8 @@ public class ChromeBaseAppCompatActivity extends AppCompatActivity
+ 
+     /** Returns whether dynamic colors should be applied. */
+     protected boolean shouldApplyDynamicColors() {
+-        return true;
++        // Keep the Roadium palette stable across car wallpaper and NTP color choices.
++        return false;
+     }
+ 
+     /**
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
+index ca37059b3e..5447b0d2d1 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
+@@ -5831,10 +5831,10 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
+         }
+     }
+ 
+-    // Applies dynamic colors based on incognito windowing status.
++    // Respect the browser palette policy and the incognito windowing overlay.
+     @Override
+     protected boolean shouldApplyDynamicColors() {
+-        return !isIncognitoWindow();
++        return super.shouldApplyDynamicColors() && !isIncognitoWindow();
+     }
+ 
+     /** Returns whether current activity is an incognito window. */
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
+index f6cf68ecc0..2ff535e185 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
+@@ -46,6 +46,7 @@ import android.window.OnBackInvokedDispatcher;
+ 
+ import androidx.annotation.CallSuper;
+ import androidx.annotation.VisibleForTesting;
++import androidx.appcompat.app.AlertDialog;
+ 
+ import org.chromium.base.ActivityState;
+ import org.chromium.base.ApplicationStatus;
+@@ -165,7 +166,6 @@ import org.chromium.chrome.browser.multiwindow.MultiInstanceManagerFactory;
+ import org.chromium.chrome.browser.multiwindow.MultiWindowUtils;
+ import org.chromium.chrome.browser.night_mode.SystemNightModeMonitor;
+ import org.chromium.chrome.browser.night_mode.WebContentsDarkModeController;
+-import org.chromium.chrome.browser.night_mode.WebContentsDarkModeMessageController;
+ import org.chromium.chrome.browser.ntp.NewTabPageUma;
+ import org.chromium.chrome.browser.offlinepages.OfflinePageUtils;
+ import org.chromium.chrome.browser.omaha.UpdateMenuItemHelper;
+@@ -249,6 +249,7 @@ import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManagerProvider;
+ import org.chromium.chrome.browser.ui.signin.StartupSigninStateCheckController;
+ import org.chromium.chrome.browser.ui.system.StatusBarColorController;
+ import org.chromium.chrome.browser.webapps.AppInstallMenuHandler;
++import org.chromium.components.content_settings.ContentSetting;
+ import org.chromium.components.bookmarks.BookmarkId;
+ import org.chromium.components.browser_ui.modaldialog.AppModalPresenter;
+ import org.chromium.components.browser_ui.settings.SettingsNavigation;
+@@ -3284,25 +3285,38 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
+         }
+ 
+         if (id == R.id.auto_dark_web_contents_id || id == R.id.auto_dark_web_contents_check_id) {
+-            // Get values needed to check/enable auto dark for the current site.
++            Tab themeTab = currentTab;
+             Profile profile = getCurrentTabModel().getProfile();
+-            GURL url = currentTab.getUrl();
+-
+-            // Flip auto dark state.
+-            boolean isEnabled = WebContentsDarkModeController.isEnabledForUrl(profile, url);
+-            WebContentsDarkModeController.setEnabledForUrl(profile, url, !isEnabled);
+-            currentTab.getWebContents().notifyRendererPreferenceUpdate();
+-
+-            WebContentsDarkModeController.recordAutoDarkUkm(
+-                    currentTab.getWebContents(), !isEnabled);
+-
+-            // Show dialog informing user how to disable the feature globally and give feedback if
+-            // disabling through the app menu for the nth time (determined by feature engagement).
+-            if (isEnabled) {
+-                WebContentsDarkModeMessageController.attemptToShowDialog(
+-                        this, profile, url.getSpec(), getModalDialogManager());
+-            }
+-
++            GURL url = themeTab.getUrl();
++            WebContents contents = themeTab.getWebContents();
++            if (contents == null || contents.isDestroyed()) return true;
++            int[] choices = {ContentSetting.DEFAULT, ContentSetting.BLOCK, ContentSetting.ALLOW};
++            int setting = WebContentsDarkModeController.getSiteThemeSetting(profile, url);
++            int selected =
++                    setting == ContentSetting.BLOCK ? 1 : setting == ContentSetting.ALLOW ? 2 : 0;
++            new AlertDialog.Builder(this, R.style.ThemeOverlay_BrowserUI_AlertDialog)
++                    .setTitle(R.string.roadium_website_theme)
++                    .setSingleChoiceItems(
++                            new CharSequence[] {
++                                getString(R.string.roadium_theme_follow_system),
++                                getString(R.string.roadium_theme_light),
++                                getString(R.string.roadium_theme_dark)
++                            },
++                            selected,
++                            (dialog, which) -> {
++                                // A choice belongs to the page that opened the dialog.
++                                if (!contents.isDestroyed()
++                                        && getActivityTab() == themeTab
++                                        && themeTab.getWebContents() == contents
++                                        && url.equals(themeTab.getUrl())) {
++                                    WebContentsDarkModeController.setSiteThemeSetting(
++                                            profile, url, choices[which]);
++                                    contents.notifyRendererPreferenceUpdate();
++                                }
++                                dialog.dismiss();
++                            })
++                    .setNegativeButton(android.R.string.cancel, null)
++                    .show();
+             return true;
+         }
+ 
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/AppMenuPropertiesDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/AppMenuPropertiesDelegateImpl.java
+index 216b8f33ea..1f0119e423 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/AppMenuPropertiesDelegateImpl.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/app/appmenu/AppMenuPropertiesDelegateImpl.java
+@@ -54,7 +54,6 @@ import org.chromium.chrome.browser.layouts.LayoutStateProvider;
+ import org.chromium.chrome.browser.layouts.LayoutType;
+ import org.chromium.chrome.browser.multiwindow.MultiWindowModeStateDispatcher;
+ import org.chromium.chrome.browser.multiwindow.MultiWindowUtils;
+-import org.chromium.chrome.browser.night_mode.WebContentsDarkModeController;
+ import org.chromium.chrome.browser.ntp.RecentlyClosedEntry;
+ import org.chromium.chrome.browser.ntp.RecentlyClosedWindow;
+ import org.chromium.chrome.browser.ntp.SessionRecentlyClosedEntry;
+@@ -1129,7 +1128,7 @@ public abstract class AppMenuPropertiesDelegateImpl implements AppMenuProperties
+         return new ListItem(AppMenuItemType.TITLE_BUTTON, model);
+     }
+ 
+-    /** Return whether auto darkening is enabled for the current Tab. */
++    /** Return whether this tab supports per-site website themes. */
+     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+     @Contract("null, _-> false")
+     public boolean shouldShowAutoDarkItem(@Nullable Tab currentTab, boolean isNativePage) {
+@@ -1138,29 +1137,22 @@ public abstract class AppMenuPropertiesDelegateImpl implements AppMenuProperties
+         boolean isFlagEnabled =
+                 ChromeFeatureList.isEnabled(
+                         ChromeFeatureList.DARKEN_WEBSITES_CHECKBOX_IN_THEMES_SETTING);
+-        boolean isFeatureEnabled =
+-                WebContentsDarkModeController.isFeatureEnabled(mContext, profile);
+-
+-        return currentTab != null && !isNativePage && isFlagEnabled && isFeatureEnabled;
++        if (currentTab == null || isNativePage || !isFlagEnabled) return false;
++        String scheme = currentTab.getUrl().getScheme();
++        return "https".equals(scheme) || "http".equals(scheme);
+     }
+ 
+-    /** Construct the ListItem for the auto darkening menu item. */
++    /** Construct the per-site website theme menu item. */
+     protected ListItem buildAutoDarkItem(Tab currentTab, boolean isNativePage, boolean showIcon) {
+         assert shouldShowAutoDarkItem(currentTab, isNativePage);
+-        boolean isEnabled =
+-                WebContentsDarkModeController.isEnabledForUrl(
+-                        assumeNonNull(mTabModelSelector.getCurrentModel().getProfile()),
+-                        currentTab.getUrl());
+         return new ListItem(
+-                AppMenuItemType.TITLE_BUTTON,
+-                AppMenuItemUtils.buildModelForMenuItemWithCheckbox(
++                AppMenuItemType.STANDARD,
++                AppMenuItemUtils.buildModelForStandardMenuItem(
+                         mContext,
+                         mAppMenuItemTheme,
+                         R.id.auto_dark_web_contents_id,
+-                        R.string.menu_auto_dark_web_contents,
++                        R.string.roadium_website_theme,
+                         showIcon ? R.drawable.ic_brightness_medium_24dp : 0,
+-                        R.id.auto_dark_web_contents_check_id,
+-                        isEnabled,
+                         isMenuIconAtStart()));
+     }
+ 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
 index a1abacea50..34ec0c997c 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
@@ -813,6 +1093,438 @@ index 3b26ce12a0..85323f8b0b 100644
      }
  
      @Override
+diff --git a/chrome/browser/ui/android/night_mode/BUILD.gn b/chrome/browser/ui/android/night_mode/BUILD.gn
+index 38e6ff91fd..08b2da2266 100644
+--- a/chrome/browser/ui/android/night_mode/BUILD.gn
++++ b/chrome/browser/ui/android/night_mode/BUILD.gn
+@@ -172,3 +172,32 @@ robolectric_library("junit") {
+ 
+   resources_package = "org.chromium.chrome.browser.night_mode"
+ }
++
++# Focused renderer and content-setting theme tests, also included in
++# chrome_junit_tests.
++robolectric_binary("roadium_theme_junit_tests") {
++  # These preference tests mock contexts and do not inflate application resources.
++  enable_android_resources = false
++  resources_package = "org.chromium.chrome.browser.night_mode"
++  sources = [
++    "java/src/org/chromium/chrome/browser/night_mode/WebContentsDarkModeControllerUnitTest.java",
++    "java/src/org/chromium/chrome/browser/night_mode/WebContentsThemeClientUnitTest.java",
++  ]
++  deps = [
++    ":java",
++    "//base:base_java",
++    "//base:base_java_test_support",
++    "//base:base_junit_test_support",
++    "//chrome/browser/flags:java",
++    "//chrome/browser/profiles/android:java",
++    "//components/browser_ui/site_settings/android:java",
++    "//components/content_settings/android:content_settings_enums_java",
++    "//content/public/android:content_full_java",
++    "//third_party/jni_zero:jni_zero_java",
++    "//third_party/junit",
++    "//third_party/mockito:mockito_java",
++    "//ui/android:ui_no_recycler_view_java",
++    "//url:gurl_java",
++    "//url:gurl_junit_test_support",
++  ]
++}
+diff --git a/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsDarkModeController.java b/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsDarkModeController.java
+index 8c8b093500..abb321781c 100644
+--- a/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsDarkModeController.java
++++ b/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsDarkModeController.java
+@@ -38,6 +38,37 @@ public class WebContentsDarkModeController {
+             return contentSetting != ContentSetting.BLOCK;
+         }
+ 
++        /** Returns DEFAULT for an inherited theme, or the explicit site's ALLOW/BLOCK rule. */
++        public @ContentSetting int getSiteThemeSetting(
++                BrowserContextHandle browserContextHandle, GURL url) {
++            if (url.isEmpty()
++                    || WebsitePreferenceBridge.isContentSettingGlobal(
++                            browserContextHandle,
++                            ContentSettingsType.AUTO_DARK_WEB_CONTENT,
++                            url,
++                            url)) {
++                return ContentSetting.DEFAULT;
++            }
++            return WebsitePreferenceBridge.getContentSetting(
++                    browserContextHandle, ContentSettingsType.AUTO_DARK_WEB_CONTENT, url, url);
++        }
++
++        /** DEFAULT removes the site's override so it follows the browser theme again. */
++        public void setSiteThemeSetting(
++                BrowserContextHandle browserContextHandle, GURL url, @ContentSetting int setting) {
++            if (setting != ContentSetting.DEFAULT
++                    && setting != ContentSetting.BLOCK
++                    && setting != ContentSetting.ALLOW) {
++                throw new IllegalArgumentException("Unsupported website theme");
++            }
++            WebsitePreferenceBridge.setContentSettingDefaultScope(
++                    browserContextHandle,
++                    ContentSettingsType.AUTO_DARK_WEB_CONTENT,
++                    url,
++                    url,
++                    setting);
++        }
++
+         public void setEnabledForUrl(
+                 BrowserContextHandle browserContextHandle, GURL url, boolean enabled) {
+             // This is only called when a user disables/enables the feature for a site from the app
+@@ -90,6 +121,10 @@ public class WebContentsDarkModeController {
+ 
+         public boolean getEnabledState(
+                 BrowserContextHandle browserContextHandle, Context context, GURL url) {
++            @ContentSetting int setting = getSiteThemeSetting(browserContextHandle, url);
++            if (setting != ContentSetting.DEFAULT) {
++                return setting == ContentSetting.ALLOW;
++            }
+             if (!isGlobalUserSettingsEnabled(browserContextHandle)) {
+                 return false;
+             }
+@@ -105,6 +140,18 @@ public class WebContentsDarkModeController {
+ 
+     private static Impl sInstance = new Impl();
+ 
++    /** Returns the effective site override, or DEFAULT when the site inherits the theme. */
++    public static @ContentSetting int getSiteThemeSetting(
++            BrowserContextHandle browserContextHandle, GURL url) {
++        return sInstance.getSiteThemeSetting(browserContextHandle, url);
++    }
++
++    /** Stores Light (BLOCK), Dark (ALLOW), or Follow system (DEFAULT) for this site. */
++    public static void setSiteThemeSetting(
++            BrowserContextHandle browserContextHandle, GURL url, @ContentSetting int setting) {
++        sInstance.setSiteThemeSetting(browserContextHandle, url, setting);
++    }
++
+     public static void setInstanceForTesting(Impl instance) {
+         var oldValue = sInstance;
+         sInstance = instance;
+diff --git a/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsDarkModeControllerUnitTest.java b/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsDarkModeControllerUnitTest.java
+index 6b77d93426..89608233ae 100644
+--- a/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsDarkModeControllerUnitTest.java
++++ b/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsDarkModeControllerUnitTest.java
+@@ -55,6 +55,15 @@ public class WebContentsDarkModeControllerUnitTest {
+         WebsitePreferenceBridgeJni.setInstanceForTesting(mMockWebsitePreferenceBridgeJni);
+ 
+         ProfileManager.setLastUsedProfileForTesting(mMockProfile);
++        // A removed native exception inherits the wildcard global rule.
++        Mockito.doAnswer(
++                        invocation ->
++                                mIsAutoDarkEnabledForUrlContentSettingValue
++                                        == ContentSetting.DEFAULT)
++                .when(mMockWebsitePreferenceBridgeJni)
++                .isContentSettingGlobal(
++                        eq(mMockProfile), eq(ContentSettingsType.AUTO_DARK_WEB_CONTENT),
++                        notNull(), notNull());
+ 
+         Mockito.doAnswer(
+                         invocation -> {
+@@ -191,6 +200,106 @@ public class WebContentsDarkModeControllerUnitTest {
+         assertEnabledState(mMockGurl, false);
+     }
+ 
++    @Test
++    public void testGetSiteThemeSetting_GlobalWildcardReturnsDefault() {
++        mIsAutoDarkEnabledForUrlContentSettingValue = ContentSetting.ALLOW;
++        Mockito.doReturn(true)
++                .when(mMockWebsitePreferenceBridgeJni)
++                .isContentSettingGlobal(
++                        eq(mMockProfile),
++                        eq(ContentSettingsType.AUTO_DARK_WEB_CONTENT),
++                        eq(mMockGurl),
++                        eq(mMockGurl));
++        Assert.assertEquals(
++                ContentSetting.DEFAULT,
++                WebContentsDarkModeController.getSiteThemeSetting(mMockProfile, mMockGurl));
++    }
++
++    @Test
++    public void testGetSiteThemeSetting_ExplicitAllowAndBlock() {
++        mIsAutoDarkEnabledForUrlContentSettingValue = ContentSetting.ALLOW;
++        Assert.assertEquals(
++                ContentSetting.ALLOW,
++                WebContentsDarkModeController.getSiteThemeSetting(mMockProfile, mMockGurl));
++        mIsAutoDarkEnabledForUrlContentSettingValue = ContentSetting.BLOCK;
++        Assert.assertEquals(
++                ContentSetting.BLOCK,
++                WebContentsDarkModeController.getSiteThemeSetting(mMockProfile, mMockGurl));
++    }
++
++    @Test
++    public void testGetEnabledState_FollowsThemeByDefault() {
++        mIsGlobalSettingsEnabled = true;
++        ColorUtils.setInNightModeForTesting(false);
++        assertEnabledState(mMockGurl, false);
++        ColorUtils.setInNightModeForTesting(true);
++        assertEnabledState(mMockGurl, true);
++        mIsGlobalSettingsEnabled = false;
++        assertEnabledState(mMockGurl, false);
++    }
++
++    @Test
++    public void testGetEnabledState_ExplicitAllowInLightModeWithGlobalDisabled() {
++        ColorUtils.setInNightModeForTesting(false);
++        mIsGlobalSettingsEnabled = false;
++        mIsAutoDarkEnabledForUrlContentSettingValue = ContentSetting.ALLOW;
++        assertEnabledState(mMockGurl, true);
++    }
++
++    @Test
++    public void testGetEnabledState_ExplicitBlockInDarkMode() {
++        ColorUtils.setInNightModeForTesting(true);
++        mIsGlobalSettingsEnabled = true;
++        mIsAutoDarkEnabledForUrlContentSettingValue = ContentSetting.BLOCK;
++        assertEnabledState(mMockGurl, false);
++    }
++
++    @Test
++    public void testSetSiteThemeSetting_ClearDarkOverrideRestoresLightDefault() {
++        ColorUtils.setInNightModeForTesting(false);
++        mIsGlobalSettingsEnabled = true;
++        WebContentsDarkModeController.setSiteThemeSetting(
++                mMockProfile, mMockGurl, ContentSetting.ALLOW);
++        Assert.assertEquals(
++                ContentSetting.ALLOW,
++                WebContentsDarkModeController.getSiteThemeSetting(mMockProfile, mMockGurl));
++        assertEnabledState(mMockGurl, true);
++        WebContentsDarkModeController.setSiteThemeSetting(
++                mMockProfile, mMockGurl, ContentSetting.DEFAULT);
++        Assert.assertEquals(
++                ContentSetting.DEFAULT,
++                WebContentsDarkModeController.getSiteThemeSetting(mMockProfile, mMockGurl));
++        assertEnabledState(mMockGurl, false);
++        Mockito.verify(mMockWebsitePreferenceBridgeJni)
++                .setContentSettingDefaultScope(
++                        eq(mMockProfile),
++                        eq(ContentSettingsType.AUTO_DARK_WEB_CONTENT),
++                        eq(mMockGurl),
++                        eq(mMockGurl),
++                        eq(ContentSetting.DEFAULT));
++    }
++
++    @Test
++    public void testSetSiteThemeSetting_ClearLightOverrideRestoresDarkDefault() {
++        ColorUtils.setInNightModeForTesting(true);
++        mIsGlobalSettingsEnabled = true;
++        WebContentsDarkModeController.setSiteThemeSetting(
++                mMockProfile, mMockGurl, ContentSetting.BLOCK);
++        assertEnabledState(mMockGurl, false);
++        WebContentsDarkModeController.setSiteThemeSetting(
++                mMockProfile, mMockGurl, ContentSetting.DEFAULT);
++        Assert.assertEquals(
++                ContentSetting.DEFAULT,
++                WebContentsDarkModeController.getSiteThemeSetting(mMockProfile, mMockGurl));
++        assertEnabledState(mMockGurl, true);
++    }
++
++    @Test(expected = IllegalArgumentException.class)
++    public void testSetSiteThemeSetting_RejectsUnsupportedSetting() {
++        WebContentsDarkModeController.setSiteThemeSetting(
++                mMockProfile, mMockGurl, ContentSetting.ASK);
++    }
++
+     private void assertAutoDarkModeChangeSourceRecorded(
+             @AutoDarkSettingsChangeSource int source, boolean enabled, int expectedCounts) {
+         String histogramName =
+diff --git a/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsThemeClient.java b/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsThemeClient.java
+index bda8d2b45a..3261d46fb2 100644
+--- a/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsThemeClient.java
++++ b/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsThemeClient.java
+@@ -13,6 +13,7 @@ import org.jni_zero.JniType;
+ import org.chromium.build.annotations.NullMarked;
+ import org.chromium.chrome.browser.flags.ChromeFeatureList;
+ import org.chromium.chrome.browser.profiles.Profile;
++import org.chromium.components.content_settings.ContentSetting;
+ import org.chromium.content_public.browser.WebContents;
+ import org.chromium.ui.base.WindowAndroid;
+ import org.chromium.ui.util.ColorUtils;
+@@ -21,6 +22,13 @@ import org.chromium.ui.util.ColorUtils;
+ @NullMarked
+ @JNINamespace("night_mode")
+ public class WebContentsThemeClient {
++    private static @ContentSetting int getSiteThemeSetting(WebContents webContents) {
++        Profile profile = Profile.fromWebContents(webContents);
++        if (profile == null) return ContentSetting.DEFAULT;
++        return WebContentsDarkModeController.getSiteThemeSetting(
++                profile, webContents.getVisibleUrl());
++    }
++
+     @CalledByNative
+     public static boolean isNightModeEnabled(
+             @JniType("content::WebContents*") WebContents webContents) {
+@@ -29,6 +37,9 @@ public class WebContentsThemeClient {
+         if (window == null) return false;
+         Context context = window.getContext().get();
+         if (context == null) return false;
++        @ContentSetting int setting = getSiteThemeSetting(webContents);
++        if (setting == ContentSetting.ALLOW) return true;
++        if (setting == ContentSetting.BLOCK) return false;
+         return ColorUtils.inNightMode(context);
+     }
+ 
+@@ -36,6 +47,9 @@ public class WebContentsThemeClient {
+     public static boolean isForceDarkWebContentEnabled(
+             @JniType("content::WebContents*") WebContents webContents) {
+         if (webContents == null) return false;
++        @ContentSetting int setting = getSiteThemeSetting(webContents);
++        if (setting == ContentSetting.ALLOW) return true;
++        if (setting == ContentSetting.BLOCK) return false;
+         if (ChromeFeatureList.isEnabled(ChromeFeatureList.FORCE_WEB_CONTENTS_DARK_MODE)) {
+             return true;
+         }
+@@ -46,8 +60,11 @@ public class WebContentsThemeClient {
+         Profile profile = Profile.fromWebContents(webContents);
+         if (profile == null) return false;
+ 
+-        return isNightModeEnabled(webContents)
+-                && WebContentsDarkModeController.isEnabledForUrl(
+-                        profile, webContents.getVisibleUrl());
++        WindowAndroid window = webContents.getTopLevelNativeWindow();
++        if (window == null) return false;
++        Context context = window.getContext().get();
++        if (context == null) return false;
++        return WebContentsDarkModeController.getEnabledState(
++                profile, context, webContents.getVisibleUrl());
+     }
+ }
+diff --git a/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsThemeClientUnitTest.java b/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsThemeClientUnitTest.java
+index f1c5995a22..f77ccf5a4d 100644
+--- a/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsThemeClientUnitTest.java
++++ b/chrome/browser/ui/android/night_mode/java/src/org/chromium/chrome/browser/night_mode/WebContentsThemeClientUnitTest.java
+@@ -25,16 +25,17 @@ import org.chromium.base.test.util.Features.DisableFeatures;
+ import org.chromium.base.test.util.Features.EnableFeatures;
+ import org.chromium.chrome.browser.flags.ChromeFeatureList;
+ import org.chromium.chrome.browser.profiles.Profile;
++import org.chromium.components.content_settings.ContentSetting;
+ import org.chromium.content_public.browser.WebContents;
+ import org.chromium.ui.base.WindowAndroid;
+ import org.chromium.ui.util.ColorUtils;
+ import org.chromium.url.GURL;
+-import org.chromium.url.JUnitTestGURLs;
+ 
+ import java.lang.ref.WeakReference;
+ 
+ /** Unit tests for {@link WebContentsThemeClient}. */
+ @Config(manifest = Config.NONE)
++@SuppressWarnings("DoNotMock") // The URL is only forwarded to the mocked controller.
+ @RunWith(BaseRobolectricTestRunner.class)
+ public class WebContentsThemeClientUnitTest {
+     @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
+@@ -45,7 +46,7 @@ public class WebContentsThemeClientUnitTest {
+     @Mock private Profile mProfile;
+     @Mock private WebContentsDarkModeController.Impl mWebContentsDarkModeControllerImpl;
+ 
+-    private final GURL mGurl = JUnitTestGURLs.URL_1;
++    @Mock private GURL mGurl;
+ 
+     @Before
+     public void setup() {
+@@ -119,7 +120,8 @@ public class WebContentsThemeClientUnitTest {
+     @EnableFeatures(ChromeFeatureList.DARKEN_WEBSITES_CHECKBOX_IN_THEMES_SETTING)
+     public void testIsForceDarkWebContentEnabled_EnabledForUrl() {
+         ColorUtils.setInNightModeForTesting(true);
+-        when(mWebContentsDarkModeControllerImpl.isEnabledForUrl(eq(mProfile), eq(mGurl)))
++        when(mWebContentsDarkModeControllerImpl.getEnabledState(
++                        eq(mProfile), eq(mContext), eq(mGurl)))
+                 .thenReturn(true);
+         assertTrue(WebContentsThemeClient.isForceDarkWebContentEnabled(mWebContents));
+     }
+@@ -129,8 +131,68 @@ public class WebContentsThemeClientUnitTest {
+     @EnableFeatures(ChromeFeatureList.DARKEN_WEBSITES_CHECKBOX_IN_THEMES_SETTING)
+     public void testIsForceDarkWebContentEnabled_DisabledForUrl() {
+         ColorUtils.setInNightModeForTesting(true);
+-        when(mWebContentsDarkModeControllerImpl.isEnabledForUrl(eq(mProfile), eq(mGurl)))
++        when(mWebContentsDarkModeControllerImpl.getEnabledState(
++                        eq(mProfile), eq(mContext), eq(mGurl)))
+                 .thenReturn(false);
+         assertFalse(WebContentsThemeClient.isForceDarkWebContentEnabled(mWebContents));
+     }
++
++    @Test
++    @DisableFeatures(ChromeFeatureList.FORCE_WEB_CONTENTS_DARK_MODE)
++    @EnableFeatures(ChromeFeatureList.DARKEN_WEBSITES_CHECKBOX_IN_THEMES_SETTING)
++    public void testIsNightModeEnabledAndForceDark_Allow() {
++        ColorUtils.setInNightModeForTesting(false);
++        when(mWebContentsDarkModeControllerImpl.getSiteThemeSetting(eq(mProfile), eq(mGurl)))
++                .thenReturn(ContentSetting.ALLOW);
++        when(mWebContentsDarkModeControllerImpl.getEnabledState(
++                        eq(mProfile), eq(mContext), eq(mGurl)))
++                .thenReturn(false);
++        assertTrue(WebContentsThemeClient.isNightModeEnabled(mWebContents));
++        assertTrue(WebContentsThemeClient.isForceDarkWebContentEnabled(mWebContents));
++    }
++
++    @Test
++    @DisableFeatures(ChromeFeatureList.FORCE_WEB_CONTENTS_DARK_MODE)
++    @EnableFeatures(ChromeFeatureList.DARKEN_WEBSITES_CHECKBOX_IN_THEMES_SETTING)
++    public void testIsNightModeEnabledAndForceDark_Block() {
++        ColorUtils.setInNightModeForTesting(true);
++        when(mWebContentsDarkModeControllerImpl.getSiteThemeSetting(eq(mProfile), eq(mGurl)))
++                .thenReturn(ContentSetting.BLOCK);
++        when(mWebContentsDarkModeControllerImpl.getEnabledState(
++                        eq(mProfile), eq(mContext), eq(mGurl)))
++                .thenReturn(true);
++        assertFalse(WebContentsThemeClient.isNightModeEnabled(mWebContents));
++        assertFalse(WebContentsThemeClient.isForceDarkWebContentEnabled(mWebContents));
++    }
++
++    @Test
++    @EnableFeatures(ChromeFeatureList.FORCE_WEB_CONTENTS_DARK_MODE)
++    public void testIsForceDark_ForceFeatureEnabledWithBlock() {
++        ColorUtils.setInNightModeForTesting(true);
++        when(mWebContentsDarkModeControllerImpl.getSiteThemeSetting(eq(mProfile), eq(mGurl)))
++                .thenReturn(ContentSetting.BLOCK);
++        assertFalse(WebContentsThemeClient.isNightModeEnabled(mWebContents));
++        assertFalse(WebContentsThemeClient.isForceDarkWebContentEnabled(mWebContents));
++    }
++
++    @Test
++    @DisableFeatures(ChromeFeatureList.FORCE_WEB_CONTENTS_DARK_MODE)
++    @EnableFeatures(ChromeFeatureList.DARKEN_WEBSITES_CHECKBOX_IN_THEMES_SETTING)
++    public void testIsNightModeEnabledAndForceDark_AllowThenResetToDefault() {
++        ColorUtils.setInNightModeForTesting(false);
++        when(mWebContentsDarkModeControllerImpl.getSiteThemeSetting(eq(mProfile), eq(mGurl)))
++                .thenReturn(ContentSetting.ALLOW);
++        when(mWebContentsDarkModeControllerImpl.getEnabledState(
++                        eq(mProfile), eq(mContext), eq(mGurl)))
++                .thenReturn(true);
++        assertTrue(WebContentsThemeClient.isNightModeEnabled(mWebContents));
++        assertTrue(WebContentsThemeClient.isForceDarkWebContentEnabled(mWebContents));
++        when(mWebContentsDarkModeControllerImpl.getSiteThemeSetting(eq(mProfile), eq(mGurl)))
++                .thenReturn(ContentSetting.DEFAULT);
++        when(mWebContentsDarkModeControllerImpl.getEnabledState(
++                        eq(mProfile), eq(mContext), eq(mGurl)))
++                .thenReturn(false);
++        assertFalse(WebContentsThemeClient.isNightModeEnabled(mWebContents));
++        assertFalse(WebContentsThemeClient.isForceDarkWebContentEnabled(mWebContents));
++    }
+ }
+diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
+index a7b76f0945..fa6c7e6f24 100644
+--- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
++++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
+@@ -8299,6 +8299,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Chrome d
+       <message name="IDS_ENTERPRISE_SIGNALS_DISCLAIMER_SHEET_CLOSED" desc="Accessibility string read when the Enterprise Signals Disclaimer bottom sheet is closed.">
+         Enterprise signals disclaimer bottom sheet is closed
+       </message>
++    <message name="IDS_ROADIUM_WEBSITE_THEME" desc="Menu and dialog title for this site's light or dark theme">
++        Website theme
++    </message>
++    <message name="IDS_ROADIUM_THEME_FOLLOW_SYSTEM" desc="Website theme choice that removes the per-site override">
++        Follow system
++    </message>
++    <message name="IDS_ROADIUM_THEME_LIGHT" desc="Website theme choice that uses a light appearance">
++        Light
++    </message>
++    <message name="IDS_ROADIUM_THEME_DARK" desc="Website theme choice that uses a dark appearance">
++        Dark
++    </message>
+     </messages>
+   </release>
+ </grit>
 diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp
 index 6d3f2380b1..0501fa73ad 100644
 --- a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp
@@ -825,6 +1537,204 @@ index 6d3f2380b1..0501fa73ad 100644
      </message>
  
      <message name="IDS_PRIVACY_LINK1" desc="URL for Bromite wiki page about ad blocking" translateable="false">
+diff --git a/components/browser_ui/styles/android/java/res/values-v31/colors.xml b/components/browser_ui/styles/android/java/res/values-v31/colors.xml
+index 646413964e..a04a223845 100644
+--- a/components/browser_ui/styles/android/java/res/values-v31/colors.xml
++++ b/components/browser_ui/styles/android/java/res/values-v31/colors.xml
+@@ -6,24 +6,24 @@ found in the LICENSE file.
+ -->
+ 
+ <resources xmlns:tools="http://schemas.android.com/tools">
+-  <!-- GM3 dynamic colors for Android S and above.-->
+-  <color name="material_primary_10">@color/material_dynamic_primary10</color>
+-  <color name="material_primary_20">@color/material_dynamic_primary20</color>
+-  <color name="material_primary_30">@color/material_dynamic_primary30</color>
+-  <color name="material_primary_40">@color/material_dynamic_primary40</color>
+-  <color name="material_primary_50">@color/material_dynamic_primary50</color>
+-  <color name="material_primary_60">@color/material_dynamic_primary60</color>
+-  <color name="material_primary_70">@color/material_dynamic_primary70</color>
+-  <color name="material_primary_80">@color/material_dynamic_primary80</color>
+-  <color name="material_primary_90">@color/material_dynamic_primary90</color>
+-  <color name="material_primary_95">@color/material_dynamic_primary95</color>
+-  <color name="material_secondary_30">@color/material_dynamic_secondary30</color>
+-  <color name="material_secondary_40">@color/material_dynamic_secondary40</color>
+-  <color name="material_secondary_50">@color/material_dynamic_secondary50</color>
+-  <color name="material_secondary_60">@color/material_dynamic_secondary60</color>
+-  <color name="material_secondary_70">@color/material_dynamic_secondary70</color>
+-  <color name="material_secondary_80">@color/material_dynamic_secondary80</color>
+-  <color name="material_secondary_90">@color/material_dynamic_secondary90</color>
+-  <color name="material_tertiary_80">@color/material_dynamic_tertiary80</color>
+-  <color name="material_tertiary_90">@color/material_dynamic_tertiary90</color>
++  <!-- Stable palette aliases for Android S and above.-->
++  <color name="material_primary_10">@color/baseline_primary_10</color>
++  <color name="material_primary_20">@color/baseline_primary_20</color>
++  <color name="material_primary_30">@color/baseline_primary_30</color>
++  <color name="material_primary_40">@color/baseline_primary_40</color>
++  <color name="material_primary_50">@color/baseline_primary_50</color>
++  <color name="material_primary_60">@color/baseline_primary_60</color>
++  <color name="material_primary_70">@color/baseline_primary_70</color>
++  <color name="material_primary_80">@color/baseline_primary_80</color>
++  <color name="material_primary_90">@color/baseline_primary_90</color>
++  <color name="material_primary_95">@color/baseline_primary_95</color>
++  <color name="material_secondary_30">@color/baseline_secondary_30</color>
++  <color name="material_secondary_40">@color/baseline_secondary_40</color>
++  <color name="material_secondary_50">@color/baseline_secondary_50</color>
++  <color name="material_secondary_60">@color/baseline_secondary_60</color>
++  <color name="material_secondary_70">@color/baseline_secondary_70</color>
++  <color name="material_secondary_80">@color/baseline_secondary_80</color>
++  <color name="material_secondary_90">@color/baseline_secondary_90</color>
++  <color name="material_tertiary_80">@color/baseline_tertiary_80</color>
++  <color name="material_tertiary_90">@color/baseline_tertiary_90</color>
+ </resources>
+\ No newline at end of file
+diff --git a/components/browser_ui/theme/android/java/res/values-night/colors.xml b/components/browser_ui/theme/android/java/res/values-night/colors.xml
+index d9d57a8d63..0b611caa85 100644
+--- a/components/browser_ui/theme/android/java/res/values-night/colors.xml
++++ b/components/browser_ui/theme/android/java/res/values-night/colors.xml
+@@ -6,7 +6,6 @@ found in the LICENSE file.
+ -->
+ 
+ <resources>
+-    <!-- This points to a system color resource in API 31+. However, it's unclear what its value is
+-         on devices that don't support dynamic colors. -->
+-    <color name="splash_screen_bg">@color/system_neutral1_900</color>
++    <!-- Roadium launch surface follows the system appearance. -->
++    <color name="splash_screen_bg">@color/roadium_dark_background</color>
+ </resources>
+diff --git a/components/browser_ui/theme/android/java/res/values/colors.xml b/components/browser_ui/theme/android/java/res/values/colors.xml
+index c9a1829412..1b1d02c330 100644
+--- a/components/browser_ui/theme/android/java/res/values/colors.xml
++++ b/components/browser_ui/theme/android/java/res/values/colors.xml
+@@ -6,7 +6,6 @@ found in the LICENSE file.
+ -->
+ 
+ <resources>
+-    <!-- This points to a system color resource in API 31+. However, it's unclear what its value is
+-         on devices that don't support dynamic colors. -->
+-    <color name="splash_screen_bg">@color/system_neutral1_10</color>
++    <!-- Roadium launch surface follows the system appearance. -->
++    <color name="splash_screen_bg">@color/roadium_warm_white</color>
+ </resources>
+diff --git a/components/browser_ui/theme/android/templates/res/values/themes.xml b/components/browser_ui/theme/android/templates/res/values/themes.xml
+index 1c1c000aea..1e5c46ee76 100644
+--- a/components/browser_ui/theme/android/templates/res/values/themes.xml
++++ b/components/browser_ui/theme/android/templates/res/values/themes.xml
+@@ -18,32 +18,32 @@ Note: This is a jinja2 template, processed at build time into the final resource
+ 
+         {% macro color_palette_light_attributes() %}
+         <!-- Color palettes -->
+-        <item name="colorPrimary">@color/baseline_primary_40</item>
+-        <item name="colorPrimaryInverse">@color/baseline_primary_80</item>
+-        <item name="colorOnPrimary">@color/baseline_primary_100</item>
+-        <item name="colorPrimaryContainer">@color/baseline_primary_90</item>
+-        <item name="colorOnPrimaryContainer">@color/baseline_primary_30</item>
+-        <item name="colorSecondaryContainer">@color/baseline_secondary_90</item>
+-        <item name="colorOnSecondaryContainer">@color/baseline_secondary_30</item>
+-        <item name="colorAccent">@macro/default_control_color_active</item>
+-        <item name="android:colorBackground">@color/baseline_neutral_100</item>
+-        <item name="colorOnBackground">@color/baseline_neutral_10</item>
+-        <item name="colorSurface">@color/gm3_baseline_surface_light</item>
+-        <item name="colorOnSurface">@color/baseline_neutral_10</item>
+-        <item name="colorSurfaceVariant">@color/baseline_neutral_variant_90</item>
+-        <item name="colorSurfaceContainerLow">@color/gm3_baseline_surface_container_low_light</item>
+-        <item name="colorSurfaceContainer">@color/gm3_baseline_surface_container_light</item>
+-        <item name="colorSurfaceContainerHigh">@color/gm3_baseline_surface_container_high_light</item>
+-        <item name="colorSurfaceContainerHighest">@color/gm3_baseline_surface_container_highest_light</item>
+-        <item name="colorSurfaceBright">@color/gm3_baseline_surface_bright_light</item>
+-        <item name="colorSurfaceDim">@color/gm3_baseline_surface_dim_light</item>
+-        <item name="colorOnSurfaceVariant">@color/baseline_neutral_variant_30</item>
+-        <item name="colorSurfaceInverse">@color/baseline_neutral_20</item>
+-        <item name="colorOnSurfaceInverse">@color/baseline_neutral_95</item>
+-        <item name="colorOutline">@color/baseline_neutral_variant_50</item>
+-        <item name="colorOutlineVariant">@color/baseline_neutral_variant_80</item>
+-        <item name="colorTertiaryContainer">@color/baseline_tertiary_90</item>
+-        <item name="colorOnTertiaryContainer">@color/baseline_tertiary_10</item>
++        <item name="colorPrimary">@color/roadium_navy</item>
++        <item name="colorPrimaryInverse">@color/roadium_dark_primary</item>
++        <item name="colorOnPrimary">@color/roadium_warm_white</item>
++        <item name="colorPrimaryContainer">@color/roadium_light_primary_container</item>
++        <item name="colorOnPrimaryContainer">@color/roadium_navy</item>
++        <item name="colorSecondaryContainer">@color/roadium_light_secondary_container</item>
++        <item name="colorOnSecondaryContainer">@color/roadium_navy</item>
++        <item name="colorAccent">@color/roadium_navy</item>
++        <item name="android:colorBackground">@color/roadium_warm_white</item>
++        <item name="colorOnBackground">@color/roadium_navy</item>
++        <item name="colorSurface">@color/roadium_warm_white</item>
++        <item name="colorOnSurface">@color/roadium_navy</item>
++        <item name="colorSurfaceVariant">@color/roadium_light_secondary_container</item>
++        <item name="colorSurfaceContainerLow">@color/roadium_light_surface_low</item>
++        <item name="colorSurfaceContainer">@color/roadium_light_surface_container</item>
++        <item name="colorSurfaceContainerHigh">@color/roadium_light_surface_high</item>
++        <item name="colorSurfaceContainerHighest">@color/roadium_light_surface_highest</item>
++        <item name="colorSurfaceBright">@color/roadium_warm_white</item>
++        <item name="colorSurfaceDim">@color/roadium_light_surface_highest</item>
++        <item name="colorOnSurfaceVariant">@color/roadium_light_on_surface_variant</item>
++        <item name="colorSurfaceInverse">@color/roadium_dark_surface</item>
++        <item name="colorOnSurfaceInverse">@color/roadium_warm_white</item>
++        <item name="colorOutline">@color/roadium_light_outline</item>
++        <item name="colorOutlineVariant">@color/roadium_light_outline_variant</item>
++        <item name="colorTertiaryContainer">@color/roadium_orange_container</item>
++        <item name="colorOnTertiaryContainer">@color/roadium_navy</item>
+         <item name="colorError">@color/baseline_error_40</item>
+         {% endmacro %}
+         {{ color_palette_light_attributes() }}
+@@ -265,31 +265,31 @@ Note: This is a jinja2 template, processed at build time into the final resource
+     <style name="Theme.BrowserUI.Dark" parent="Theme.Material3Expressive.Dark.NoActionBar">
+         {% macro color_palette_dark_attributes() %}
+         <!-- Color palettes -->
+-        <item name="colorPrimary">@color/baseline_primary_80</item>
+-        <item name="colorPrimaryInverse">@color/baseline_primary_40</item>
+-        <item name="colorOnPrimary">@color/baseline_primary_20</item>
+-        <item name="colorPrimaryContainer">@color/baseline_primary_30</item>
+-        <item name="colorOnPrimaryContainer">@color/baseline_primary_90</item>
+-        <item name="colorSecondaryContainer">@color/baseline_secondary_30</item>
+-        <item name="colorOnSecondaryContainer">@color/baseline_secondary_90</item>
+-        <item name="android:colorBackground">@color/baseline_neutral_10</item>
+-        <item name="colorOnBackground">@color/baseline_neutral_90</item>
+-        <item name="colorSurface">@color/gm3_baseline_surface_dark</item>
+-        <item name="colorOnSurface">@color/baseline_neutral_90</item>
+-        <item name="colorSurfaceVariant">@color/baseline_neutral_variant_30</item>
+-        <item name="colorOnSurfaceVariant">@color/baseline_neutral_variant_80</item>
+-        <item name="colorSurfaceInverse">@color/baseline_neutral_95</item>
+-        <item name="colorOnSurfaceInverse">@color/baseline_neutral_20</item>
+-        <item name="colorSurfaceBright">@color/gm3_baseline_surface_bright_dark</item>
+-        <item name="colorSurfaceDim">@color/gm3_baseline_surface_dim_dark</item>
+-        <item name="colorSurfaceContainerLow">@color/gm3_baseline_surface_container_low_dark</item>
+-        <item name="colorSurfaceContainer">@color/gm3_baseline_surface_container_dark</item>
+-        <item name="colorSurfaceContainerHigh">@color/gm3_baseline_surface_container_high_dark</item>
+-        <item name="colorSurfaceContainerHighest">@color/gm3_baseline_surface_container_highest_dark</item>
+-        <item name="colorOutline">@color/baseline_neutral_variant_60</item>
+-        <item name="colorOutlineVariant">@color/baseline_neutral_variant_30</item>
+-        <item name="colorTertiaryContainer">@color/baseline_tertiary_30</item>
+-        <item name="colorOnTertiaryContainer">@color/baseline_tertiary_90</item>
++        <item name="colorPrimary">@color/roadium_dark_primary</item>
++        <item name="colorPrimaryInverse">@color/roadium_navy</item>
++        <item name="colorOnPrimary">@color/roadium_dark_background</item>
++        <item name="colorPrimaryContainer">@color/roadium_dark_primary_container</item>
++        <item name="colorOnPrimaryContainer">@color/roadium_warm_white</item>
++        <item name="colorSecondaryContainer">@color/roadium_dark_secondary_container</item>
++        <item name="colorOnSecondaryContainer">@color/roadium_warm_white</item>
++        <item name="android:colorBackground">@color/roadium_dark_background</item>
++        <item name="colorOnBackground">@color/roadium_warm_white</item>
++        <item name="colorSurface">@color/roadium_dark_surface</item>
++        <item name="colorOnSurface">@color/roadium_warm_white</item>
++        <item name="colorSurfaceVariant">@color/roadium_dark_surface_high</item>
++        <item name="colorOnSurfaceVariant">@color/roadium_dark_on_surface_variant</item>
++        <item name="colorSurfaceInverse">@color/roadium_warm_white</item>
++        <item name="colorOnSurfaceInverse">@color/roadium_navy</item>
++        <item name="colorSurfaceBright">@color/roadium_dark_surface_highest</item>
++        <item name="colorSurfaceDim">@color/roadium_dark_background</item>
++        <item name="colorSurfaceContainerLow">@color/roadium_dark_surface_low</item>
++        <item name="colorSurfaceContainer">@color/roadium_dark_surface</item>
++        <item name="colorSurfaceContainerHigh">@color/roadium_dark_surface_high</item>
++        <item name="colorSurfaceContainerHighest">@color/roadium_dark_surface_highest</item>
++        <item name="colorOutline">@color/roadium_dark_outline</item>
++        <item name="colorOutlineVariant">@color/roadium_dark_outline_variant</item>
++        <item name="colorTertiaryContainer">@color/roadium_dark_orange_container</item>
++        <item name="colorOnTertiaryContainer">@color/roadium_orange_container</item>
+         <item name="colorError">@color/baseline_error_80</item>
+         {% endmacro %}
+         {{ color_palette_dark_attributes() }}
 diff --git a/components/policy/core/common/policy_loader_command_line.cc b/components/policy/core/common/policy_loader_command_line.cc
 index fa15119483..93f60e937a 100644
 --- a/components/policy/core/common/policy_loader_command_line.cc
@@ -1826,3 +2736,39 @@ index 46b1b31bc8..63daf81772 100755
      content = content.replace("chrome", "cromite")
      content = content.replace("chromium", "cromite")
      content = content.replace("bromite", "cromite")
+diff --git a/ui/android/java/res/values/color_palette.xml b/ui/android/java/res/values/color_palette.xml
+index 260496e43e..ed7bf193bf 100644
+--- a/ui/android/java/res/values/color_palette.xml
++++ b/ui/android/java/res/values/color_palette.xml
+@@ -177,4 +177,31 @@ found in the LICENSE file.
+     <color name="material_tertiary_80">@color/baseline_tertiary_80</color>
+     <color name="material_tertiary_40">@color/baseline_tertiary_40</color>
+ 
++    <!-- Roadium normal browser theme, separate from incognito gray tokens. -->
++    <color name="roadium_navy">#193E74</color>
++    <color name="roadium_teal">#3C9FA0</color>
++    <color name="roadium_orange">#F4A04A</color>
++    <color name="roadium_warm_white">#F4F1E8</color>
++    <color name="roadium_light_primary_container">#D9E8ED</color>
++    <color name="roadium_light_secondary_container">#D4EBE8</color>
++    <color name="roadium_light_surface_low">#F0EDE4</color>
++    <color name="roadium_light_surface_container">#EAE7DE</color>
++    <color name="roadium_light_surface_high">#E3E6DF</color>
++    <color name="roadium_light_surface_highest">#DCE3DD</color>
++    <color name="roadium_light_on_surface_variant">#405366</color>
++    <color name="roadium_light_outline">#6E7D83</color>
++    <color name="roadium_light_outline_variant">#BDC9C7</color>
++    <color name="roadium_dark_primary">#76CECB</color>
++    <color name="roadium_dark_background">#0D1B2A</color>
++    <color name="roadium_dark_surface">#172A40</color>
++    <color name="roadium_dark_primary_container">#1C4D60</color>
++    <color name="roadium_dark_secondary_container">#21484D</color>
++    <color name="roadium_dark_surface_low">#132336</color>
++    <color name="roadium_dark_surface_high">#20364D</color>
++    <color name="roadium_dark_surface_highest">#2A4056</color>
++    <color name="roadium_dark_on_surface_variant">#C2D1D8</color>
++    <color name="roadium_dark_outline">#91A5B0</color>
++    <color name="roadium_dark_outline_variant">#425B6D</color>
++    <color name="roadium_orange_container">#FFDBB4</color>
++    <color name="roadium_dark_orange_container">#604019</color>
+ </resources>

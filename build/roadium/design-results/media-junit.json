@@ -1,0 +1,297 @@
+{
+  "global_tags": [],
+  "all_tests": [
+    "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveDeferredSpeechIsCancelledOnPause[29]",
+    "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveDeferredSpeechIsCancelledOnPause[36]",
+    "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveDestroyedSpeechRemovesListener[29]",
+    "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveDestroyedSpeechRemovesListener[36]",
+    "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveSpeechRequiresResumedActivity[29]",
+    "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveSpeechRequiresResumedActivity[36]",
+    "org.chromium.content.browser.TtsPlatformImplTest#testNonAutomotiveSpeechDoesNotInstallRoadiumListener[29]",
+    "org.chromium.content.browser.TtsPlatformImplTest#testNonAutomotiveSpeechDoesNotInstallRoadiumListener[36]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveCannotUnmuteWhilePaused[29]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveCannotUnmuteWhilePaused[36]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveDestroyedContentsRemoveActivityListener[29]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveDestroyedContentsRemoveActivityListener[36]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveNewBackgroundContentsAreBlocked[29]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveNewBackgroundContentsAreBlocked[36]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotivePreservesUserMutePreference[29]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotivePreservesUserMutePreference[36]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveRendererPlaybackRestartIsPaused[29]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveRendererPlaybackRestartIsPaused[36]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveRequiresResumedActivity[29]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveRequiresResumedActivity[36]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetAndGetStylusWritingHandler[29]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetAndGetStylusWritingHandler[36]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetAndGetStylusWritingHandler_nativeCleared[29]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetAndGetStylusWritingHandler_nativeCleared[36]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetStylusWritingDelegate[29]",
+    "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetStylusWritingDelegate[36]"
+  ],
+  "disabled_tests": [],
+  "per_iteration_data": [
+    {
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetAndGetStylusWritingHandler[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveNewBackgroundContentsAreBlocked[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 20,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotivePreservesUserMutePreference[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 19,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveDestroyedContentsRemoveActivityListener[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 17,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveDestroyedContentsRemoveActivityListener[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 18,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveCannotUnmuteWhilePaused[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 71,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveRequiresResumedActivity[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 20,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveSpeechRequiresResumedActivity[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 24,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveNewBackgroundContentsAreBlocked[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 23,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveDestroyedSpeechRemovesListener[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 18,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetStylusWritingDelegate[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 28,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveDestroyedSpeechRemovesListener[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 26,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetAndGetStylusWritingHandler_nativeCleared[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 21,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveSpeechRequiresResumedActivity[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 25,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetAndGetStylusWritingHandler_nativeCleared[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 20,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveRendererPlaybackRestartIsPaused[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 23,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveRendererPlaybackRestartIsPaused[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 27,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveRequiresResumedActivity[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 20,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveDeferredSpeechIsCancelledOnPause[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 32,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotivePreservesUserMutePreference[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 22,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetAndGetStylusWritingHandler[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.TtsPlatformImplTest#testNonAutomotiveSpeechDoesNotInstallRoadiumListener[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1772,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.TtsPlatformImplTest#testAutomotiveDeferredSpeechIsCancelledOnPause[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 31,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testAutomotiveCannotUnmuteWhilePaused[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 72,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.TtsPlatformImplTest#testNonAutomotiveSpeechDoesNotInstallRoadiumListener[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 3043,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.content.browser.webcontents.WebContentsImplTest#testSetStylusWritingDelegate[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 28,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ]
+    }
+  ],
+  "links": {}
+}

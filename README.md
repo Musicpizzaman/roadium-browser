@@ -2,6 +2,8 @@
 
 Parked-only Android Automotive browser based on Cromite. See [Roadium development notes](ROADIUM.md) and [build instructions](build/roadium/README.md).
 
+Roadium includes its supplied R artwork, a navy/teal/orange/warm-white browser palette, system appearance by default, and saved per-site Light/Dark overrides. See [branding assets](assets/branding/README.md).
+
 The upstream Cromite documentation follows.
 
 ---

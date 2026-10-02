@@ -1,0 +1,715 @@
+{
+  "global_tags": [],
+  "all_tests": [
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testEnableForUrl_Disabled[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testEnableForUrl_Disabled[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testEnableForUrl_Enabled[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testEnableForUrl_Enabled[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled_LightMode[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled_LightMode[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled_NoUserSettings[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled_NoUserSettings[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnableStateForUrl_Disabled[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnableStateForUrl_Disabled[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnableStateForUrl_Enabled[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnableStateForUrl_Enabled[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_ExplicitAllowInLightModeWithGlobalDisabled[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_ExplicitAllowInLightModeWithGlobalDisabled[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_ExplicitBlockInDarkMode[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_ExplicitBlockInDarkMode[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_FollowsThemeByDefault[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_FollowsThemeByDefault[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetSiteThemeSetting_ExplicitAllowAndBlock[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetSiteThemeSetting_ExplicitAllowAndBlock[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetSiteThemeSetting_GlobalWildcardReturnsDefault[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetSiteThemeSetting_GlobalWildcardReturnsDefault[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGlobalSettingsDisabled[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGlobalSettingsDisabled[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGlobalSettingsEnabled[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGlobalSettingsEnabled[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_ClearDarkOverrideRestoresLightDefault[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_ClearDarkOverrideRestoresLightDefault[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_ClearLightOverrideRestoresDarkDefault[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_ClearLightOverrideRestoresDarkDefault[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_RejectsUnsupportedSetting[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_RejectsUnsupportedSetting[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_DarkenWebsiteDisabled[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_DarkenWebsiteDisabled[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_DisabledForUrl[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_DisabledForUrl[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_EnabledForUrl[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_EnabledForUrl[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_ForceDarkModeEnabled[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_ForceDarkModeEnabled[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_NightModeOff[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_NightModeOff[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_NullWebContents[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_NullWebContents[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDark_ForceFeatureEnabledWithBlock[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDark_ForceFeatureEnabledWithBlock[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_AllowThenResetToDefault[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_AllowThenResetToDefault[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_Allow[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_Allow[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_Block[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_Block[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NightModeOff[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NightModeOff[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NightModeOn[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NightModeOn[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullContext[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullContext[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullWebContents[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullWebContents[36]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullWindowAndroid[29]",
+    "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullWindowAndroid[36]"
+  ],
+  "disabled_tests": [],
+  "per_iteration_data": [
+    {
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_ClearDarkOverrideRestoresLightDefault[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 15,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_AllowThenResetToDefault[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testEnableForUrl_Disabled[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_NightModeOff[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 20,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testEnableForUrl_Disabled[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 9,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDark_ForceFeatureEnabledWithBlock[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 65,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_ClearLightOverrideRestoresDarkDefault[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NightModeOn[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled_NoUserSettings[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGlobalSettingsDisabled[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_EnabledForUrl[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 8,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullContext[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_ExplicitBlockInDarkMode[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetSiteThemeSetting_GlobalWildcardReturnsDefault[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 19,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_FollowsThemeByDefault[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_RejectsUnsupportedSetting[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnableStateForUrl_Disabled[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullWindowAndroid[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_NullWebContents[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_ClearLightOverrideRestoresDarkDefault[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 15,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnableStateForUrl_Enabled[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_DisabledForUrl[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_ExplicitAllowInLightModeWithGlobalDisabled[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGlobalSettingsEnabled[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullWebContents[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullContext[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_DisabledForUrl[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullWindowAndroid[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 8,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetSiteThemeSetting_ExplicitAllowAndBlock[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NightModeOff[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetSiteThemeSetting_ExplicitAllowAndBlock[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_AllowThenResetToDefault[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGlobalSettingsDisabled[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGlobalSettingsEnabled[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnableStateForUrl_Disabled[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 17,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_ForceDarkModeEnabled[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled_NoUserSettings[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_ClearDarkOverrideRestoresLightDefault[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 17,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_ExplicitBlockInDarkMode[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testEnableForUrl_Enabled[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDark_ForceFeatureEnabledWithBlock[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 82,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_NullWebContents[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NightModeOff[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_Block[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 9,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NightModeOn[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 9,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testSetSiteThemeSetting_RejectsUnsupportedSetting[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 18,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetSiteThemeSetting_GlobalWildcardReturnsDefault[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 24,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_ForceDarkModeEnabled[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_EnabledForUrl[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_Allow[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 9,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_DarkenWebsiteDisabled[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_FollowsThemeByDefault[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 16,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled_LightMode[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2747,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testEnableForUrl_Enabled[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnabledState_ExplicitAllowInLightModeWithGlobalDisabled[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 18,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_Allow[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabledAndForceDark_Block[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_NightModeOff[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 18,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsNightModeEnabled_NullWebContents[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testGetEnableStateForUrl_Enabled[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsThemeClientUnitTest#testIsForceDarkWebContentEnabled_DarkenWebsiteDisabled[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 9,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.chrome.browser.night_mode.WebContentsDarkModeControllerUnitTest#testFeatureEnabled_LightMode[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1484,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ]
+    }
+  ],
+  "links": {}
+}

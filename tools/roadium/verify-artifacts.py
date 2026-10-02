@@ -27,11 +27,12 @@ assert (attempt / 'exit').read_text().strip() == '0'
 metadata = json.loads((workspace / 'roadium/build/roadium/baseline.json').read_text())
 head_tree = subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], cwd=src, text=True).strip()
 assert head_tree == metadata['baseline_source_tree'], (head_tree, metadata['baseline_source_tree'])
-sys.path.insert(0, str(src / 'build/util'))
-import android_chrome_version
-_, _, build_number, patch_number = map(int, metadata['chromium_version'].split('.'))
-expected_code = str(android_chrome_version.GenerateVersionCodes(
-    build_number, patch_number, arch)['CHROME_VERSION_CODE'])
+from version_code import expected_version_code
+expected_code = str(expected_version_code(src, metadata, arch))
+actual_gn_code = subprocess.check_output(
+    [str(src / 'buildtools/linux64/gn'), 'args', f'out/{arch}',
+     '--list=android_override_version_code', '--short'], cwd=src, text=True).strip()
+assert actual_gn_code == f'android_override_version_code = "{expected_code}"', actual_gn_code
 diff = subprocess.check_output(['git', 'diff', '--binary', 'HEAD'], cwd=src)
 assert hashlib.sha256(diff).hexdigest() == metadata['patches'][0]['sha256']
 android = '{http://schemas.android.com/apk/res/android}'
@@ -145,6 +146,7 @@ result = {
     'project': 'Roadium Browser', 'architecture': arch,
     'package': 'io.github.musicpizzaman.roadium',
     'version': metadata['chromium_version'], 'version_code': int(expected_code),
+    'roadium_version_code_offset': metadata.get('roadium_version_code_offset', 0),
     'baseline_source_tree': metadata['baseline_source_tree'],
     'cromite_commit': metadata['cromite_commit'],
     'source_patch_sha256': metadata['patches'][0]['sha256'],

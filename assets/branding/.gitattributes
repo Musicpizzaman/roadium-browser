@@ -1,0 +1,6 @@
+# Preserve exported images and source font bytes.
+*.png binary
+*.jpg binary
+*.ttf binary
+# Preserve the upstream font license text verbatim.
+fonts/*-OFL.txt whitespace=-blank-at-eol
