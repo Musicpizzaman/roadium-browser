@@ -1,0 +1,30 @@
+{
+  "status": "passed-with-explicit-live-gaps",
+  "installed_apk_sha256": "d18d2781075d5bb788341788894680814f45f9575f948ee328a952dbd0325a4b",
+  "fresh_default_verified": true,
+  "upgrade_preservation_verified": true,
+  "supported_runtime_commands": [
+    "json-prune",
+    "override-property-read",
+    "abort-on-property-write",
+    "skip-video",
+    "hide-if-matches-xpath"
+  ],
+  "dom_json_property_frame_and_privilege_cases": "passed",
+  "ordinary_audio_video_webaudio": "passed",
+  "background_scriptlet_play_attempt_stays_paused": true,
+  "foreground_recovery": true,
+  "actual_vehicle_restriction_state_tested": false,
+  "vehicle_properties_modified": false,
+  "live_desktop_mobile_embed_playback": "passed",
+  "captions_english_toggle": "passed",
+  "quality_actual_144p": "passed",
+  "seek_seconds": 10,
+  "fullscreen": "passed",
+  "shorts": "did not buffer in this lab; also failed advanced-off baseline; acceptance open",
+  "pre_roll": "no observed opportunity; inconclusive",
+  "mid_roll": "no observed opportunity; inconclusive",
+  "network": "Loopback CONNECT relay for emulator DNS; end-to-end TLS; some ancillary hosts denied, so ad-format coverage remains limited",
+  "runtime_grammar_gap": "json-prune [-] accepted by parser but does not remove matching array entry; no semantic rewrite performed",
+  "local_seek_limit": "1s WebM seeks settle at keyframe0 with advanced on/off; exact local seek accuracy not claimed"
+}

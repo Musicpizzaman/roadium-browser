@@ -1,0 +1,63 @@
+{
+  "scope": "List endpoints intentionally return503; local HTTPS document remains available",
+  "metadata": {
+    "https://uazo.github.io/cromite/filters/fanboy-social.txt": {
+      "download_count": 1,
+      "error_count": 1,
+      "expiration_time": "13436899201763046",
+      "last_installation_time": "13436812801763017",
+      "roadium_diagnostics": {
+        "active_privileged": false,
+        "active_rules": {
+          "accepted": 13867,
+          "parser_rejected": 0,
+          "prohibited_privilege": 0,
+          "unsafe_arguments": 0,
+          "unsupported_commands": 0,
+          "unsupported_options": 0
+        },
+        "downloaded": false,
+        "error": "HTTP 503",
+        "fallback_attempted": true,
+        "fallback_outcome": "failed",
+        "last_success": "13436812801763166",
+        "last_success_source": "https://uazo.github.io/cromite/filters/fanboy-social.txt",
+        "parsed": false,
+        "primary_failure": "HTTP 503",
+        "recovery": "current",
+        "source": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/fanboy-social.txt",
+        "stage": 5
+      },
+      "version": "202610130952"
+    },
+    "https://uazo.github.io/cromite/filters/fanboy-notifications.txt": {
+      "download_count": 1,
+      "error_count": 1,
+      "expiration_time": "13436899201711973",
+      "last_installation_time": "13436812801711940",
+      "roadium_diagnostics": {
+        "active_privileged": false,
+        "active_rules": {
+          "accepted": 1371,
+          "parser_rejected": 0,
+          "prohibited_privilege": 0,
+          "unsafe_arguments": 0,
+          "unsupported_commands": 0,
+          "unsupported_options": 0
+        },
+        "downloaded": false,
+        "error": "HTTP 503",
+        "fallback_attempted": true,
+        "fallback_outcome": "failed",
+        "last_success": "13436812801712029",
+        "last_success_source": "https://uazo.github.io/cromite/filters/fanboy-notifications.txt",
+        "parsed": false,
+        "primary_failure": "HTTP 503",
+        "recovery": "current",
+        "source": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/fanboy-notifications.txt",
+        "stage": 5
+      },
+      "version": "202610130952"
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "card": 3,
+  "status": "implemented-and-verified",
+  "verified_utc": "2026-10-14T12:47:48.932332+00:00",
+  "source_patch_sha256": "fa0e7a57e72696158efca236c66666b52dda20449a6a4ab77c7344d2d46f2b69",
+  "source_overlay_tree": "827c5751427f01b0ac1dca82a66886bb1dbf2e29",
+  "cumulative_source_patch_sha256": "eb6fbe801190d11fb9a5303033540fe8ed33316bc658d476b1b8a3079cb09f4f",
+  "previous_patches_unchanged": true,
+  "native_tests": 32,
+  "diagnostics_test_executions": 24,
+  "media_test_executions": 26,
+  "packages": [
+    {
+      "architecture": "x64",
+      "file": "ChromePublic.apk",
+      "sha256": "3c1aee8bb2036b44f82c39582f276e2f5e71d6c7b5248621991800db1331f91a"
+    },
+    {
+      "architecture": "x64",
+      "file": "ChromePublic.aab",
+      "sha256": "e53fda32f2ed78623aa217a8b6dad982eea0e4c8f7918ecd715bc189acd400cd"
+    },
+    {
+      "architecture": "arm64",
+      "file": "ChromePublic.apk",
+      "sha256": "c40e3464c98192122e7a2ae78b505157374f5bbe14cd0c81fd43ea5dd13af7a9"
+    },
+    {
+      "architecture": "arm64",
+      "file": "ChromePublic.aab",
+      "sha256": "13e38ea582645c17a5fe208bf78cadd3cc065626423d98bb81915f1450080722"
+    }
+  ],
+  "installed_apk_sha256": "3c1aee8bb2036b44f82c39582f276e2f5e71d6c7b5248621991800db1331f91a",
+  "upgrade_cases": [
+    {
+      "case": "upgrade-inherited",
+      "stored_advanced": null,
+      "configuration_preserved": true,
+      "signatures_preserved": true
+    },
+    {
+      "case": "upgrade-explicit-false",
+      "stored_advanced": false,
+      "configuration_preserved": true,
+      "signatures_preserved": true
+    },
+    {
+      "case": "upgrade-explicit-true-global-off",
+      "stored_advanced": true,
+      "configuration_preserved": true,
+      "signatures_preserved": true
+    }
+  ],
+  "fresh_offline": {
+    "stored_override": false,
+    "downloaded_signatures": 0,
+    "advanced_enabled": true,
+    "bundles_active": true
+  },
+  "installed_runtime_cases": [
+    {
+      "case": "trusted-enabled",
+      "supported_scriptlet_effect": true,
+      "basic_blocking": true,
+      "passed": true
+    },
+    {
+      "case": "trusted-disabled",
+      "supported_scriptlet_effect": false,
+      "basic_blocking": true,
+      "passed": true
+    },
+    {
+      "case": "trusted-reenabled",
+      "supported_scriptlet_effect": true,
+      "basic_blocking": true,
+      "passed": true
+    },
+    {
+      "case": "trusted-global-off",
+      "supported_scriptlet_effect": false,
+      "basic_blocking": false,
+      "passed": true
+    },
+    {
+      "case": "trusted-global-restored",
+      "supported_scriptlet_effect": true,
+      "basic_blocking": true,
+      "passed": true
+    },
+    {
+      "case": "untrusted-cached",
+      "supported_scriptlet_effect": false,
+      "basic_blocking": true,
+      "passed": true
+    },
+    {
+      "case": "manual-rules",
+      "supported_scriptlet_effect": false,
+      "basic_blocking": true,
+      "passed": true
+    }
+  ],
+  "fixture_method": "Root-seeded real native-converter FlatBuffers in backed-up disposable user13; no production trust overrides",
+  "cleanup": {
+    "original_disposable_preferences_byte_identical": true,
+    "wifi": 1,
+    "mobile_data": 1,
+    "test_ports_removed": true
+  },
+  "pending_release_gates": [
+    "Physical ARM64 Android 12 vehicle checks",
+    "Production upload-key signing"
+  ],
+  "cards_04_through_09": "on hold",
+  "overlay_loader_tests": 16,
+  "package_resource_gate_tests": 8,
+  "fork_and_source_diff_check": "passed"
+}

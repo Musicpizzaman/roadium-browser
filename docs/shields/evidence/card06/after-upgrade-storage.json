@@ -1,0 +1,55 @@
+{
+  "directory": "/data/user/11/io.github.musicpizzaman.roadium/app_chrome/Default/adblock_subscriptions",
+  "records": [
+    {
+      "file": "roadium-268d17ec8ad46666c88cd85c0c4e64015fa48e672f35bbf97b64dc254c34fb97.current.json",
+      "sha256": "d3a53fdbd57c0173e7e1bb2420965638b1fd45a7ad3861a99f33bd0d960d0a9a",
+      "record": {
+        "accepted": 2492,
+        "file": "roadium-268d17ec8ad46666c88cd85c0c4e64015fa48e672f35bbf97b64dc254c34fb97-C3DD2CB3E0583147DFD51C455D8D481D.fb",
+        "format": 1,
+        "identity": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+        "installed": "13436757073479695",
+        "parser_rejected": 48,
+        "privileged": false,
+        "prohibited_privilege": 1915,
+        "schema": "Apu+MU09OCFx11xibV1gU0afrAVCmbvSp8K2NKDV2Yc=",
+        "sha256": "df1dba75797d72474a6d296b04c69fc58108fda3effab52dd64cac04de965dd0",
+        "source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      }
+    },
+    {
+      "file": "roadium-1322d63b4ff84d557972c5f7f029c1cf1c4c6e943afa8ede159cd1aabb2e4fdd.current.json",
+      "sha256": "f13b53217cbcc3d543959f0bc3a627d00abd4983d2d3decc9aad5eab023be62e",
+      "record": {
+        "accepted": 81698,
+        "file": "roadium-1322d63b4ff84d557972c5f7f029c1cf1c4c6e943afa8ede159cd1aabb2e4fdd-DC6775B0B06BECCADE490426832D5AFA.fb",
+        "format": 1,
+        "identity": "https://uazo.github.io/cromite/filters/easylist.txt",
+        "installed": "13436757073686895",
+        "parser_rejected": 5,
+        "privileged": false,
+        "prohibited_privilege": 37,
+        "schema": "Apu+MU09OCFx11xibV1gU0afrAVCmbvSp8K2NKDV2Yc=",
+        "sha256": "0dd8cfbf16b64b283f5cf3fd6d79c5279c8c916875e76b1d94508e5bc70eebfc",
+        "source": "https://uazo.github.io/cromite/filters/easylist.txt",
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      }
+    }
+  ],
+  "files": [
+    {
+      "file": "roadium-268d17ec8ad46666c88cd85c0c4e64015fa48e672f35bbf97b64dc254c34fb97-C3DD2CB3E0583147DFD51C455D8D481D.fb",
+      "sha256": "df1dba75797d72474a6d296b04c69fc58108fda3effab52dd64cac04de965dd0"
+    },
+    {
+      "file": "roadium-1322d63b4ff84d557972c5f7f029c1cf1c4c6e943afa8ede159cd1aabb2e4fdd-DC6775B0B06BECCADE490426832D5AFA.fb",
+      "sha256": "0dd8cfbf16b64b283f5cf3fd6d79c5279c8c916875e76b1d94508e5bc70eebfc"
+    }
+  ]
+}

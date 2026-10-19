@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "private_tab_opened_in_owned_profile": true,
+  "site_info_has_no_Shields_controls": true,
+  "native_factory_policy": "Browser client remaps Eyeo factory contexts to GetOriginalProfile before service lookup; direct off-record factory policy alone does not describe actual private filtering",
+  "claim": "Controls are offered in regular PageInfo; existing original-profile filtering settings, including session exceptions, also apply to Incognito tabs after reload"
+}

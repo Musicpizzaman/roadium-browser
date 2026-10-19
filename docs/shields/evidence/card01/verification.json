@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-13",
+  "scope": "Card 01; x64 development build; API 33 Automotive read-only emulator",
+  "tests": {
+    "overlay_loader": {
+      "passed": 16
+    },
+    "native": {
+      "passed": 15,
+      "result": "native-results.json"
+    },
+    "android": {
+      "passed": 20,
+      "apis": [
+        29,
+        36
+      ],
+      "result": "android-results.json"
+    },
+    "existing_media": {
+      "passed": 26,
+      "apis": [
+        29,
+        36
+      ],
+      "result": "media-results.json"
+    }
+  },
+  "runtime": {
+    "fresh_offline": "Five selected lists; no active data; finite five-timeout manual result",
+    "online": "Five activated; EasyList and anti-circumvention loaded; advanced disabled",
+    "failed_update": "Five ERR_CONNECTION_REFUSED failures; previous installed versions and active engine retained",
+    "upgrade_existing": "Configuration, first-run flag, installed versions and unset advanced preference preserved",
+    "upgrade_explicit": "Explicit advanced false, custom rule, allowed domain and five selections preserved",
+    "only_easylist_enabled": "net::ERR_BLOCKED_BY_ADMINISTRATOR for controlled advertising fetch",
+    "only_easylist_disabled": "Identical controlled fetch completed; no downloaded code executed",
+    "global_off_ui": "EasyList paused (ad blocking off); anti-circumvention not selected for this fixture",
+    "automotive": "Driving restriction screen appeared; HTML audio/video paused and did not auto-resume when parked; WebAudio context remained running, which alone does not establish audible output"
+  },
+  "limitations": [
+    "ARM64 packaging not built for this card yet",
+    "Physical Android 12 car testing pending",
+    "No live YouTube effectiveness claim",
+    "Audible WebAudio/speech validation not performed; existing media policy unit tests passed",
+    "Mixed/storage/cancellation/error fixtures verified in focused native tests, not all in live UI"
+  ],
+  "cleanup": "Exact injected IPv4/IPv6 TCP443 rejection rules removed; global proxy absent; network restored; user11 original five lists/global on restored; developer port forwarding removed; playback stopped"
+}

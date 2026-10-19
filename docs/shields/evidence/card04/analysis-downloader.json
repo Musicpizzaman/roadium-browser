@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Analysis of Card04 implementation for bounded downloader with GitHub-pages fallback. The current architecture handles redirects via `OnConversionFinished` but lacks a formal fallback mechanism for primary URL failures (network, HTTP, timeout, bad content, or validation). Validator failure (signature mismatch) occurs in `SubscriptionValidatorImpl` after the downloader completes and the converter produces `FlatbufferData`. To support fallback without activating invalid data, the downloader must catch `ConversionResult` errors or empty data and trigger a secondary request to the mapped GitHub-pages URL, maintaining the original subscription identity and privileges. Boundedness is enforced via `kMaxNumberOfRedirects` and `AdblockResourceRequest::RetryPolicy`, but explicit payload size limits and timeout controls must be added to `AdblockResourceRequestImpl` to satisfy Card04 requirements.\",\n  \"architecture_observations\": [\n    \"Current redirect logic is embedded in `OnConversionFinished`, which is part of the conversion phase, not the transport phase.\",\n    \"Validator failure happens post-download/post-conversion, meaning the file is already on disk.\",\n    \"Identity (subscription_url) is used as the key in `ongoing_downloads_`, which must be preserved during fallback.\",\n    \"The `AdblockResourceRequest` does not currently expose a way to set explicit payload size bounds or hard timeouts.\",\n    \"Cancellation logic in `CancelDownload` correctly erases the entry, preventing stale callbacks from acting on the primary URL.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"components/adblock/core/subscription/subscription_downloader_impl.h\",\n      \"change\": \"Add `std::map<GURL, GURL> fallback_urls_` to track approved GitHub-pages mappings. Add `void TriggerFallback(const GURL& primary_url)` to handle the transition.\"\n    },\n    {\n      \"file\": \"components/adblock/core/net/adblock_resource_request_impl.h\",\n      \"change\": \"Add `void SetMaxPayloadSize(size_t bytes)` and `void SetTimeout(base::TimeDelta timeout)` to the interface and implementation.\"\n    },\n    {\n      \"file\": \"components/adblock/core/subscription/subscription_downloader_impl.cc\",\n      \"change\": \"Modify `OnConversionFinished` to detect `ConversionError` or empty `FlatbufferData`. If a fallback exists for the current `subscription_url`, call `TriggerFallback` instead of `AbortWithWarning`. In `TriggerFallback`, initiate a new `StartDownload` using the fallback URL but preserving the original `subscription_url` as the identity for `persistent_metadata_` and `conversion_executor_`.\"\n    }\n  ],\n  \"patch\": \"\",\n  \"risks\": [\n    \"Fallback logic could lead to infinite loops if the fallback URL also fails and points back to the primary (though mapping is one-way).\",\n    \"Preserving identity while changing transport URL must be carefully audited to ensure `persistent_metadata_` doesn't create duplicate entries for the same logical subscription.\"\n  ],\n  \"tests\": [\n    \"Unit test: Simulate `ConversionResult` error and verify `StartDownload` is called with the mapped GitHub-pages URL.\",\n    \"Unit test: Verify that a validator failure (signature mismatch) triggers the fallback mechanism.\",\n    \"Integration test: Ensure `kMaxNumberOfRedirects` is respected even when a fallback is triggered.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Analysis of Card04 implementation for bounded downloader with GitHub-pages fallback. The current architecture handles redirects via `OnConversionFinished` but lacks a formal fallback mechanism for primary URL failures (network, HTTP, timeout, bad content, or validation). Validator failure (signature mismatch) occurs in `SubscriptionValidatorImpl` after the downloader completes and the converter produces `FlatbufferData`. To support fallback without activating invalid data, the downloader must catch `ConversionResult` errors or empty data and trigger a secondary request to the mapped GitHub-pages URL, maintaining the original subscription identity and privileges. Boundedness is enforced via `kMaxNumberOfRedirects` and `AdblockResourceRequest::RetryPolicy`, but explicit payload size limits and timeout controls must be added to `AdblockResourceRequestImpl` to satisfy Card04 requirements.",
+    "architecture_observations": [
+      "Current redirect logic is embedded in `OnConversionFinished`, which is part of the conversion phase, not the transport phase.",
+      "Validator failure happens post-download/post-conversion, meaning the file is already on disk.",
+      "Identity (subscription_url) is used as the key in `ongoing_downloads_`, which must be preserved during fallback.",
+      "The `AdblockResourceRequest` does not currently expose a way to set explicit payload size bounds or hard timeouts.",
+      "Cancellation logic in `CancelDownload` correctly erases the entry, preventing stale callbacks from acting on the primary URL."
+    ],
+    "proposed_changes": [
+      {
+        "file": "components/adblock/core/subscription/subscription_downloader_impl.h",
+        "change": "Add `std::map<GURL, GURL> fallback_urls_` to track approved GitHub-pages mappings. Add `void TriggerFallback(const GURL& primary_url)` to handle the transition."
+      },
+      {
+        "file": "components/adblock/core/net/adblock_resource_request_impl.h",
+        "change": "Add `void SetMaxPayloadSize(size_t bytes)` and `void SetTimeout(base::TimeDelta timeout)` to the interface and implementation."
+      },
+      {
+        "file": "components/adblock/core/subscription/subscription_downloader_impl.cc",
+        "change": "Modify `OnConversionFinished` to detect `ConversionError` or empty `FlatbufferData`. If a fallback exists for the current `subscription_url`, call `TriggerFallback` instead of `AbortWithWarning`. In `TriggerFallback`, initiate a new `StartDownload` using the fallback URL but preserving the original `subscription_url` as the identity for `persistent_metadata_` and `conversion_executor_`."
+      }
+    ],
+    "patch": "",
+    "risks": [
+      "Fallback logic could lead to infinite loops if the fallback URL also fails and points back to the primary (though mapping is one-way).",
+      "Preserving identity while changing transport URL must be carefully audited to ensure `persistent_metadata_` doesn't create duplicate entries for the same logical subscription."
+    ],
+    "tests": [
+      "Unit test: Simulate `ConversionResult` error and verify `StartDownload` is called with the mapped GitHub-pages URL.",
+      "Unit test: Verify that a validator failure (signature mismatch) triggers the fallback mechanism.",
+      "Integration test: Ensure `kMaxNumberOfRedirects` is respected even when a fallback is triggered."
+    ]
+  },
+  "isError": false
+}

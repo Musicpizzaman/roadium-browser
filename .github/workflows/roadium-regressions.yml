@@ -1,0 +1,27 @@
+name: Roadium offline regressions
+on:
+  pull_request:
+    paths: ['tools/roadium/**', 'tools/filters/**', 'build/roadium/**', 'docs/shields/**', '.github/workflows/roadium-regressions.yml']
+  push:
+    paths: ['tools/roadium/**', 'tools/filters/**', 'build/roadium/**', 'docs/shields/**', '.github/workflows/roadium-regressions.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify frozen inputs and regression negative controls
+        run: python3 tools/roadium/run-regressions.py --output "$RUNNER_TEMP/roadium-regressions"
+      - name: Retain bounded check results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: roadium-offline-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/roadium-regressions/
+          retention-days: 14
+          if-no-files-found: error

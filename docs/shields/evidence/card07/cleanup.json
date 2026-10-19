@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-18",
+  "owned_emulator": "read-only RoadiumAAOS33 emulator-5554",
+  "guards_passed": true,
+  "original_users_preserved": [
+    0,
+    10
+  ],
+  "night_mode_restored": "no",
+  "switch_original_foreground_output": "",
+  "foreground_after_restore": "0",
+  "remove_user_13": "Success: removed user",
+  "remove_user_11": "Success: removed user",
+  "remaining_users": "Users:\r\n\tUserInfo{0:Driver:813} running\r\n\tUserInfo{10:Driver:412}",
+  "remaining_forwards": "",
+  "remaining_reverses": "",
+  "owned_device_helpers_removed": true,
+  "emulator_shutdown_output": "OK: killing emulator, bye bye\r\r\nOK",
+  "status": "passed",
+  "host_fixture_servers_stopped": true,
+  "closed_host_ports": [
+    8847,
+    8877
+  ]
+}

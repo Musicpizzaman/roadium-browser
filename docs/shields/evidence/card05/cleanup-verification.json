@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "own_user_removed": true,
+  "original_users_preserved": true,
+  "foreground_restored_before_shutdown": 10,
+  "flags_removed": true,
+  "helper_removed": true,
+  "port_mappings_removed": true,
+  "host_fixture_servers_stopped": true,
+  "network_settings_restored": true,
+  "selinux": "Enforcing",
+  "own_read_only_emulator_closed": true,
+  "avd_snapshot_saved": false,
+  "vehicle_properties_modified": false,
+  "saved_avd_disk_verification": "Read-only/no-snapshot-save launch verified; byte-for-byte pre-launch disk hash was not captured",
+  "production_signing_material_accessed": false,
+  "private_backups_kept_outside_repository": true,
+  "host_cleanup_note": "Legacy Windows PowerShell Stop-Process failed; the same re-verified own server PIDs were terminated with .NET Process.Kill; both listeners, process exits and emulator exit verified"
+}

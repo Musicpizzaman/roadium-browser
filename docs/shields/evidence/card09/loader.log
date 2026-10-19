@@ -1,0 +1,22 @@
+...error: patch failed: browser.txt:1
+error: browser.txt: patch does not apply
+.......error: diagnostics.txt: already exists in working directory
+......
+----------------------------------------------------------------------
+Ran 16 tests in 1.093s
+
+OK
+Applied 1 verified Roadium patch(es).
+The verified Roadium overlay series is already applied.
+Applied 1 verified Roadium patch(es).
+Applied 1 verified Roadium patch(es).
+Applied 1 verified Roadium patch(es).
+Applied 1 verified Roadium patch(es).
+The verified Roadium overlay series is already applied.
+Applied 1 verified Roadium patch(es).
+Applied 2 verified Roadium patch(es).
+The verified Roadium overlay series is already applied.
+Applied 1 verified Roadium patch(es).
+Applied 1 verified Roadium patch(es).
+Applied 1 verified Roadium patch(es).
+Applied 1 verified Roadium patch(es).

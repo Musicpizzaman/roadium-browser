@@ -1,0 +1,24 @@
+{
+  "purpose": "Controlled Card08 network/cosmetic filtering and broken-site restoration checks",
+  "test_only": true,
+  "files": {
+    "tools/roadium/fixtures/shields-site.html": {
+      "sha256": "3a90cdb538a5bba377879d8a0eeef4f603f5379fc0cb637d48635b8ae6a02fdf",
+      "bytes": 491
+    },
+    "tools/roadium/fixtures/shields-site-filters.txt": {
+      "sha256": "aab5f3c50d23cfa736b8cce65d8e8247c10179a80f42ab08a771ba876dc67d79",
+      "bytes": 151
+    }
+  },
+  "transport": "Owned local HTTPS fixture server, loopback DNS, pinned owned test certificate; not live service evidence",
+  "hosts": [
+    "protected.card08.invalid",
+    "other.card08.invalid",
+    "child.protected.card08.invalid",
+    "xn--bcher-kva.card08.invalid",
+    "frame.card08.invalid",
+    "ads.card08.invalid",
+    "custom.card08.invalid"
+  ]
+}

@@ -1,0 +1,54 @@
+offline mode
+ninja: Entering directory `out/x64'
+
+
+disable fast local for non-interactive: fastlocal=1->0
+ use `--fast_local` to enable fast local with non-interactive mode
+schedule pending:1+ready:0 (node:136509 edge:2)
+build start: Ready 1 Pending 1
+rebuild manifest finished
+
+loading build.ninja... done 1.57255559s
+load siso config done 65.348696ms
+schedule pending:1+ready:0 (node:696834 edge:2)
+build start: Ready 1 Pending 1
+rebuild manifest finished
+schedule pending:1+ready:0 (node:696834 edge:8)
+build start: Ready 2702 Pending 23819
+[0/2777] 3.08s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__build_config_srcjar(//build/toolchain/android:android_clang_x64)
+[0/2482] 3.08s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__build_config_crbug_908819(//build/toolchain/android:android_clang_x64)
+[0/30] 3.21s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__build_config_srcjar(//build/toolchain/android:android_clang_x64)
+[1/29] 3.24s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__build_config_crbug_908819(//build/toolchain/android:android_clang_x64)
+[2/28] 3.24s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__merge_manifests(//build/toolchain/android:android_clang_x64)
+[2/28] 3.64s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__merge_manifests(//build/toolchain/android:android_clang_x64)
+[3/27] 3.64s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__compile_resources(//build/toolchain/android:android_clang_x64)
+[3/27] 5.41s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__compile_resources(//build/toolchain/android:android_clang_x64)
+[4/24] 5.41s S COPY obj/components/adblock/core/subscription/roadium_shields_unit_tests__apk.ap_ arsc/roadium_shields_unit_tests_apk/roadium_shields_unit_tests-debug.ap_
+[4/24] 5.41s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__java__header(//build/toolchain/android:android_clang_x64)
+[4/24] 5.41s F COPY obj/components/adblock/core/subscription/roadium_shields_unit_tests__apk.ap_ arsc/roadium_shields_unit_tests_apk/roadium_shields_unit_tests-debug.ap_
+[5/23] 5.93s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__java__header(//build/toolchain/android:android_clang_x64)
+[6/22] 5.94s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__compile_java(//build/toolchain/android:android_clang_x64)
+[6/22] 7.47s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__compile_java(//build/toolchain/android:android_clang_x64)
+[7/21] 7.47s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__java__dex(//build/toolchain/android:android_clang_x64)
+[7/21] 8.62s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__java__dex(//build/toolchain/android:android_clang_x64)
+[8/19] 8.62s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__size_info(//build/toolchain/android:android_clang_x64)
+[8/19] 8.62s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__final_dex(//build/toolchain/android:android_clang_x64)
+[8/19] 8.88s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__size_info(//build/toolchain/android:android_clang_x64)
+[9/18] 12.96s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__final_dex(//build/toolchain/android:android_clang_x64)
+[10/17] 12.96s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__create(//build/toolchain/android:android_clang_x64)
+[10/17] 13.66s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__create(//build/toolchain/android:android_clang_x64)
+[11/14] 13.66s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__test_runner_script(//build/toolchain/android:android_clang_x64)
+[11/14] 13.73s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__test_runner_script(//build/toolchain/android:android_clang_x64)
+[12/13] 13.73s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests(//build/toolchain/android:android_clang_x64)
+[12/13] 13.76s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests(//build/toolchain/android:android_clang_x64)
+build finished
+
+	
+noexec:1 local:12 remote:0 cache:0 skip:26508
+  cache-write:0(err:0) fallback:0 retry:0
+fs: ops: 2665(err:1) / r:1665(err:0) 93.01MiB / w:1(err:0) 1.65MiB
+
+
+shutdown cloud logging/monitoring done 10.9µs
+
+14.14s Build Succeeded: 13 steps - 0.92/s

@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "startup_condition": "After browser restart, inspect effective state and explicitly reload after list activation; first custom-list startup navigation is not treated as active-filter evidence.",
+  "saved_disable_restart_and_restore": true,
+  "session_expires_on_process_restart": true,
+  "removing_session_preserves_saved_choice": true,
+  "removing_saved_preserves_session_until_expiry": true,
+  "unrelated_saved_exception_and_advanced_opt_out_preserved": true
+}

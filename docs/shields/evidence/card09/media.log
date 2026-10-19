@@ -1,0 +1,107 @@
+Additional test environment:
+    CHROME_HEADLESS=1
+    LANG=en_US.UTF-8
+Command: /home/lg/vpython_root/store/python_venv-hmr5stuq9egr1bnu13fhahv43c/contents/bin/python3 build/android/test_runner.py junit --output-directory out/x64 --wrapper-script-args /home/lg/working_dir/chromium/src/out/x64/bin/run_roadium_media_junit_tests --json-results-file /home/lg/working_dir/card09-regression-accepted/media.json --test-suite roadium_media_junit_tests --native-libs-dir out/x64/robolectric_x64 --robolectric-runtime-deps-dir third_party/robolectric/cipd/lib --resource-apk out/x64/obj/content/public/android/roadium_media_junit_tests.robo.ap_ --shadows-allowlist testing/android/junit/shadows-allowlist.txt --json-results-file /home/lg/working_dir/card09-regression-accepted/media.json
+
+W 21:24:27.767    0.477s Main  Running tests with 2 shard(s) using 2 concurrent process(es).
+
+Shard 0 output:
+ 0| [==========] Running 13 tests.
+ 0| [----------] Global test environment set-up.
+ 0| 
+ 0| [----------] Run 4 test cases from org.chromium.content.browser.TtsPlatformImplTest
+ 0| [ RUN      ] org.chromium.content.browser.TtsPlatformImplTest.testNonAutomotiveSpeechDoesNotInstallRoadiumListener[29]
+ 0| WARNING: A restricted method in java.lang.System has been called
+ 0| WARNING: java.lang.System::load has been called by org.conscrypt.NativeLibraryUtil in an unnamed module (file:/home/lg/working_dir/chromium/src/third_party/android_deps/autorolled/cipd/libs/org_conscrypt_conscrypt_openjdk_uber/conscrypt-openjdk-uber.jar)
+ 0| WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+ 0| WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+ 0| 
+ 0| [WARN] Unknown chunk type '200'.
+ 0| [       OK ] org.chromium.content.browser.TtsPlatformImplTest.testNonAutomotiveSpeechDoesNotInstallRoadiumListener[29] (1822 ms)
+ 0| [ RUN      ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveDeferredSpeechIsCancelledOnPause[29]
+ 0| [       OK ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveDeferredSpeechIsCancelledOnPause[29] (31 ms)
+ 0| [ RUN      ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveSpeechRequiresResumedActivity[29]
+ 0| [       OK ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveSpeechRequiresResumedActivity[29] (36 ms)
+ 0| [ RUN      ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveDestroyedSpeechRemovesListener[29]
+ 0| [       OK ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveDestroyedSpeechRemovesListener[29] (18 ms)
+ 0| [----------] Run 4 test cases from org.chromium.content.browser.TtsPlatformImplTest (2374 ms)
+ 0| 
+ 0| [----------] Run 9 test cases from org.chromium.content.browser.webcontents.WebContentsImplTest
+ 0| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveCannotUnmuteWhilePaused[29]
+ 0| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveCannotUnmuteWhilePaused[29] (73 ms)
+ 0| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveRendererPlaybackRestartIsPaused[29]
+ 0| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveRendererPlaybackRestartIsPaused[29] (20 ms)
+ 0| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveNewBackgroundContentsAreBlocked[29]
+ 0| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveNewBackgroundContentsAreBlocked[29] (19 ms)
+ 0| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotivePreservesUserMutePreference[29]
+ 0| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotivePreservesUserMutePreference[29] (17 ms)
+ 0| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveRequiresResumedActivity[29]
+ 0| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveRequiresResumedActivity[29] (18 ms)
+ 0| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveDestroyedContentsRemoveActivityListener[29]
+ 0| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveDestroyedContentsRemoveActivityListener[29] (18 ms)
+ 0| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetStylusWritingDelegate[29]
+ 0| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetStylusWritingDelegate[29] (27 ms)
+ 0| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetAndGetStylusWritingHandler_nativeCleared[29]
+ 0| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetAndGetStylusWritingHandler_nativeCleared[29] (21 ms)
+ 0| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetAndGetStylusWritingHandler[29]
+ 0| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetAndGetStylusWritingHandler[29] (17 ms)
+ 0| [----------] Run 9 test cases from org.chromium.content.browser.webcontents.WebContentsImplTest (240 ms)
+ 0| 
+ 0| [----------] Global test environment tear-down.
+ 0| [==========] 13 tests ran. (2618 ms total)
+ 0| [  PASSED  ] 13 tests.
+
+Shard 1 output:
+ 1| [==========] Running 13 tests.
+ 1| [----------] Global test environment set-up.
+ 1| 
+ 1| [----------] Run 4 test cases from org.chromium.content.browser.TtsPlatformImplTest
+ 1| [ RUN      ] org.chromium.content.browser.TtsPlatformImplTest.testNonAutomotiveSpeechDoesNotInstallRoadiumListener[36]
+ 1| WARNING: A restricted method in java.lang.System has been called
+ 1| WARNING: java.lang.System::load has been called by org.robolectric.nativeruntime.DefaultNativeRuntimeLoader in an unnamed module
+ 1| WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+ 1| WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+ 1| 
+ 1| [WARN] Unknown chunk type '200'.
+ 1| [       OK ] org.chromium.content.browser.TtsPlatformImplTest.testNonAutomotiveSpeechDoesNotInstallRoadiumListener[36] (3135 ms)
+ 1| [ RUN      ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveDeferredSpeechIsCancelledOnPause[36]
+ 1| [       OK ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveDeferredSpeechIsCancelledOnPause[36] (31 ms)
+ 1| [ RUN      ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveSpeechRequiresResumedActivity[36]
+ 1| [       OK ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveSpeechRequiresResumedActivity[36] (22 ms)
+ 1| [ RUN      ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveDestroyedSpeechRemovesListener[36]
+ 1| [       OK ] org.chromium.content.browser.TtsPlatformImplTest.testAutomotiveDestroyedSpeechRemovesListener[36] (16 ms)
+ 1| [----------] Run 4 test cases from org.chromium.content.browser.TtsPlatformImplTest (3668 ms)
+ 1| 
+ 1| [----------] Run 9 test cases from org.chromium.content.browser.webcontents.WebContentsImplTest
+ 1| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveCannotUnmuteWhilePaused[36]
+ 1| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveCannotUnmuteWhilePaused[36] (75 ms)
+ 1| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveRendererPlaybackRestartIsPaused[36]
+ 1| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveRendererPlaybackRestartIsPaused[36] (19 ms)
+ 1| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveNewBackgroundContentsAreBlocked[36]
+ 1| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveNewBackgroundContentsAreBlocked[36] (16 ms)
+ 1| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotivePreservesUserMutePreference[36]
+ 1| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotivePreservesUserMutePreference[36] (17 ms)
+ 1| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveRequiresResumedActivity[36]
+ 1| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveRequiresResumedActivity[36] (17 ms)
+ 1| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveDestroyedContentsRemoveActivityListener[36]
+ 1| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testAutomotiveDestroyedContentsRemoveActivityListener[36] (16 ms)
+ 1| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetStylusWritingDelegate[36]
+ 1| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetStylusWritingDelegate[36] (30 ms)
+ 1| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetAndGetStylusWritingHandler_nativeCleared[36]
+ 1| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetAndGetStylusWritingHandler_nativeCleared[36] (23 ms)
+ 1| [ RUN      ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetAndGetStylusWritingHandler[36]
+ 1| [       OK ] org.chromium.content.browser.webcontents.WebContentsImplTest.testSetAndGetStylusWritingHandler[36] (16 ms)
+ 1| [----------] Run 9 test cases from org.chromium.content.browser.webcontents.WebContentsImplTest (235 ms)
+ 1| 
+ 1| [----------] Global test environment tear-down.
+ 1| [==========] 13 tests ran. (3905 ms total)
+ 1| [  PASSED  ] 13 tests.
+C 21:24:32.196    4.906s Main  36 log lines omitted.
+C 21:24:32.197    4.907s Main  ********************************************************************************
+C 21:24:32.197    4.907s Main  Summary
+C 21:24:32.197    4.907s Main  ********************************************************************************
+C 21:24:32.197    4.907s Main  [==========] 26 tests ran.
+C 21:24:32.197    4.907s Main  [  PASSED  ] 26 tests.
+C 21:24:32.197    4.908s Main  ********************************************************************************
+C 21:24:32.198    4.909s Main  RAW LOGS: file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_18T21_24_27/raw_logs/raw_logs.txt
+C 21:24:32.211    4.921s Main  TEST RESULTS: file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_18T21_24_27/test_results_presentation/test_results_presentation.html

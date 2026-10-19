@@ -1,0 +1,42 @@
+{
+  "adblock": {
+    "install_first_run_subscriptions": false,
+    "last_used_schema_version": "Apu+MU09OCFx11xibV1gU0afrAVCmbvSp8K2NKDV2Yc=",
+    "privilegedfilters_enabled": false,
+    "subscription_metadata": {
+      "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": {
+        "download_count": 1,
+        "error_count": 0,
+        "expiration_time": "13467991400242096",
+        "last_installation_time": "13436455400242096",
+        "roadium_diagnostics": {
+          "active_privileged": true,
+          "downloaded": false,
+          "error": "",
+          "last_success": "13436455400242096",
+          "last_success_source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+          "parsed": false,
+          "source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+          "stage": 1
+        },
+        "version": "203001010003"
+      }
+    },
+    "subscription_signatures": {
+      "C03C03C03C03C03C03C03C03C03C03C03.fb": "12aMWbeZxoYOTTxYcysZ8mNt69MaXxt45PJH+bwCxfU="
+    }
+  },
+  "filtering": {
+    "configurations": {
+      "adblock": {
+        "domains": [],
+        "enabled": true,
+        "filters": [],
+        "subscriptions": [
+          "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt"
+        ],
+        "temp_filters": []
+      }
+    }
+  }
+}

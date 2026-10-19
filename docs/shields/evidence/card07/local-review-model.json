@@ -1,0 +1,25 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The PR introduces a `ShieldsPresets` utility to manage managed filter lists (Standard, Balanced, Strict) while preserving custom/regional subscriptions. It correctly implements idempotence, category-specific toggles, and identity checks using URL strings to avoid DNS hazards. The logic ensures that non-managed URLs are never overwritten or removed during preset transitions. Tests cover transition integrity, category isolation, and identity strictness.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [\n    \"The `replace` method uses `selected.addAll(target)` which may introduce duplicates if a target URL was already present in the `selected` set (though `LinkedHashSet` handles uniqueness, the order might shift slightly).\"\n  ],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"No test case specifically verifies the behavior when a managed URL is provided with a different protocol (e.g., http vs https) to ensure it doesn't accidentally match/overwrite.\"\n  ],\n  \"recommended_changes\": [\n    \"Consider using `Set.addAll` explicitly or checking for existence before adding to `selected` to maintain strict order consistency.\",\n    \"\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The PR introduces a `ShieldsPresets` utility to manage managed filter lists (Standard, Balanced, Strict) while preserving custom/regional subscriptions. It correctly implements idempotence, category-specific toggles, and identity checks using URL strings to avoid DNS hazards. The logic ensures that non-managed URLs are never overwritten or removed during preset transitions. Tests cover transition integrity, category isolation, and identity strictness.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [
+      "The `replace` method uses `selected.addAll(target)` which may introduce duplicates if a target URL was already present in the `selected` set (though `LinkedHashSet` handles uniqueness, the order might shift slightly)."
+    ],
+    "security_issues": [],
+    "test_gaps": [
+      "No test case specifically verifies the behavior when a managed URL is provided with a different protocol (e.g., http vs https) to ensure it doesn't accidentally match/overwrite."
+    ],
+    "recommended_changes": [
+      "Consider using `Set.addAll` explicitly or checking for existence before adding to `selected` to maintain strict order consistency.",
+      ""
+    ]
+  },
+  "isError": false
+}

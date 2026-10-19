@@ -1,0 +1,63 @@
+Ad blocking: Enabled
+Advanced filtering: Disabled
+EasyList: loaded in the active engine
+Anti-circumvention: loaded in the active engine. Privileged scriptlets: not eligible
+Tap for local update errors and conversion counts.
+
+No manual check requested in this session
+
+EasyList
+https://uazo.github.io/cromite/filters/easylist.txt
+Engine: loaded in the active engine
+State: Preloaded
+Loaded version: 202610130952
+Stored version: 203001020002
+Last installation: not recorded
+Last successful activation/update: 10/17/26 4:40:42 PM
+Latest attempt: failed; downloaded No, parsed No
+Latest source: https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylist.txt
+Storage recovery: bundled baseline
+Active data source: bundled: Cromite pages 338336d9e640489c648d47d606cb0030064c4e0f
+Successful requests: 3 (includes HEAD)
+Recorded consecutive download failures: 1
+Primary failure: ERR_INTERNET_DISCONNECTED
+Fallback: failed
+Latest error: ERR_INTERNET_DISCONNECTED
+Latest conversion counts: not recorded
+
+ABP filters
+https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Engine: loaded in the active engine
+State: Preloaded
+Loaded version: 202610130952
+Stored version: 203001020002
+Last installation: not recorded
+Last successful activation/update: 10/17/26 4:41:31 PM
+Latest attempt: failed; downloaded No, parsed No
+Latest source: https://raw.githubusercontent.com/uazo/cromite/pages/filters/abp-filters-anti-cv.txt
+Storage recovery: bundled baseline
+Active data source: bundled: Cromite pages 338336d9e640489c648d47d606cb0030064c4e0f
+Successful requests: 4 (includes HEAD)
+Recorded consecutive download failures: 1
+Primary failure: ERR_INTERNET_DISCONNECTED
+Fallback: failed
+Latest error: ERR_INTERNET_DISCONNECTED
+Latest conversion counts: not recorded
+
+
+https://custom.card05.invalid/list.txt
+Engine: selected; no active data
+State: Installing
+Loaded version: not available
+Stored version: 203001020001
+Last installation: not recorded
+Last successful activation/update: 10/17/26 4:39:37 PM
+Latest attempt: download requested/in progress; downloaded No, parsed No
+Latest source: https://custom.card05.invalid/list.txt
+Storage recovery: unavailable; update scheduled
+Active data source: none; no valid data
+Successful requests: 1 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion counts: not recorded

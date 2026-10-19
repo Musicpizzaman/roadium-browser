@@ -1,0 +1,40 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Draft design for Card05 storage upgrade. The current implementation lacks durability (no explicit flush), structural verification during load, and safe deletion (RemoveSubscription destroys data). The proposed design introduces an immutable generation-based storage model using '.fb' files and per-URL SHA256 JSON metadata records (current/previous). This ensures corruption recovery and prevents arbitrary file deletion. All I/O will be managed by a single sequenced runner using 'base::ImportantFileWriter::WriteFileAtomically' and explicit 'Flush()'. A new 'Store' method will distinguish between legacy interface and explicit activation/retire logic to prevent race conditions during updates or uninstalls.\",\n  \"architecture_observations\": [\n    \"Current 'WriteSubscription' uses 'base::WriteFile' which does not guarantee durability via flush.\",\n    \"Enumeration in 'ReadSubscriptionsFromDirectory' is non-deterministic and lacks structural validation of the file content beyond signature.\",\n    \"RemoveSubscription immediately deletes the file, preventing recovery from accidental uninstalls.\",\n    \"No mechanism to distinguish between a valid current subscription and a stale/corrupted one during directory scanning.\",\n    \"File paths are generated via 'UnguessableToken', making it difficult to correlate files with specific URLs without external metadata.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"components/adblock/core/subscription/subscription_persistent_storage_impl.h\",\n      \"change\": \"Add private structures for 'SubscriptionMetadataRecord' (URL, digest, schema, provenance) and 'StorageRunner' to sequence all I/O. Define 'StoreSubscriptionWithGeneration' to handle atomic publication of new generations.\"\n    },\n    {\n      \"file\": \"components/adblock/core/subscription/subscription_persistent_storage_impl.cc\",\n      \"change\": \"Implement 'WriteSubscription' using 'base::ImportantFileWriter::WriteFileAtomically' followed by 'File::Sync()'. Update 'ReadSubscriptionsFromDirectory' to verify SHA256 digests against JSON metadata records. Implement 'Retain2valid' logic to keep the previous generation for recovery.\"\n    }\n  ],\n  \"patch\": \"\",\n  \"risks\": [\n    \"Complexity increase in the I/O path due to the sequenced runner and metadata management.\",\n    \"Potential for disk space bloat if 'Retain2valid' logic fails to prune old generations correctly.\",\n    \"Migration complexity: legacy signed files must be correctly identified and migrated to the new metadata-backed format.\"\n  ],\n  \"tests\": [\n    \"Unit test: Verify that a crash during 'WriteFileAtomically' leaves either the old or new file intact, but not a corrupted mix.\",\n    \"Unit test: Simulate corruption in a '.fb' file and verify the system recovers using the 'previous' JSON record.\",\n    \"Integration test: Ensure 'RemoveSubscription' only deletes files that are not part of a 'Retain2valid' generation.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Draft design for Card05 storage upgrade. The current implementation lacks durability (no explicit flush), structural verification during load, and safe deletion (RemoveSubscription destroys data). The proposed design introduces an immutable generation-based storage model using '.fb' files and per-URL SHA256 JSON metadata records (current/previous). This ensures corruption recovery and prevents arbitrary file deletion. All I/O will be managed by a single sequenced runner using 'base::ImportantFileWriter::WriteFileAtomically' and explicit 'Flush()'. A new 'Store' method will distinguish between legacy interface and explicit activation/retire logic to prevent race conditions during updates or uninstalls.",
+    "architecture_observations": [
+      "Current 'WriteSubscription' uses 'base::WriteFile' which does not guarantee durability via flush.",
+      "Enumeration in 'ReadSubscriptionsFromDirectory' is non-deterministic and lacks structural validation of the file content beyond signature.",
+      "RemoveSubscription immediately deletes the file, preventing recovery from accidental uninstalls.",
+      "No mechanism to distinguish between a valid current subscription and a stale/corrupted one during directory scanning.",
+      "File paths are generated via 'UnguessableToken', making it difficult to correlate files with specific URLs without external metadata."
+    ],
+    "proposed_changes": [
+      {
+        "file": "components/adblock/core/subscription/subscription_persistent_storage_impl.h",
+        "change": "Add private structures for 'SubscriptionMetadataRecord' (URL, digest, schema, provenance) and 'StorageRunner' to sequence all I/O. Define 'StoreSubscriptionWithGeneration' to handle atomic publication of new generations."
+      },
+      {
+        "file": "components/adblock/core/subscription/subscription_persistent_storage_impl.cc",
+        "change": "Implement 'WriteSubscription' using 'base::ImportantFileWriter::WriteFileAtomically' followed by 'File::Sync()'. Update 'ReadSubscriptionsFromDirectory' to verify SHA256 digests against JSON metadata records. Implement 'Retain2valid' logic to keep the previous generation for recovery."
+      }
+    ],
+    "patch": "",
+    "risks": [
+      "Complexity increase in the I/O path due to the sequenced runner and metadata management.",
+      "Potential for disk space bloat if 'Retain2valid' logic fails to prune old generations correctly.",
+      "Migration complexity: legacy signed files must be correctly identified and migrated to the new metadata-backed format."
+    ],
+    "tests": [
+      "Unit test: Verify that a crash during 'WriteFileAtomically' leaves either the old or new file intact, but not a corrupted mix.",
+      "Unit test: Simulate corruption in a '.fb' file and verify the system recovers using the 'previous' JSON record.",
+      "Integration test: Ensure 'RemoveSubscription' only deletes files that are not part of a 'Retain2valid' generation."
+    ]
+  },
+  "isError": false
+}

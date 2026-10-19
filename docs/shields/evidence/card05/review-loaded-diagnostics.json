@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The diff correctly updates the logic to ensure 'has_active_data' is the primary gate for source reporting, preventing 'none' from appearing when data is available. It correctly switches to 'subscription->GetInstallationTime()' to ensure the actual loaded timestamp is used during recovery, while preserving historical success fields. The logic correctly handles the distinction between bundled and recovered sources.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"Verify that 'none; no valid data' is correctly displayed when 'has_active_data' is false across all three states (Installed, AutoInstalled, Preloaded).\",\n    \"Verify that 'GetInstallationTime()' returns the expected recovered timestamp specifically during the 'LoadComplete' transition.\"\n  ],\n  \"recommended_changes\": [\n    \"Ensure 'none; no valid data' string is localized if required by the UI layer.\",\n    \"Confirm that 'd.last_success_source' is non-null before access to prevent potential crashes in edge-case recovery scenarios.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The diff correctly updates the logic to ensure 'has_active_data' is the primary gate for source reporting, preventing 'none' from appearing when data is available. It correctly switches to 'subscription->GetInstallationTime()' to ensure the actual loaded timestamp is used during recovery, while preserving historical success fields. The logic correctly handles the distinction between bundled and recovered sources.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [],
+    "security_issues": [],
+    "test_gaps": [
+      "Verify that 'none; no valid data' is correctly displayed when 'has_active_data' is false across all three states (Installed, AutoInstalled, Preloaded).",
+      "Verify that 'GetInstallationTime()' returns the expected recovered timestamp specifically during the 'LoadComplete' transition."
+    ],
+    "recommended_changes": [
+      "Ensure 'none; no valid data' string is localized if required by the UI layer.",
+      "Confirm that 'd.last_success_source' is non-null before access to prevent potential crashes in edge-case recovery scenarios."
+    ]
+  },
+  "isError": false
+}

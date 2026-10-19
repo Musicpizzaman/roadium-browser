@@ -1,215 +1,80 @@
 # Roadium Browser
 
-Parked-only Android Automotive browser based on Cromite. See [Roadium development notes](ROADIUM.md) and [build instructions](build/roadium/README.md).
+<img src="assets/branding/roadium-app-icon.png" alt="Roadium Browser icon" width="112">
 
-Roadium includes its supplied R artwork, a navy/teal/orange/warm-white browser palette, system appearance by default, and saved per-site Light/Dark overrides. See [branding assets](assets/branding/README.md).
+**A browser built for parked use on Android Automotive OS.**
 
-For reusable Windows bundle signing with your existing upload key, see [Roadium Bundle Signer](tools/roadium/signer/README.md).
+Roadium brings a vehicle-focused browsing experience, configurable filtering
+and its own appearance to cars with Android Automotive OS. The initial test
+vehicle is a 2024 Chevrolet Blazer EV running Android 12.
 
-The upstream Cromite documentation follows.
+## Built on Cromite
 
----
+Roadium is independently maintained and uses [Cromite](https://github.com/uazo/cromite)
+as its upstream foundation. Cromite provides the Chromium browser base,
+privacy features and native filtering engine. We intend to continue bringing
+Cromite engine updates, security fixes and privacy improvements into Roadium
+through reviewed and tested builds.
 
-<a href="https://github.com/uazo/cromite/releases/latest">
-  <img src="https://img.shields.io/github/v/release/uazo/cromite" alt="current Cromite release" title="current Cromite release" />
-</a>
-<br>
+Roadium maintains its own Automotive features, settings, branding and releases
+on top of that foundation. This repository keeps the upstream patch series
+intact and adds a separate Roadium overlay. Development continues on `develop`.
+Upstream updates are integrated deliberately; installing Roadium does not
+mean a new Cromite release is automatically installed in its place.
 
-[![Build Cromite](https://github.com/uazo/cromite/actions/workflows/build_cromite.yaml/badge.svg)](https://github.com/uazo/cromite/actions/workflows/build_cromite.yaml)
+## Roadium features
 
-# Cromite (a Bromite fork) - Take back your browser
+- **Automotive browsing:** Android 12 or later, with media restrictions for
+  parked use and support for vehicle controls and the on-screen keyboard.
+- **Configurable Shields:** bundled filter data, protection presets, category
+  controls, custom rules and filter-update diagnostics.
+- **Site controls:** saved and temporary exceptions, plus a local count of
+  blocked requests. Exceptions share the browser profile's regular and
+  Incognito filtering scope; temporary exceptions last until browser restart.
+- **Roadium appearance:** its own icon and colors, system-following light and
+  dark appearance, and saved per-site website theme overrides.
+- **Automotive privacy choices:** browser sign-in, sync, password saving and
+  payment autofill are disabled in the current vehicle build.
 
-<a href="https://www.cromite.org">
-  <img title="Cromite - take back your browser!" src="https://www.cromite.org/app_icon.png" width="96" alt="Bromite" />
-</a>
-<br>
+## Testing and availability
 
-Cromite is a [Chromium](https://www.chromium.org/Home) fork based on [Bromite](https://github.com/bromite/bromite) with built-in support for ad blocking and an eye for privacy.
+Roadium is in active development and internal vehicle testing. Emulator and
+package checks complement testing on the car; they do not establish behavior
+on every vehicle or display. Fullscreen display sizing and preferred 720p
+playback remain ongoing work and are not completed features in the current
+Shields test build.
 
-Cromite is available for Android arm64-v8a, arm32-v7a and x86_64, Android 10 and above, Windows and Linux 64bit.
+Updates use Roadium's own build, signing and Android Automotive OS test-release
+process. Cromite downloads are upstream builds, not Roadium updates.
 
-# Goals
+## Project documentation
 
-Cromite's goal is to
-- limit the features built into the browser that can be used as a platform for tracking users' habits, and, if it is not technically possible, disable them and leave it up to the user to choose whether to re-enable them
-- limit the close integration between the browser and its manufacturer
-- not let the excellent research work done by csagan5 with Bromite be lost
+- [Roadium development notes](ROADIUM.md)
+- [Build and artifact verification](build/roadium/README.md)
+- [Shields taskers and implementation status](docs/shields/README.md)
+- [Regression and release checks](docs/shields/REGRESSION_RUNBOOK.md)
+- [Current internal-test signing and Play Console steps](docs/shields/PLAY_CONSOLE_UPDATE_801003722.md)
+- [Roadium Bundle Signer](tools/roadium/signer/README.md)
+- [Branding assets and attribution](assets/branding/README.md)
 
-In addition, Cromite would like to promote greater integration with other non-profit, open source browsers, encouraging closer collaboration with others, and attempt to integrate them directly into Chromium once they have reached an appropriate level of maturity.
+## Feedback and development
 
-# Privacy limitations
+Use the [Roadium issue tracker](https://github.com/Musicpizzaman/roadium-browser/issues)
+for Roadium bugs and feature requests. For vehicle issues, include the model,
+year, Android version, Roadium version and steps to reproduce while parked.
 
-Cromite's privacy features, including anti-fingerprinting mitigations (which are not comprehensive), **are not to be considered useful for journalists and people living in countries with freedom limitations**, please look at [Tor Browser](https://www.torproject.org/download/) in such cases (better to use the desktop version).
-Please note that this project is not free of bugs and that changing the behaviour of a browser can be risky and not without problems.
+Roadium-specific changes and releases are maintained here. Cromite remains
+our upstream reference for browser-engine, security and privacy work.
 
-# Docs
-- [Privacy Policy](https://github.com/uazo/cromite/blob/master/docs/PRIVACY_POLICY.md)
-- [Features](https://github.com/uazo/cromite/blob/master/docs/FEATURES.md)
-- [Faqs](https://github.com/uazo/cromite/blob/master/docs/FAQ.md)
-- [How to build](https://github.com/uazo/cromite/blob/master/docs/HOW_TO_BUILD.md)
-- [Patch list](https://github.com/uazo/cromite/blob/master/docs/PATCHES.md)
+## Credits and licensing
 
-# Releases
+Roadium builds on the work of [Cromite](https://github.com/uazo/cromite),
+[Chromium](https://www.chromium.org/) and [Bromite](https://github.com/bromite/bromite),
+along with their contributors and third-party projects. Roadium is not
+affiliated with or endorsed by those projects.
 
-All built versions are available as [releases](https://github.com/uazo/cromite/releases).
-
-Cromite is currently built for ARM, ARM64, Android x86, Windows x64 and Linux.
-
-The following files will be present for each release:
-
-#### Cromite apk for android:
-- [arm64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/arm64_ChromePublic.apk)
-- [arm_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/arm_ChromePublic.apk)
-- [x64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/x64_ChromePublic.apk)
-
-#### Linux package:
-- [chrome-lin64.tar.gz](https://github.com/uazo/cromite/releases/latest/download/chrome-lin64.tar.gz)
-
-#### Windows package:
-- [chrome-win.zip](https://github.com/uazo/cromite/releases/latest/download/chrome-win.zip)
-
-#### Debugging symbols and proguard file for java stacktrace deobfuscation
-- x64_ChromePublic.apk.mapping
-- arm64_ChromePublic.apk.mapping
-- arm64_symbols.zip
-
-#### Build time analysis file:
-- arm64_ninja_log_trace.html
-
-#### Chrlauncher autoupdate file:
-- updateurl.txt
-
-Additional files are also available: please note that these files are created by an [additional build](https://github.com/uazo/cromite/actions/workflows/build_additional_targets.yaml) separate from the release process, and therefore may not be immediately available.
-
-#### Cromite System WebView apk for android:
-- arm64_SystemWebView.apk
-- x64_SystemWebView.apk
-
-#### Vanilla Chromium for android (used for tests):
-- arm64_VanillaChromium.apk
-- arm_VanillaChromium.apk
-- x64_VanillaChromium.apk
-
-#### SystemWebView Shell (used for tests)
-- arm64_SystemWebViewShell.apk
-- x64_SystemWebViewShell.apk
-
-### F-droid
-
-Official F-droid repo url:
-https://www.cromite.org/fdroid/repo/?fingerprint=49F37E74DEE483DCA2B991334FB5A0200787430D0B5F9A783DD5F13695E9517B
-
-### Auto-update in Android
-
-You will automatically receive notifications about new updates (and be able to install them) via the auto updater functionality.
-You will be asked whether you want to activate the functionality during the first start-up.
-
-### Auto-update setup for Windows
-
-1. Download https://github.com/henrypp/chrlauncher/releases
-2. Create a `chrlauncher.ini`
-
-```
-[chrlauncher]
-
-# Custom Chromium update URL (string):
-ChromiumUpdateUrl=https://github.com/uazo/cromite/releases/latest/download/updateurl.txt
-
-# Command line for Chromium (string):
-# note --user-data-dir= works better if path is absolute
-# See here: http://peter.sh/experiments/chromium-command-line-switches/
-ChromiumCommandLine=--user-data-dir="%LOCALAPPDATA%\Cromite\User Data" --no-default-browser-check
-
-# to enable full logging in c:\temp\log.txt (daily rotate, no automatic deletion)
-# ChromiumCommandLine=--enable-logging --v=0 --log-file=C:\temp\log.txt --user-data-dir=".\User Data" --no-default-browser-check
-
-# Chromium executable file name (string):
-ChromiumBinary=chrome.exe
-
-# Chromium binaries directory (string):
-# Relative (to chrlauncher directory) or full path (env. variables supported).
-ChromiumDirectory=.\bin
-```
-To prevent deletion by Microsoft Defender each time the browser is updated, check the `user-data-dir` folder by modifying it accordingly.
-
-### Enable network process sandbox in windows
-I don't include any setups because I don't like the experience of not knowing what they do, so you must manually run this command on first installation:
-```
-cd <where_is_the_exe>
-icacls . /grant "*S-1-15-2-2:(OI)(CI)(RX)"
-```
-see https://github.com/uazo/bromite-buildtools/issues/51
-
-### Enable AppContainer for renderer process in windows
-you can activate (highly recommended) the 'RendererAppContainer' flag from the command line with
-```
-  --enable-features=RendererAppContainer
-```
-In this case, it is also necessary to run icacls as indicated above.
-
-### Auto-update setup for linux
-working in progress in https://github.com/uazo/cromite/issues/771
-
-### Making Cromite work in Ubuntu 24.04 and its derivatives (kubuntu, etc)
-This happens because, starting with Ubuntu 24.04, Apparmor
-restricts the use of unprivileged user namespaces. To fix this, you have several options:
-#### 1. Creating an apparmor profile for cromite
-Create `/etc/apparmor.d/chrome`, and write:
-```
-abi <abi/4.0>,
-include <tunables/global>
-
-profile cromite /home/user/cromite/chrome-lin/chrome flags=(unconfined) {
-  userns,
-
-  include if exists <local/chrome>
-}
-```
-replacing the cromite binary path with where you have placed cromite.
-
-Now, run `sudo apparmor_parser -r /etc/apparmor.d/cromite` to apply the changes.
-#### 2. Disabling the restriction until next reboot
-`sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0`
-#### 3. Disabling the restriction permanently
-Add `kernel.apparmor_restrict_unprivileged_userns=0` to the file `/etc/sysctl.d/60-apparmor-namespace.conf`.  Create the file if not exists.
-
-# Contributing
-
-Please submit issues following the issue template; beware that GitHub does not display the templates from mobile.
-
-Patches are welcome and accepted if they match the project goals.
-
-If you want to help me, [here](https://github.com/uazo/cromite/blob/master/docs/HELP_ME_PLEASE.md) is the list of things I would need.
-
-For any usage or development discussion please use GitHub Discussions: https://github.com/uazo/cromite/discussions
-
-# Credits
-
-* [Chromium project](https://www.chromium.org/Home) and developers
-* [Bromite](https://github.com/bromite/bromite)
-  * [Iridium project](https://github.com/iridium-browser) for some patches
-  * [ungoogled-chromium](https://github.com/Eloston/ungoogled-chromium) for some patches
-  * [ungoogled-chromium-android](https://github.com/ungoogled-software/ungoogled-chromium-android) for some patches
-  * [GrapheneOS](https://github.com/GrapheneOS) for some security patches
-  * [Inox patchset](https://github.com/gcarq/inox-patchset) for some patches (via ungoogled-chromium)
-  * [Brave Browser](https://github.com/brave/brave-core) for some patches
-
-thanks to [austinhuang0131](https://github.com/austinhuang0131) for the svg icon
-
-# Donate
-
-If you want, you can donate to support cromite development through [paypal](https://www.paypal.com/pools/c/9e5lO2OIzb).
-
-Current link:
-- https://www.paypal.com/pools/c/9hEHZ6tElk
-
-Historical fundraisings links:
-- https://www.paypal.com/pools/c/9cwNgAQhRL
-- https://www.paypal.com/pools/c/9e5lO2OIzb
-
-# License
-
-Cromite is published under [GNU GPL v3](./LICENSE).
-The patches published as part of the Bromite project are released under GNU GPL v3 only.
-Cromite specific patches are under the GNU GPL-2+ licence.
-Each individual patch contains specific information on the licence used.
+The repository retains its [GNU GPL v3 license](LICENSE). Individual components
+and patches retain their applicable licenses and copyright notices. The
+[upstream README reference](docs/UPSTREAM_CROMITE_README.md) preserves Cromite's
+original credits and licensing details; source notices and browser open-source
+credits remain in place.

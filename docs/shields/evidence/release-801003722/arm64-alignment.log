@@ -1,0 +1,8 @@
+base/lib/arm64-v8a/libchrome.so LOAD=[16384, 16384, 65536]
+base/lib/arm64-v8a/libcrashpad_handler_trampoline.so LOAD=[16384, 16384, 16384]
+xr/lib/arm64-v8a/libimpress_api_jni.so LOAD=[16384, 16384, 16384]
+xr/lib/arm64-v8a/libandroidx.xr.arcore.openxr.so LOAD=[16384, 16384, 16384]
+xr/lib/arm64-v8a/libandroidx.xr.runtime.openxr.so LOAD=[16384, 16384, 16384]
+xr/lib/arm64-v8a/libarcore_sdk_c.so LOAD=[16384, 16384, 16384]
+xr/lib/arm64-v8a/libarcore_sdk_jni.so LOAD=[16384, 16384, 16384]
+Seven ARM64 libraries pass ELF16K load alignment

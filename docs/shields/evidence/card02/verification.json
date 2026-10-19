@@ -1,0 +1,52 @@
+{
+  "card": 2,
+  "status": "implemented and verified",
+  "scope_excluded": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "source_patches": [
+    {
+      "path": "build/roadium/patches/0001-roadium-aaos-foundation.patch",
+      "sha256": "3f0fedee04363332ccfe8fb2bbd2ba1f4ed8127e187f04c5bd2104a33debd0df"
+    },
+    {
+      "path": "build/roadium/patches/0002-roadium-shields-diagnostics.patch",
+      "sha256": "9a4a39651200f465f52ffa1e3d0ccade4a035a07fc0a97cd0f0b5745535eff58"
+    },
+    {
+      "path": "build/roadium/patches/0003-roadium-bundled-filters.patch",
+      "sha256": "eb4f85d293ea50d4e69cb25f633f86d1539a8caae71752d44ebbdc3662513df4"
+    }
+  ],
+  "source_patch_sha256": "a62d66be6d65a766d0adabc6c18b440d245f429a5b679aedd5f747e0aacedaa8",
+  "source_overlay_tree": "69ac49b1e34f3a63c9a965d65ecfd15140dea799",
+  "tests": {
+    "input": 9,
+    "package": 8,
+    "overlay_loader": 16,
+    "native": 22,
+    "diagnostics_executions": 20,
+    "media_executions": 26
+  },
+  "builds": {
+    "x64": "passed; APK/AAB and bundled resources verified",
+    "arm64": "passed; APK/AAB and bundled resources verified"
+  },
+  "runtime": "x64 API33 Automotive fresh offline, control, explicit opt-out, upgrade, online activation and offline timeout retention passed",
+  "higher_version_test": "controlled native version203001010001; live upstream served same version as bundle",
+  "advanced_default": "unchanged false; bundles converted nonprivileged",
+  "physical_vehicle": "pending release gate",
+  "production_signing": "not performed; APK development certificate and unsigned AAB",
+  "cleanup": {
+    "network": "original wifi/mobile-data enabled state restored",
+    "driving_state": "Park restored",
+    "browser": "disposable profile force-stopped",
+    "forwarding": "task-owned ADB forwarding removed"
+  }
+}

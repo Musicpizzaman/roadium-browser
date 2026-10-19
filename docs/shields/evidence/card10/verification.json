@@ -1,0 +1,24 @@
+{
+  "status": "in_progress",
+  "browser_overlay_added": false,
+  "geometry_fix_verified": false,
+  "preferred_720p_implemented": false,
+  "physical_chevy_tested": false,
+  "desktop_fixture_modes": [
+    "surface",
+    "player",
+    "video"
+  ],
+  "history_limit_verified": 40,
+  "generator_checks": [
+    "exact_copy",
+    "missing_source_refusal",
+    "source_overwrite_refusal"
+  ],
+  "installed_baseline_apk_sha256": "d18d2781075d5bb788341788894680814f45f9575f948ee328a952dbd0325a4b",
+  "emulator_visual_acceptance": "pending; blank capture after combined sequence, isolated exit captures visible",
+  "source_hashes": {
+    "tools\\roadium\\make-fixtures.py": "bd2389d837e3c607310b46d547b0afff92f9bc7a0e1b4604eda3cb35ea71b70e",
+    "tools\\roadium\\fixtures\\fullscreen-video.html": "1d273a8846e50afcd3d70ddd0e46266b4562e3a0a8a989e605be9f4ac447e704"
+  }
+}

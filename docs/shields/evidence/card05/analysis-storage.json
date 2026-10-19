@@ -1,0 +1,42 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Analysis of Card05 recovery requirements. Current storage uses unguessable tokens for filenames, writing files first, then storing signatures in Prefs. This is non-atomic: a crash between file write and signature storage leaves an orphan file; a crash during signature storage leaves a valid file with no signature (deleted on next load). Proposed architecture implements a 'Current/Previous' rotation for each subscription URL to ensure atomic publication and recovery from interrupted writes or corrupt files. It uses a sidecar metadata file or a deterministic naming convention to link files to URLs, enabling recovery of the 'last-known-good' version if the candidate is corrupt or incompatible.\",\n  \"architecture_observations\": [\n    \"Current write order: 1. Write FB file (unguessable name) -> 2. Store Signature (Prefs) -> 3. Update Metadata (Prefs).\",\n    \"Defect: No atomicity between file write and signature storage; orphans are possible.\",\n    \"Defect: No version/state tracking for the 'in-progress' write, making recovery from interrupted writes impossible.\",\n    \"Defect: If a new write is corrupt, the existing valid subscription is lost if the file is overwritten (though current code uses new names, it lacks a way to 'roll back' to the previous valid file for a specific URL).\",\n    \"Metadata (SubscriptionPersistentMetadataImpl) is decoupled from the physical file lifecycle.\",\n    \"Signature validation (SubscriptionValidatorImpl) is the primary gatekeeper for file integrity.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"components/adblock/core/subscription/subscription_persistent_storage_impl.cc\",\n      \"change\": \"Modify WriteSubscription to use a two-stage commit: 1. Write to '.tmp' file. 2. Rename to '.current'. 3. Write '.previous' (if exists). 4. Update Prefs. Implement recovery in LoadSubscriptions to check for '.tmp' or '.corrupt' files and attempt to restore from '.previous'.\"\n    },\n    {\n      \"file\": \"components/adblock/core/subscription/subscription_validator_impl.cc\",\n      \"change\": \"Extend signature storage to support versioned signatures (current vs previous) to match the file rotation strategy.\"\n    }\n  ],\n  \"patch\": \"\",\n  \"risks\": [\n    \"Renaming/Rotation logic increases disk I/O and complexity in the critical path.\",\n    \"Incompatible schema changes might trigger mass deletion if not handled by the 'previous' fallback.\",\n    \"Race conditions if multiple threads attempt to update the same subscription URL simultaneously.\"\n  ],\n  \"tests\": [\n    \"Test: Crash simulation between file write and signature storage (verify recovery from .previous).\",\n    \"Test: Corrupt candidate file write (verify fallback to valid previous).\",\n    \"Test: Schema version mismatch (verify bootstrap/fallback behavior).\",\n    \"Test: Interrupted rename operation (verify file system consistency).\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Analysis of Card05 recovery requirements. Current storage uses unguessable tokens for filenames, writing files first, then storing signatures in Prefs. This is non-atomic: a crash between file write and signature storage leaves an orphan file; a crash during signature storage leaves a valid file with no signature (deleted on next load). Proposed architecture implements a 'Current/Previous' rotation for each subscription URL to ensure atomic publication and recovery from interrupted writes or corrupt files. It uses a sidecar metadata file or a deterministic naming convention to link files to URLs, enabling recovery of the 'last-known-good' version if the candidate is corrupt or incompatible.",
+    "architecture_observations": [
+      "Current write order: 1. Write FB file (unguessable name) -> 2. Store Signature (Prefs) -> 3. Update Metadata (Prefs).",
+      "Defect: No atomicity between file write and signature storage; orphans are possible.",
+      "Defect: No version/state tracking for the 'in-progress' write, making recovery from interrupted writes impossible.",
+      "Defect: If a new write is corrupt, the existing valid subscription is lost if the file is overwritten (though current code uses new names, it lacks a way to 'roll back' to the previous valid file for a specific URL).",
+      "Metadata (SubscriptionPersistentMetadataImpl) is decoupled from the physical file lifecycle.",
+      "Signature validation (SubscriptionValidatorImpl) is the primary gatekeeper for file integrity."
+    ],
+    "proposed_changes": [
+      {
+        "file": "components/adblock/core/subscription/subscription_persistent_storage_impl.cc",
+        "change": "Modify WriteSubscription to use a two-stage commit: 1. Write to '.tmp' file. 2. Rename to '.current'. 3. Write '.previous' (if exists). 4. Update Prefs. Implement recovery in LoadSubscriptions to check for '.tmp' or '.corrupt' files and attempt to restore from '.previous'."
+      },
+      {
+        "file": "components/adblock/core/subscription/subscription_validator_impl.cc",
+        "change": "Extend signature storage to support versioned signatures (current vs previous) to match the file rotation strategy."
+      }
+    ],
+    "patch": "",
+    "risks": [
+      "Renaming/Rotation logic increases disk I/O and complexity in the critical path.",
+      "Incompatible schema changes might trigger mass deletion if not handled by the 'previous' fallback.",
+      "Race conditions if multiple threads attempt to update the same subscription URL simultaneously."
+    ],
+    "tests": [
+      "Test: Crash simulation between file write and signature storage (verify recovery from .previous).",
+      "Test: Corrupt candidate file write (verify fallback to valid previous).",
+      "Test: Schema version mismatch (verify bootstrap/fallback behavior).",
+      "Test: Interrupted rename operation (verify file system consistency)."
+    ]
+  },
+  "isError": false
+}

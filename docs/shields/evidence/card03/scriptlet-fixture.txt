@@ -1,0 +1,8 @@
+[Adblock Plus 2.0]
+! Title: Roadium Card03 controlled scriptlet fixture
+! Version: 203001010003
+! Expires: 365 days
+127.0.0.1#$#override-property-read roadiumProbe undefined
+127.0.0.1#$#simulate-mouse-event #unsupported-probe
+127.0.0.1##.card03-ad
+||pagead2.googlesyndication.com^

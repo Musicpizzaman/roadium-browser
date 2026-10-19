@@ -1,0 +1,100 @@
+{
+  "card": 6,
+  "status": "implemented-with-open-live-acceptance-gates",
+  "verified_utc": "2026-10-18T03:55:49.972143+00:00",
+  "source_patch_sha256": "9c01a74974f2bde3024a0430c57cff8e2e9e49ef269a1a3c131a271fae619e72",
+  "previous_six_patches_unchanged": true,
+  "cumulative_source_patch_sha256": "4bb773e6959f620cacf96891e11d890f9338996abf5942c0a0b0d7acdcc4a3a8",
+  "source_overlay_tree": "03cd90f156aad8219ab85df710dfea017d348062",
+  "affected_source_files_verified_identical": 4,
+  "production_change": "Experimental list first-run selection only: Ignore; existing and explicit opt-in retained",
+  "tests": {
+    "native": 224,
+    "diagnostics-junit": 28,
+    "media-junit": 26,
+    "focused_total": 278,
+    "overlay_loader": 16,
+    "package_resource_gate": 8,
+    "compiled_header_regeneration": "passed",
+    "changed_rule_and_identity_negative_controls": "passed",
+    "post_review_rerun": "passed"
+  },
+  "inventory": {
+    "rules": 145,
+    "sources": 5,
+    "outcomes": {
+      "accepted": 137,
+      "unsupported_commands": 8
+    },
+    "actual_source_privilege_policy": true
+  },
+  "artifacts": [
+    {
+      "architecture": "x64",
+      "file": "ChromePublic.apk",
+      "sha256": "d18d2781075d5bb788341788894680814f45f9575f948ee328a952dbd0325a4b",
+      "bytes": 351866356
+    },
+    {
+      "architecture": "x64",
+      "file": "ChromePublic.aab",
+      "sha256": "cad976fae197fede204c506128d9b902370998582381309b991900e018b1d459",
+      "bytes": 153574978
+    },
+    {
+      "architecture": "arm64",
+      "file": "ChromePublic.apk",
+      "sha256": "221a69bba870bd4c0a7bcf520f130d700ad0b526c96043fbbb3713b3454d3567",
+      "bytes": 325616429
+    },
+    {
+      "architecture": "arm64",
+      "file": "ChromePublic.aab",
+      "sha256": "2d4e3ae6fd30f4d22f9cb2bfe67037d745cef5a81b35c6abfeb9011d0de01b6f",
+      "bytes": 142666558
+    }
+  ],
+  "installed": {
+    "status": "passed-with-explicit-live-gaps",
+    "installed_apk_sha256": "d18d2781075d5bb788341788894680814f45f9575f948ee328a952dbd0325a4b",
+    "fresh_default_verified": true,
+    "upgrade_preservation_verified": true,
+    "supported_runtime_commands": [
+      "json-prune",
+      "override-property-read",
+      "abort-on-property-write",
+      "skip-video",
+      "hide-if-matches-xpath"
+    ],
+    "dom_json_property_frame_and_privilege_cases": "passed",
+    "ordinary_audio_video_webaudio": "passed",
+    "background_scriptlet_play_attempt_stays_paused": true,
+    "foreground_recovery": true,
+    "actual_vehicle_restriction_state_tested": false,
+    "vehicle_properties_modified": false,
+    "live_desktop_mobile_embed_playback": "passed",
+    "captions_english_toggle": "passed",
+    "quality_actual_144p": "passed",
+    "seek_seconds": 10,
+    "fullscreen": "passed",
+    "shorts": "did not buffer in this lab; also failed advanced-off baseline; acceptance open",
+    "pre_roll": "no observed opportunity; inconclusive",
+    "mid_roll": "no observed opportunity; inconclusive",
+    "network": "Loopback CONNECT relay for emulator DNS; end-to-end TLS; some ancillary hosts denied, so ad-format coverage remains limited",
+    "runtime_grammar_gap": "json-prune [-] accepted by parser but does not remove matching array entry; no semantic rewrite performed",
+    "local_seek_limit": "1s WebM seeks settle at keyframe0 with advanced on/off; exact local seek accuracy not claimed"
+  },
+  "local_review": "approved; no findings",
+  "cleanup": "passed",
+  "remaining_live_gates": [
+    "Shorts did not buffer in lab",
+    "No observed pre-roll/mid-roll ad opportunities",
+    "json-prune [-] runtime removal grammar unsupported",
+    "Physical ARM64 Android12 vehicle restriction/recovery",
+    "Production signing and extended connectivity/storage/media soak"
+  ],
+  "changes_committed": false,
+  "cards07_to09": "on hold",
+  "local_links_checked": 382,
+  "git_diff_checks": "passed"
+}

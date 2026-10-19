@@ -1,0 +1,32 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Audit of cleanup-runtime.py for user13 profile restoration. The script correctly targets /data/user/13/io.github.musicpizzaman.roadium. It uses SHA256 verification for the backup archive and specific path whitelisting (app_chrome, shared_prefs) to prevent cross-user data deletion. UID/Context are preserved via 'stat' and 'chcon'. No blocking architectural conflicts identified.\",\n  \"architecture_observations\": [\n    \"Strictly scoped to user13 via 'am get-current-user' and 'stat' checks.\",\n    \"Archive integrity verified via SHA256 before extraction.\",\n    \"Path traversal and absolute path injection prevented by '..' and 'is_absolute' checks.\",\n    \"SELinux context and UID are explicitly restored using backup metadata.\",\n    \"Host TLS and port mappings are verified against expected values before removal.\"\n  ],\n  \"proposed_changes\": [],\n  \"patch\": \"\",\n  \"risks\": [\n    \"None identified: The script enforces strict path matching and user ID verification before any destructive actions.\",\n    \"The use of 'rm -rf' is mitigated by the preceding 'realpath' and 'stat' assertions.\"\n  ],\n  \"tests\": [\n    \"Preflight check for user13 identity.\",\n    \"SHA256 verification of the backup payload.\",\n    \"Verification of restored Preferences content.\",\n    \"Verification of restored shared_prefs files.\",\n    \"Verification of SELinux context and UID restoration.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Audit of cleanup-runtime.py for user13 profile restoration. The script correctly targets /data/user/13/io.github.musicpizzaman.roadium. It uses SHA256 verification for the backup archive and specific path whitelisting (app_chrome, shared_prefs) to prevent cross-user data deletion. UID/Context are preserved via 'stat' and 'chcon'. No blocking architectural conflicts identified.",
+    "architecture_observations": [
+      "Strictly scoped to user13 via 'am get-current-user' and 'stat' checks.",
+      "Archive integrity verified via SHA256 before extraction.",
+      "Path traversal and absolute path injection prevented by '..' and 'is_absolute' checks.",
+      "SELinux context and UID are explicitly restored using backup metadata.",
+      "Host TLS and port mappings are verified against expected values before removal."
+    ],
+    "proposed_changes": [],
+    "patch": "",
+    "risks": [
+      "None identified: The script enforces strict path matching and user ID verification before any destructive actions.",
+      "The use of 'rm -rf' is mitigated by the preceding 'realpath' and 'stat' assertions."
+    ],
+    "tests": [
+      "Preflight check for user13 identity.",
+      "SHA256 verification of the backup payload.",
+      "Verification of restored Preferences content.",
+      "Verification of restored shared_prefs files.",
+      "Verification of SELinux context and UID restoration."
+    ]
+  },
+  "isError": false
+}

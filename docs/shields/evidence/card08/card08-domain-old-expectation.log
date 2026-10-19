@@ -1,0 +1,414 @@
+Additional test environment:
+    CHROME_HEADLESS=1
+    LANG=en_US.UTF-8
+Command: /home/lg/vpython_root/store/python_venv-hmr5stuq9egr1bnu13fhahv43c/contents/bin/python3 build/android/test_runner.py junit --output-directory out/x64 --wrapper-script-args out/x64/bin/run_roadium_shields_junit_tests --json-results-file out/x64/card08-test-results/final-java.json --test-suite roadium_shields_junit_tests --native-libs-dir out/x64/robolectric_x64 --robolectric-runtime-deps-dir third_party/robolectric/cipd/lib --resource-apk out/x64/obj/components/adblock/android/roadium_shields_junit_tests.robo.ap_ --shadows-allowlist testing/android/junit/shadows-allowlist.txt --json-results-file out/x64/card08-test-results/final-java.json
+
+W 20:16:26.015    0.565s Main  Running tests with 2 shard(s) using 2 concurrent process(es).
+
+Shard 0 output:
+ 0| [==========] Running 27 tests.
+ 0| [----------] Global test environment set-up.
+ 0| 
+ 0| [----------] Run 14 test cases from org.chromium.components.adblock.ShieldsDiagnosticsTest
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.selectedPendingListDoesNotClaimActiveFiltering[29]
+ 0| WARNING: A restricted method in java.lang.System has been called
+ 0| WARNING: java.lang.System::load has been called by org.conscrypt.NativeLibraryUtil in an unnamed module (file:/home/lg/working_dir/chromium/src/third_party/android_deps/autorolled/cipd/libs/org_conscrypt_conscrypt_openjdk_uber/conscrypt-openjdk-uber.jar)
+ 0| WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+ 0| WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+ 0| 
+ 0| [WARN] Unknown chunk type '200'.
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.selectedPendingListDoesNotClaimActiveFiltering[29] (1060 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[29] (21 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.conversionReasonsAreVisibleWithoutRuleContents[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.conversionReasonsAreVisibleWithoutRuleContents[29] (19 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacyHistoryStaysUnknownRatherThanFalse[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacyHistoryStaysUnknownRatherThanFalse[29] (14 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListRetainsCapturedFallbackDetails[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListRetainsCapturedFallbackDetails[29] (15 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.emptyAndUnavailableStatesCannotRemainChecking[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.emptyAndUnavailableStatesCannotRemainChecking[29] (17 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.downloadedAndParsedAreNotActivation[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.downloadedAndParsedAreNotActivation[29] (15 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[29] (16 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListKeepsCapturedManualCancellationResult[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListKeepsCapturedManualCancellationResult[29] (14 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.fallbackFailureAndActiveSourceAreIndependent[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.fallbackFailureAndActiveSourceAreIndependent[29] (15 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.globalDisableAndAdvancedEligibilityRemainIndependent[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.globalDisableAndAdvancedEligibilityRemainIndependent[29] (14 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.failedUpdateRetainsIndependentActiveState[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.failedUpdateRetainsIndependentActiveState[29] (12 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessRequiresCurrentActivePermittedData[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessRequiresCurrentActivePermittedData[29] (13 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.manualBatchShowsActualMixedResultAndTimeout[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.manualBatchShowsActualMixedResultAndTimeout[29] (12 ms)
+ 0| [----------] Run 14 test cases from org.chromium.components.adblock.ShieldsDiagnosticsTest (1723 ms)
+ 0| 
+ 0| [----------] Run 6 test cases from org.chromium.components.adblock.ShieldsPresetsTest
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.existingFourDefaultsAreBalancedWithoutMigration[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.existingFourDefaultsAreBalancedWithoutMigration[29] (44 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.everyCategoryOnlyChangesItsOwnedLists[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.everyCategoryOnlyChangesItsOwnedLists[29] (39 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[29] (36 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.customCannotResetManagedChoices[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.customCannotResetManagedChoices[29] (14 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.canonicalIdentityIsExactAndExperimentalIsNeverAdded[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.canonicalIdentityIsExactAndExperimentalIsNeverAdded[29] (14 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.categoryDeviationAndRecoveryAreDerivedFromActualSelections[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.categoryDeviationAndRecoveryAreDerivedFromActualSelections[29] (14 ms)
+ 0| [----------] Run 6 test cases from org.chromium.components.adblock.ShieldsPresetsTest (169 ms)
+ 0| 
+ 0| [----------] Run 7 test cases from org.chromium.components.adblock.ShieldsSiteStateTest
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.malformedHostsAndRuleInjectionAreRejected[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.malformedHostsAndRuleInjectionAreRejected[29] (19 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29]
+ 0| java.lang.AssertionError: expected:<[BÜCHER.example]> but was:<[]>
+ 0| 	at org.junit.Assert.fail(Assert.java:89)
+ 0| 	at org.junit.Assert.failNotEquals(Assert.java:835)
+ 0| 	at org.junit.Assert.assertEquals(Assert.java:120)
+ 0| 	at org.junit.Assert.assertEquals(Assert.java:146)
+ 0| 	at org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope(ShieldsSiteStateTest.java:21)
+ 0| 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+ 0| 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+ 0| 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+ 0| 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+ 0| 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:61)
+ 0| 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+ 0| 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+ 0| 	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:542)
+ 0| 	at org.chromium.base.test.BaseRobolectricTestRunner$HelperTestRunner$1.evaluate(BaseRobolectricTestRunner.java:48)
+ 0| 	at org.chromium.base.test.BaseTimeLimitedStatement.evaluate(BaseTimeLimitedStatement.java:53)
+ 0| 	at org.robolectric.internal.SandboxTestRunner.lambda$executeInSandbox$4(SandboxTestRunner.java:429)
+ 0| 	at org.robolectric.internal.SandboxTestRunner.runInSandbox(SandboxTestRunner.java:455)
+ 0| 	at org.robolectric.internal.SandboxTestRunner.executeInSandbox(SandboxTestRunner.java:420)
+ 0| 	at org.robolectric.internal.SandboxTestRunner$5.evaluate(SandboxTestRunner.java:405)
+ 0| 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+ 0| 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+ 0| 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+ 0| 	at org.robolectric.internal.SandboxTestRunner.access$000(SandboxTestRunner.java:64)
+ 0| 	at org.robolectric.internal.SandboxTestRunner$4.evaluate(SandboxTestRunner.java:294)
+ 0| 	at org.robolectric.internal.SandboxTestRunner$2.evaluate(SandboxTestRunner.java:260)
+ 0| 	at org.robolectric.internal.SandboxTestRunner$3.lambda$evaluate$0(SandboxTestRunner.java:280)
+ 0| 	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThreadWithClassLoader$1(Sandbox.java:112)
+ 0| 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+ 0| 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+ 0| 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+ 0| 	at java.base/java.lang.Thread.run(Thread.java:1474)
+ 0| [   FAILED ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29] (25 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[29] (10 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.concurrentExceptionsRemainDistinctReasons[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.concurrentExceptionsRemainDistinctReasons[29] (12 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.nonWebPagesHaveNoSiteControls[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.nonWebPagesHaveNoSiteControls[29] (11 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.suffixRequiresDnsLabelBoundary[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.suffixRequiresDnsLabelBoundary[29] (13 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.globalPauseAlwaysWinsOverEitherException[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.globalPauseAlwaysWinsOverEitherException[29] (10 ms)
+ 0| [----------] Run 7 test cases from org.chromium.components.adblock.ShieldsSiteStateTest (105 ms)
+ 0| 
+ 0| [----------] Global test environment tear-down.
+ 0| [==========] 27 tests ran. (1998 ms total)
+ 0| [  PASSED  ] 26 tests.
+ 0| [  FAILED  ] 1 tests.
+ 0| [  FAILED  ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29]
+ 0| 
+
+Shard 1 output:
+ 1| [==========] Running 27 tests.
+ 1| [----------] Global test environment set-up.
+ 1| 
+ 1| [----------] Run 14 test cases from org.chromium.components.adblock.ShieldsDiagnosticsTest
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.selectedPendingListDoesNotClaimActiveFiltering[36]
+ 1| WARNING: A restricted method in java.lang.System has been called
+ 1| WARNING: java.lang.System::load has been called by org.robolectric.nativeruntime.DefaultNativeRuntimeLoader in an unnamed module
+ 1| WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+ 1| WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+ 1| 
+ 1| [WARN] Unknown chunk type '200'.
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.selectedPendingListDoesNotClaimActiveFiltering[36] (2644 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[36] (28 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.conversionReasonsAreVisibleWithoutRuleContents[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.conversionReasonsAreVisibleWithoutRuleContents[36] (20 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacyHistoryStaysUnknownRatherThanFalse[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacyHistoryStaysUnknownRatherThanFalse[36] (14 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListRetainsCapturedFallbackDetails[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListRetainsCapturedFallbackDetails[36] (18 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.emptyAndUnavailableStatesCannotRemainChecking[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.emptyAndUnavailableStatesCannotRemainChecking[36] (16 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.downloadedAndParsedAreNotActivation[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.downloadedAndParsedAreNotActivation[36] (11 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[36] (13 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListKeepsCapturedManualCancellationResult[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListKeepsCapturedManualCancellationResult[36] (13 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.fallbackFailureAndActiveSourceAreIndependent[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.fallbackFailureAndActiveSourceAreIndependent[36] (13 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.globalDisableAndAdvancedEligibilityRemainIndependent[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.globalDisableAndAdvancedEligibilityRemainIndependent[36] (14 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.failedUpdateRetainsIndependentActiveState[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.failedUpdateRetainsIndependentActiveState[36] (13 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessRequiresCurrentActivePermittedData[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessRequiresCurrentActivePermittedData[36] (13 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.manualBatchShowsActualMixedResultAndTimeout[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.manualBatchShowsActualMixedResultAndTimeout[36] (12 ms)
+ 1| [----------] Run 14 test cases from org.chromium.components.adblock.ShieldsDiagnosticsTest (3302 ms)
+ 1| 
+ 1| [----------] Run 6 test cases from org.chromium.components.adblock.ShieldsPresetsTest
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.existingFourDefaultsAreBalancedWithoutMigration[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.existingFourDefaultsAreBalancedWithoutMigration[36] (17 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.everyCategoryOnlyChangesItsOwnedLists[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.everyCategoryOnlyChangesItsOwnedLists[36] (15 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[36] (19 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.customCannotResetManagedChoices[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.customCannotResetManagedChoices[36] (12 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.canonicalIdentityIsExactAndExperimentalIsNeverAdded[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.canonicalIdentityIsExactAndExperimentalIsNeverAdded[36] (12 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.categoryDeviationAndRecoveryAreDerivedFromActualSelections[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.categoryDeviationAndRecoveryAreDerivedFromActualSelections[36] (12 ms)
+ 1| [----------] Run 6 test cases from org.chromium.components.adblock.ShieldsPresetsTest (93 ms)
+ 1| 
+ 1| [----------] Run 7 test cases from org.chromium.components.adblock.ShieldsSiteStateTest
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.malformedHostsAndRuleInjectionAreRejected[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.malformedHostsAndRuleInjectionAreRejected[36] (14 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36]
+ 1| java.lang.AssertionError: expected:<[BÜCHER.example]> but was:<[]>
+ 1| 	at org.junit.Assert.fail(Assert.java:89)
+ 1| 	at org.junit.Assert.failNotEquals(Assert.java:835)
+ 1| 	at org.junit.Assert.assertEquals(Assert.java:120)
+ 1| 	at org.junit.Assert.assertEquals(Assert.java:146)
+ 1| 	at org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope(ShieldsSiteStateTest.java:21)
+ 1| 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+ 1| 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+ 1| 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+ 1| 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+ 1| 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:61)
+ 1| 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+ 1| 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+ 1| 	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:542)
+ 1| 	at org.chromium.base.test.BaseRobolectricTestRunner$HelperTestRunner$1.evaluate(BaseRobolectricTestRunner.java:48)
+ 1| 	at org.chromium.base.test.BaseTimeLimitedStatement.evaluate(BaseTimeLimitedStatement.java:53)
+ 1| 	at org.robolectric.internal.SandboxTestRunner.lambda$executeInSandbox$4(SandboxTestRunner.java:429)
+ 1| 	at org.robolectric.internal.SandboxTestRunner.runInSandbox(SandboxTestRunner.java:455)
+ 1| 	at org.robolectric.internal.SandboxTestRunner.executeInSandbox(SandboxTestRunner.java:420)
+ 1| 	at org.robolectric.internal.SandboxTestRunner$5.evaluate(SandboxTestRunner.java:405)
+ 1| 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+ 1| 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+ 1| 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+ 1| 	at org.robolectric.internal.SandboxTestRunner.access$000(SandboxTestRunner.java:64)
+ 1| 	at org.robolectric.internal.SandboxTestRunner$4.evaluate(SandboxTestRunner.java:294)
+ 1| 	at org.robolectric.internal.SandboxTestRunner$2.evaluate(SandboxTestRunner.java:260)
+ 1| 	at org.robolectric.internal.SandboxTestRunner$3.lambda$evaluate$0(SandboxTestRunner.java:280)
+ 1| 	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThreadWithClassLoader$1(Sandbox.java:112)
+ 1| 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+ 1| 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+ 1| 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+ 1| 	at java.base/java.lang.Thread.run(Thread.java:1474)
+ 1| [   FAILED ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36] (24 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[36] (11 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.concurrentExceptionsRemainDistinctReasons[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.concurrentExceptionsRemainDistinctReasons[36] (11 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.nonWebPagesHaveNoSiteControls[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.nonWebPagesHaveNoSiteControls[36] (11 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.suffixRequiresDnsLabelBoundary[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.suffixRequiresDnsLabelBoundary[36] (13 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.globalPauseAlwaysWinsOverEitherException[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.globalPauseAlwaysWinsOverEitherException[36] (10 ms)
+ 1| [----------] Run 7 test cases from org.chromium.components.adblock.ShieldsSiteStateTest (97 ms)
+ 1| 
+ 1| [----------] Global test environment tear-down.
+ 1| [==========] 27 tests ran. (3494 ms total)
+ 1| [  PASSED  ] 26 tests.
+ 1| [  FAILED  ] 1 tests.
+ 1| [  FAILED  ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36]
+ 1| 
+C 20:16:30.043    4.593s Main  64 log lines omitted.
+To re-run failed shard 0, use --json-config config.json, where config.json contains:
+{
+  "configs": {
+    "LEGACY/PAUSED[29]": {
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest": [
+        "selectedPendingListDoesNotClaimActiveFiltering[29]",
+        "legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[29]",
+        "conversionReasonsAreVisibleWithoutRuleContents[29]",
+        "legacyHistoryStaysUnknownRatherThanFalse[29]",
+        "removedListRetainsCapturedFallbackDetails[29]",
+        "emptyAndUnavailableStatesCannotRemainChecking[29]",
+        "downloadedAndParsedAreNotActivation[29]",
+        "advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[29]",
+        "removedListKeepsCapturedManualCancellationResult[29]",
+        "fallbackFailureAndActiveSourceAreIndependent[29]",
+        "globalDisableAndAdvancedEligibilityRemainIndependent[29]",
+        "failedUpdateRetainsIndependentActiveState[29]",
+        "advancedReadinessRequiresCurrentActivePermittedData[29]",
+        "manualBatchShowsActualMixedResultAndTimeout[29]"
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest": [
+        "existingFourDefaultsAreBalancedWithoutMigration[29]",
+        "everyCategoryOnlyChangesItsOwnedLists[29]",
+        "allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[29]",
+        "customCannotResetManagedChoices[29]",
+        "canonicalIdentityIsExactAndExperimentalIsNeverAdded[29]",
+        "categoryDeviationAndRecoveryAreDerivedFromActualSelections[29]"
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest": [
+        "malformedHostsAndRuleInjectionAreRejected[29]",
+        "idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29]",
+        "legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[29]",
+        "concurrentExceptionsRemainDistinctReasons[29]",
+        "nonWebPagesHaveNoSiteControls[29]",
+        "suffixRequiresDnsLabelBoundary[29]",
+        "globalPauseAlwaysWinsOverEitherException[29]"
+      ]
+    }
+  },
+  "disabled": {},
+  "instrumentedPackages": [],
+  "instrumentedClasses": []
+}
+
+To re-run failed shard 1, use --json-config config.json, where config.json contains:
+{
+  "configs": {
+    "LEGACY/PAUSED[36]": {
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest": [
+        "selectedPendingListDoesNotClaimActiveFiltering[36]",
+        "legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[36]",
+        "conversionReasonsAreVisibleWithoutRuleContents[36]",
+        "legacyHistoryStaysUnknownRatherThanFalse[36]",
+        "removedListRetainsCapturedFallbackDetails[36]",
+        "emptyAndUnavailableStatesCannotRemainChecking[36]",
+        "downloadedAndParsedAreNotActivation[36]",
+        "advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[36]",
+        "removedListKeepsCapturedManualCancellationResult[36]",
+        "fallbackFailureAndActiveSourceAreIndependent[36]",
+        "globalDisableAndAdvancedEligibilityRemainIndependent[36]",
+        "failedUpdateRetainsIndependentActiveState[36]",
+        "advancedReadinessRequiresCurrentActivePermittedData[36]",
+        "manualBatchShowsActualMixedResultAndTimeout[36]"
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest": [
+        "existingFourDefaultsAreBalancedWithoutMigration[36]",
+        "everyCategoryOnlyChangesItsOwnedLists[36]",
+        "allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[36]",
+        "customCannotResetManagedChoices[36]",
+        "canonicalIdentityIsExactAndExperimentalIsNeverAdded[36]",
+        "categoryDeviationAndRecoveryAreDerivedFromActualSelections[36]"
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest": [
+        "malformedHostsAndRuleInjectionAreRejected[36]",
+        "idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36]",
+        "legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[36]",
+        "concurrentExceptionsRemainDistinctReasons[36]",
+        "nonWebPagesHaveNoSiteControls[36]",
+        "suffixRequiresDnsLabelBoundary[36]",
+        "globalPauseAlwaysWinsOverEitherException[36]"
+      ]
+    }
+  },
+  "disabled": {},
+  "instrumentedPackages": [],
+  "instrumentedClasses": []
+}
+
+To re-run the 2 failed shard(s), use: --shards 2 --shard-filter 0,1
+C 20:16:30.044    4.594s Main  ********************************************************************************
+C 20:16:30.044    4.594s Main  Detailed Logs
+C 20:16:30.044    4.594s Main  ********************************************************************************
+C 20:16:30.044    4.594s Main  [FAILURE] org.chromium.components.adblock.ShieldsSiteStateTest#idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29]:
+C 20:16:30.044    4.594s Main   0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29]
+C 20:16:30.044    4.594s Main   0| I/cr_CommandLineFlags: Java command line set to: 
+C 20:16:30.044    4.594s Main   0| java.lang.AssertionError: expected:<[BÜCHER.example]> but was:<[]>
+C 20:16:30.044    4.594s Main   0| 	at org.junit.Assert.fail(Assert.java:89)
+C 20:16:30.044    4.594s Main   0| 	at org.junit.Assert.failNotEquals(Assert.java:835)
+C 20:16:30.044    4.594s Main   0| 	at org.junit.Assert.assertEquals(Assert.java:120)
+C 20:16:30.044    4.594s Main   0| 	at org.junit.Assert.assertEquals(Assert.java:146)
+C 20:16:30.044    4.594s Main   0| 	at org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope(ShieldsSiteStateTest.java:21)
+C 20:16:30.044    4.594s Main   0| 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+C 20:16:30.044    4.594s Main   0| 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+C 20:16:30.044    4.594s Main   0| 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+C 20:16:30.044    4.594s Main   0| 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+C 20:16:30.044    4.594s Main   0| 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:61)
+C 20:16:30.044    4.594s Main   0| 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+C 20:16:30.044    4.594s Main   0| 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+C 20:16:30.044    4.594s Main   0| 	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:542)
+C 20:16:30.044    4.594s Main   0| 	at org.chromium.base.test.BaseRobolectricTestRunner$HelperTestRunner$1.evaluate(BaseRobolectricTestRunner.java:48)
+C 20:16:30.044    4.594s Main   0| 	at org.chromium.base.test.BaseTimeLimitedStatement.evaluate(BaseTimeLimitedStatement.java:53)
+C 20:16:30.044    4.594s Main   0| 	at org.robolectric.internal.SandboxTestRunner.lambda$executeInSandbox$4(SandboxTestRunner.java:429)
+C 20:16:30.044    4.594s Main   0| 	at org.robolectric.internal.SandboxTestRunner.runInSandbox(SandboxTestRunner.java:455)
+C 20:16:30.044    4.594s Main   0| 	at org.robolectric.internal.SandboxTestRunner.executeInSandbox(SandboxTestRunner.java:420)
+C 20:16:30.044    4.594s Main   0| 	at org.robolectric.internal.SandboxTestRunner$5.evaluate(SandboxTestRunner.java:405)
+C 20:16:30.044    4.595s Main   0| 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+C 20:16:30.044    4.595s Main   0| 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+C 20:16:30.044    4.595s Main   0| 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+C 20:16:30.044    4.595s Main   0| 	at org.robolectric.internal.SandboxTestRunner.access$000(SandboxTestRunner.java:64)
+C 20:16:30.044    4.595s Main   0| 	at org.robolectric.internal.SandboxTestRunner$4.evaluate(SandboxTestRunner.java:294)
+C 20:16:30.044    4.595s Main   0| 	at org.robolectric.internal.SandboxTestRunner$2.evaluate(SandboxTestRunner.java:260)
+C 20:16:30.044    4.595s Main   0| 	at org.robolectric.internal.SandboxTestRunner$3.lambda$evaluate$0(SandboxTestRunner.java:280)
+C 20:16:30.044    4.595s Main   0| 	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThreadWithClassLoader$1(Sandbox.java:112)
+C 20:16:30.044    4.595s Main   0| 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+C 20:16:30.044    4.595s Main   0| 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+C 20:16:30.044    4.595s Main   0| 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+C 20:16:30.044    4.595s Main   0| 	at java.base/java.lang.Thread.run(Thread.java:1474)
+C 20:16:30.044    4.595s Main   0| [   FAILED ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29] (25 ms)
+C 20:16:30.044    4.595s Main  
+C 20:16:30.044    4.595s Main  [FAILURE] org.chromium.components.adblock.ShieldsSiteStateTest#idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36]:
+C 20:16:30.044    4.595s Main   1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36]
+C 20:16:30.044    4.595s Main   1| I/cr_CommandLineFlags: Java command line set to: 
+C 20:16:30.044    4.595s Main   1| java.lang.AssertionError: expected:<[BÜCHER.example]> but was:<[]>
+C 20:16:30.044    4.595s Main   1| 	at org.junit.Assert.fail(Assert.java:89)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.Assert.failNotEquals(Assert.java:835)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.Assert.assertEquals(Assert.java:120)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.Assert.assertEquals(Assert.java:146)
+C 20:16:30.044    4.595s Main   1| 	at org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope(ShieldsSiteStateTest.java:21)
+C 20:16:30.044    4.595s Main   1| 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+C 20:16:30.044    4.595s Main   1| 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:61)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+C 20:16:30.044    4.595s Main   1| 	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:542)
+C 20:16:30.044    4.595s Main   1| 	at org.chromium.base.test.BaseRobolectricTestRunner$HelperTestRunner$1.evaluate(BaseRobolectricTestRunner.java:48)
+C 20:16:30.044    4.595s Main   1| 	at org.chromium.base.test.BaseTimeLimitedStatement.evaluate(BaseTimeLimitedStatement.java:53)
+C 20:16:30.044    4.595s Main   1| 	at org.robolectric.internal.SandboxTestRunner.lambda$executeInSandbox$4(SandboxTestRunner.java:429)
+C 20:16:30.044    4.595s Main   1| 	at org.robolectric.internal.SandboxTestRunner.runInSandbox(SandboxTestRunner.java:455)
+C 20:16:30.044    4.595s Main   1| 	at org.robolectric.internal.SandboxTestRunner.executeInSandbox(SandboxTestRunner.java:420)
+C 20:16:30.044    4.595s Main   1| 	at org.robolectric.internal.SandboxTestRunner$5.evaluate(SandboxTestRunner.java:405)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+C 20:16:30.044    4.595s Main   1| 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+C 20:16:30.044    4.595s Main   1| 	at org.robolectric.internal.SandboxTestRunner.access$000(SandboxTestRunner.java:64)
+C 20:16:30.044    4.595s Main   1| 	at org.robolectric.internal.SandboxTestRunner$4.evaluate(SandboxTestRunner.java:294)
+C 20:16:30.044    4.595s Main   1| 	at org.robolectric.internal.SandboxTestRunner$2.evaluate(SandboxTestRunner.java:260)
+C 20:16:30.044    4.595s Main   1| 	at org.robolectric.internal.SandboxTestRunner$3.lambda$evaluate$0(SandboxTestRunner.java:280)
+C 20:16:30.044    4.595s Main   1| 	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThreadWithClassLoader$1(Sandbox.java:112)
+C 20:16:30.044    4.595s Main   1| 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+C 20:16:30.044    4.595s Main   1| 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+C 20:16:30.045    4.595s Main   1| 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+C 20:16:30.045    4.595s Main   1| 	at java.base/java.lang.Thread.run(Thread.java:1474)
+C 20:16:30.045    4.595s Main   1| [   FAILED ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36] (24 ms)
+C 20:16:30.045    4.595s Main  ********************************************************************************
+C 20:16:30.045    4.595s Main  Summary
+C 20:16:30.045    4.595s Main  ********************************************************************************
+C 20:16:30.045    4.595s Main  [==========] 54 tests ran.
+C 20:16:30.045    4.595s Main  [  PASSED  ] 52 tests.
+C 20:16:30.045    4.595s Main  [  FAILED  ] 2 tests, listed below:
+C 20:16:30.045    4.595s Main  [  FAILED  ] org.chromium.components.adblock.ShieldsSiteStateTest#idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29]
+C 20:16:30.045    4.595s Main  [  FAILED  ] org.chromium.components.adblock.ShieldsSiteStateTest#idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36]
+C 20:16:30.045    4.595s Main  
+C 20:16:30.045    4.595s Main  2 FAILED TESTS
+C 20:16:30.045    4.595s Main  ********************************************************************************
+C 20:16:30.045    4.596s Main  
+    2 Test(s) failed.
+    Rerun failed tests with copy and pastable command:
+        out/x64/bin/run_roadium_shields_junit_tests --json-results-file out/x64/card08-test-results/final-java.json --test-launcher-filter-file=out/x64/rerun_failed_tests.filter
+    
+C 20:16:30.052    4.602s Main  RAW LOGS: file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_18T20_16_25/raw_logs/raw_logs.txt
+C 20:16:30.063    4.613s Main  TEST RESULTS: file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_18T20_16_25/test_results_presentation/test_results_presentation.html

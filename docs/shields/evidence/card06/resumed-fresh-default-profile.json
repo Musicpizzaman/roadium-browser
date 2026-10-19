@@ -1,0 +1,176 @@
+{
+  "adblock": {
+    "install_first_run_subscriptions": false,
+    "last_used_schema_version": "Apu+MU09OCFx11xibV1gU0afrAVCmbvSp8K2NKDV2Yc=",
+    "subscription_metadata": {
+      "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": {
+        "download_count": 1,
+        "error_count": 0,
+        "expiration_time": "13436772427168778",
+        "last_installation_time": "13436768827168755",
+        "roadium_diagnostics": {
+          "active_privileged": true,
+          "active_rules": {
+            "accepted": 3861,
+            "parser_rejected": 48,
+            "prohibited_privilege": 0,
+            "unsafe_arguments": 28,
+            "unsupported_commands": 518,
+            "unsupported_options": 0
+          },
+          "downloaded": true,
+          "error": "",
+          "fallback_attempted": false,
+          "fallback_outcome": "",
+          "last_success": "13436768827168826",
+          "last_success_source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+          "parsed": true,
+          "parsed_privileged": true,
+          "primary_failure": "",
+          "recovery": "current",
+          "rules": {
+            "accepted": 3861,
+            "parser_rejected": 48,
+            "prohibited_privilege": 0,
+            "unsafe_arguments": 28,
+            "unsupported_commands": 518,
+            "unsupported_options": 0
+          },
+          "source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+          "stage": 4
+        },
+        "version": "202610130952"
+      },
+      "https://uazo.github.io/cromite/filters/badblock_lite.txt": {
+        "download_count": 1,
+        "error_count": 0,
+        "expiration_time": "13436772427026436",
+        "last_installation_time": "13436768827026389",
+        "roadium_diagnostics": {
+          "active_privileged": false,
+          "active_rules": {
+            "accepted": 14664,
+            "parser_rejected": 873,
+            "prohibited_privilege": 0,
+            "unsafe_arguments": 0,
+            "unsupported_commands": 0,
+            "unsupported_options": 0
+          },
+          "downloaded": true,
+          "error": "",
+          "fallback_attempted": false,
+          "fallback_outcome": "",
+          "last_success": "13436768827026551",
+          "last_success_source": "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+          "parsed": true,
+          "parsed_privileged": false,
+          "primary_failure": "",
+          "recovery": "current",
+          "rules": {
+            "accepted": 14664,
+            "parser_rejected": 873,
+            "prohibited_privilege": 0,
+            "unsafe_arguments": 0,
+            "unsupported_commands": 0,
+            "unsupported_options": 0
+          },
+          "source": "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+          "stage": 4
+        },
+        "version": "04October2026v1"
+      },
+      "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt": {
+        "download_count": 1,
+        "error_count": 0,
+        "expiration_time": "13437200827825926",
+        "last_installation_time": "13436768827825903",
+        "roadium_diagnostics": {
+          "active_privileged": false,
+          "active_rules": {
+            "accepted": 102259,
+            "parser_rejected": 0,
+            "prohibited_privilege": 0,
+            "unsafe_arguments": 0,
+            "unsupported_commands": 0,
+            "unsupported_options": 0
+          },
+          "downloaded": true,
+          "error": "",
+          "fallback_attempted": false,
+          "fallback_outcome": "",
+          "last_success": "13436768827826012",
+          "last_success_source": "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+          "parsed": true,
+          "parsed_privileged": false,
+          "primary_failure": "",
+          "recovery": "current",
+          "rules": {
+            "accepted": 102259,
+            "parser_rejected": 0,
+            "prohibited_privilege": 0,
+            "unsafe_arguments": 0,
+            "unsupported_commands": 0,
+            "unsupported_options": 0
+          },
+          "source": "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+          "stage": 4
+        },
+        "version": ""
+      },
+      "https://uazo.github.io/cromite/filters/easylist.txt": {
+        "download_count": 1,
+        "error_count": 0,
+        "expiration_time": "13436855227460538",
+        "last_installation_time": "13436768827460513",
+        "roadium_diagnostics": {
+          "active_privileged": false,
+          "active_rules": {
+            "accepted": 81698,
+            "parser_rejected": 5,
+            "prohibited_privilege": 37,
+            "unsafe_arguments": 0,
+            "unsupported_commands": 0,
+            "unsupported_options": 0
+          },
+          "downloaded": true,
+          "error": "",
+          "fallback_attempted": false,
+          "fallback_outcome": "",
+          "last_success": "13436768827460610",
+          "last_success_source": "https://uazo.github.io/cromite/filters/easylist.txt",
+          "parsed": true,
+          "parsed_privileged": false,
+          "primary_failure": "",
+          "recovery": "current",
+          "rules": {
+            "accepted": 81698,
+            "parser_rejected": 5,
+            "prohibited_privilege": 37,
+            "unsafe_arguments": 0,
+            "unsupported_commands": 0,
+            "unsupported_options": 0
+          },
+          "source": "https://uazo.github.io/cromite/filters/easylist.txt",
+          "stage": 4
+        },
+        "version": "202610130952"
+      }
+    }
+  },
+  "filtering": {
+    "configurations": {
+      "adblock": {
+        "domains": [],
+        "enabled": true,
+        "filters": [],
+        "subscriptions": [
+          "https://uazo.github.io/cromite/filters/easylist.txt",
+          "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+          "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+          "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt"
+        ],
+        "temp_filters": []
+      }
+    }
+  }
+}

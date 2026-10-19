@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "inputs": [
+    {
+      "accepted": 13868,
+      "parser_rejected": 0,
+      "prohibited_privilege": 0,
+      "sha256": "68a0ecb5f6f9dd5c8569ab0cbdb763cd81e8720007aead471bdd908cd542a5e4",
+      "unsafe_arguments": 0,
+      "unsupported_commands": 0,
+      "unsupported_options": 0,
+      "url": "https://uazo.github.io/cromite/filters/fanboy-social.txt"
+    },
+    {
+      "accepted": 1372,
+      "parser_rejected": 0,
+      "prohibited_privilege": 0,
+      "sha256": "b62baa07dc887a1c45ce3babcecfcd75c9c9d0806376b2355de6757eb28e636e",
+      "unsafe_arguments": 0,
+      "unsupported_commands": 0,
+      "unsupported_options": 0,
+      "url": "https://uazo.github.io/cromite/filters/fanboy-notifications.txt"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Drafting bounded test implementation for the fifth-overlay update. The update introduces fallback logic for approved EasyList transports, replacing terminal errors with a fallback attempt. Tests must now account for `primary_failure`/`fallback_outcome` diagnostics and the new `OngoingDownload` struct. Key scenarios include valid primary downloads, primary failure triggering successful fallback (canonical identity), dual failures (callback/error count), race conditions (cancellation/stale primary vs. stale conversion), and metadata rejection (redirects). Existing tests like `HttpFailureHasReason...` and `StaleConversion...` require updates to reflect that a primary failure is no longer necessarily terminal.\",\n  \"architecture_observations\": [\n    \"`OngoingDownload` is now a struct instead of a tuple.\",\n    \"Approved transports now support a single fallback attempt before terminal error.\",\n    \"Canonical identity is preserved for approved mappings.\",\n    \"New diagnostics: `primary_failure`, `fallback_outcome`, and `fallback_attempted`.\",\n    \"Strict transport policy: redirects are rejected for approved lists.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"components/adblock/test/shields_diagnostics_unittest.cc\",\n      \"change\": \"Add new test cases for fallback logic and update existing failure tests to handle the fallback attempt phase.\"\n    }\n  ],\n  \"patch\": \"\",\n  \"risks\": [\n    \"Existing tests assuming immediate failure on primary error will fail.\",\n    \"Race conditions between stale primary and stale conversion might be harder to reproduce with new struct-based state.\"\n  ],\n  \"tests\": [\n    \"Valid primary (no fallback).\",\n    \"Primary failure -> Fallback success (canonical identity).\",\n    \"Both failure (check error count/callback).\",\n    \"Cancelled/Stale primary vs Stale conversion race.\",\n    \"Metadata redirect rejection.\",\n    \"Lookalikes (no fallback).\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Drafting bounded test implementation for the fifth-overlay update. The update introduces fallback logic for approved EasyList transports, replacing terminal errors with a fallback attempt. Tests must now account for `primary_failure`/`fallback_outcome` diagnostics and the new `OngoingDownload` struct. Key scenarios include valid primary downloads, primary failure triggering successful fallback (canonical identity), dual failures (callback/error count), race conditions (cancellation/stale primary vs. stale conversion), and metadata rejection (redirects). Existing tests like `HttpFailureHasReason...` and `StaleConversion...` require updates to reflect that a primary failure is no longer necessarily terminal.",
+    "architecture_observations": [
+      "`OngoingDownload` is now a struct instead of a tuple.",
+      "Approved transports now support a single fallback attempt before terminal error.",
+      "Canonical identity is preserved for approved mappings.",
+      "New diagnostics: `primary_failure`, `fallback_outcome`, and `fallback_attempted`.",
+      "Strict transport policy: redirects are rejected for approved lists."
+    ],
+    "proposed_changes": [
+      {
+        "file": "components/adblock/test/shields_diagnostics_unittest.cc",
+        "change": "Add new test cases for fallback logic and update existing failure tests to handle the fallback attempt phase."
+      }
+    ],
+    "patch": "",
+    "risks": [
+      "Existing tests assuming immediate failure on primary error will fail.",
+      "Race conditions between stale primary and stale conversion might be harder to reproduce with new struct-based state."
+    ],
+    "tests": [
+      "Valid primary (no fallback).",
+      "Primary failure -> Fallback success (canonical identity).",
+      "Both failure (check error count/callback).",
+      "Cancelled/Stale primary vs Stale conversion race.",
+      "Metadata redirect rejection.",
+      "Lookalikes (no fallback)."
+    ]
+  },
+  "isError": false
+}

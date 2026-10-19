@@ -1,0 +1,14 @@
+[
+  {
+    "file": "easylist.fb",
+    "sha256": "0dd8cfbf16b64b283f5cf3fd6d79c5279c8c916875e76b1d94508e5bc70eebfc",
+    "bytes": 8184160,
+    "identical": true
+  },
+  {
+    "file": "anticv.fb",
+    "sha256": "df1dba75797d72474a6d296b04c69fc58108fda3effab52dd64cac04de965dd0",
+    "bytes": 309424,
+    "identical": true
+  }
+]

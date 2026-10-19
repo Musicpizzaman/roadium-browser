@@ -1,0 +1,20 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The diff implements the requested usability revisions for the Shields per-site panel. It successfully moves the activity count and action buttons (Save Off, Session Action, and Exception removals) above the verbose scope and attribution diagnostics. The activity count is correctly calculated using AdblockController before display. String resources were updated to improve clarity (e.g., replacing 'Session exceptions' with 'Temporary exceptions' and refining the activity scope description). No behavioral logic or API changes were introduced, maintaining architectural consistency.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"No new unit tests were added to verify the UI ordering, but the logic remains unchanged from the previous state.\"\n  ],\n  \"recommended_changes\": []\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The diff implements the requested usability revisions for the Shields per-site panel. It successfully moves the activity count and action buttons (Save Off, Session Action, and Exception removals) above the verbose scope and attribution diagnostics. The activity count is correctly calculated using AdblockController before display. String resources were updated to improve clarity (e.g., replacing 'Session exceptions' with 'Temporary exceptions' and refining the activity scope description). No behavioral logic or API changes were introduced, maintaining architectural consistency.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [],
+    "security_issues": [],
+    "test_gaps": [
+      "No new unit tests were added to verify the UI ordering, but the logic remains unchanged from the previous state."
+    ],
+    "recommended_changes": []
+  },
+  "isError": false
+}

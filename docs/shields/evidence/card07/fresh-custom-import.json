@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "valid_custom_list_imported_through_UI": true,
+  "manual_rule_added_through_UI": true,
+  "both_survived_Strict_and_restore_Balanced": true,
+  "selected_subscriptions": [
+    "https://uazo.github.io/cromite/filters/easylist.txt",
+    "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+    "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+    "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+    "https://custom.card07.invalid/list.txt"
+  ],
+  "manual_rules": [
+    "##.card07-custom"
+  ],
+  "global_enabled_kept": true,
+  "advanced_default_kept": true
+}

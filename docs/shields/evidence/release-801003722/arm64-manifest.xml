@@ -1,0 +1,144 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:compileSdkVersion="37" android:compileSdkVersionCodename="17" android:isolatedSplits="true" android:versionCode="801003722" android:versionName="153.0.8010.37" package="io.github.musicpizzaman.roadium" platformBuildVersionCode="37" platformBuildVersionName="17">
+  <uses-sdk android:minSdkVersion="31" android:targetSdkVersion="36"/>
+  <uses-feature android:glEsVersion="0x00030000"/>
+  <uses-feature android:name="android.hardware.type.automotive" android:required="true"/>
+  <uses-feature android:name="android.hardware.wifi" android:required="false"/>
+  <uses-feature android:name="android.hardware.screen.portrait" android:required="false"/>
+  <uses-feature android:name="android.hardware.screen.landscape" android:required="false"/>
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+  <uses-permission-sdk-23 android:name="android.permission.ACCESS_WIFI_STATE"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission-sdk-23 android:maxSdkVersion="30" android:name="android.permission.BLUETOOTH_ADMIN"/>
+  <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_CONNECT"/>
+  <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_ADVERTISE"/>
+  <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH"/>
+  <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="0x00010000"/>
+  <uses-permission-sdk-23 android:name="android.permission.REORDER_TASKS"/>
+  <uses-permission-sdk-23 android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+  <uses-permission android:name="android.permission.CAMERA"/>
+  <uses-permission android:name="android.permission.CAPTURE_KEYBOARD"/>
+  <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+  <uses-permission android:name="android.permission.RUN_USER_INITIATED_JOBS"/>
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+  <uses-permission android:name="android.permission.NFC"/>
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+  <uses-permission android:name="android.permission.REPOSITION_SELF_WINDOWS"/>
+  <uses-permission-sdk-23 android:name="android.permission.USE_BIOMETRIC"/>
+  <uses-permission-sdk-23 android:name="android.permission.USE_FINGERPRINT"/>
+  <uses-permission android:name="android.permission.VIBRATE"/>
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.CREDENTIAL_MANAGER_QUERY_CANDIDATE_CREDENTIALS"/>
+  <uses-permission android:name="android.permission.CREDENTIAL_MANAGER_SET_ALLOWED_PROVIDERS"/>
+  <uses-permission android:name="android.permission.CREDENTIAL_MANAGER_SET_ORIGIN"/>
+  <uses-permission android:name="android.permission.QUERY_ADVANCED_PROTECTION_MODE"/>
+  <uses-permission android:name="android.permission.USE_LOOPBACK_INTERFACE"/>
+  <permission android:name="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:protectionLevel="0x00000002"/>
+  <permission android:name="io.github.musicpizzaman.roadium.permission.READ_WRITE_BOOKMARK_FOLDERS" android:protectionLevel="0x00000003"/>
+  <permission android:name="io.github.musicpizzaman.roadium.TOS_ACKED" android:protectionLevel="0x00000003"/>
+  <permission android:label="Debug web pages" android:name="io.github.musicpizzaman.roadium.permission.DEBUG" android:protectionLevel="0x00000002"/>
+  <uses-permission android:name="io.github.musicpizzaman.roadium.permission.READ_WRITE_BOOKMARK_FOLDERS"/>
+  <uses-permission android:name="io.github.musicpizzaman.roadium.TOS_ACKED"/>
+  <uses-permission android:name="com.chrome.permission.DEVICE_EXTRAS"/>
+  <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+  <uses-permission android:name="android.permission.USE_PINNED_WINDOWING_LAYER"/>
+  <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
+  <uses-feature android:name="android.hardware.camera" android:required="false"/>
+  <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+  <uses-feature android:name="android.hardware.microphone" android:required="false"/>
+  <uses-feature android:name="android.hardware.touchscreen" android:required="false"/>
+  <application android:allowBackup="false" android:appComponentFactory="org.chromium.chrome.browser.base.SplitCompatAppComponentFactory" android:enableOnBackInvokedCallback="false" android:gwpAsanMode="1" android:icon="0x7f090324" android:label="Roadium Browser" android:largeHeap="false" android:manageSpaceActivity="0x7f140b54" android:memtagMode="1" android:name="org.chromium.chrome.browser.base.SplitChromeApplication" android:networkSecurityConfig="0x7f180036" android:roundIcon="0x7f090325" android:supportsRtl="true" android:zygotePreloadName="org.chromium.content_public.app.ZygotePreload" android:zygotePreloadNativeLib="libchrome.so">
+    <meta-data android:name="org.chromium.content.browser.NUM_SANDBOXED_SERVICES" android:value="40"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService0" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process0" android:useAppZygote="true"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService1" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process1"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService2" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process2"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService3" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process3"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService4" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process4"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService5" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process5"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService6" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process6"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService7" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process7"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService8" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process8"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService9" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process9"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService10" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process10"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService11" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process11"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService12" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process12"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService13" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process13"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService14" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process14"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService15" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process15"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService16" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process16"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService17" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process17"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService18" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process18"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService19" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process19"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService20" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process20"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService21" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process21"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService22" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process22"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService23" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process23"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService24" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process24"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService25" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process25"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService26" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process26"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService27" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process27"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService28" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process28"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService29" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process29"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService30" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process30"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService31" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process31"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService32" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process32"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService33" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process33"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService34" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process34"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService35" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process35"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService36" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process36"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService37" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process37"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService38" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process38"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService39" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process39"/>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.NativeOnlySandboxedProcessService0" android:nativeService="true" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process0" android:useAppZygote="true">
+      <property android:name="android.app.PROPERTY_NATIVE_SERVICE_LIBRARY_NAME" android:value="libchrome.so"/>
+      <property android:name="android.app.PROPERTY_NATIVE_SERVICE_FUNCTION_NAME" android:value="NativeChildProcessService_onCreate"/>
+    </service>
+    <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.NativeOnlySandboxedProcessService1" android:nativeService="true" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":sandboxed_process1">
+      <property android:name="android.app.PROPERTY_NATIVE_SERVICE_LIBRARY_NAME" android:value="libchrome.so"/>
+      <property android:name="android.app.PROPERTY_NATIVE_SERVICE_FUNCTION_NAME" android:value="NativeChildProcessService_onCreate"/>
+    </service>
+    <meta-data android:name="org.chromium.content.browser.NUM_PRIVILEGED_SERVICES" android:value="10"/>
+    <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService0" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":privileged_process0"/>
+    <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService1" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":privileged_process1"/>
+    <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService2" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":privileged_process2"/>
+    <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService3" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":privileged_process3"/>
+    <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService4" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":privileged_process4"/>
+    <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService5" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":privileged_process5"/>
+    <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService6" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":privileged_process6"/>
+    <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService7" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":privileged_process7"/>
+    <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService8" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":privileged_process8"/>
+    <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService9" android:permission="io.github.musicpizzaman.roadium.permission.CHILD_SERVICE" android:process=":privileged_process9"/>
+    <meta-data android:name="android.allow_multiple_resumed_activities" android:value="true"/>
+    <meta-data android:name="com.samsung.android.sdk.multiwindow.enable" android:value="true"/>
+    <meta-data android:name="com.samsung.android.sdk.multiwindow.penwindow.enable" android:value="true"/>
+    <meta-data android:name="android.content.APP_RESTRICTIONS" android:resource="0x7f18000a"/>
+    <provider android:authorities="io.github.musicpizzaman.roadium.FileProvider" android:exported="false" android:grantUriPermissions="true" android:name="org.chromium.chrome.browser.util.ChromeFileProvider">
+      <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="0x7f18001e"/>
+    </provider>
+    <provider android:authorities="io.github.musicpizzaman.roadium.DownloadFileProvider" android:exported="false" android:grantUriPermissions="true" android:name="org.chromium.chrome.browser.download.DownloadFileProvider">
+      <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="0x7f18001e"/>
+    </provider>
+    <provider android:authorities="io.github.musicpizzaman.roadium.DropDataProvider" android:exported="false" android:grantUriPermissions="true" android:name="org.chromium.ui.dragdrop.DropDataContentProvider"/>
+    <provider android:authorities="io.github.musicpizzaman.roadium.PdfContentProvider" android:exported="false" android:grantUriPermissions="true" android:name="org.chromium.chrome.browser.pdf.PdfContentProvider"/>
+    <provider android:authorities="io.github.musicpizzaman.roadium.ChromeBrowserProvider;io.github.musicpizzaman.roadium.browser;io.github.musicpizzaman.roadium" android:exported="true" android:name="org.chromium.chrome.browser.provider.ChromeBrowserProvider">
+      <path-permission android:path="/bookmarks/search_suggest_query" android:readPermission="android.permission.GLOBAL_SEARCH"/>
+    </provider>
+    <provider android:authorities="io.github.musicpizzaman.roadium.PageContentProvider" android:exported="false" android:grantUriPermissions="true" android:name="org.chromium.chrome.browser.provider.PageContentProvider"/>
+    <provider android:authorities="io.github.musicpizzaman.roadium.ScreenshotContentProvider" android:exported="false" android:grantUriPermissions="true" android:name="org.chromium.chrome.browser.screenshotprovider.ScreenshotContentProvider"/>
+    <provider android:authorities="io.github.musicpizzaman.roadium.AutofillThirdPartyModeContentProvider" android:exported="true" android:name="org.chromium.chrome.browser.autofill.AutofillThirdPartyModeContentProvider"/>
+    <service android:exported="false" android:name="org.chromium.components.background_task_scheduler.internal.BackgroundTaskJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+    <receiver android:exported="false" android:name="org.chromium.components.background_task_scheduler.internal.BackgroundTaskBroadcastReceiver"/>
+  </application>
+</manifest>

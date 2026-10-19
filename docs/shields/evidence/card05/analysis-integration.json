@@ -1,0 +1,33 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Audit of Card05 restart recovery integration reveals a potential race condition and state mismatch during the transition from invalid current subscriptions to valid previous/bundled ones. The `PreloadedSubscriptionProviderImpl` correctly manages bundled fallback via `UpdatePreloadedSubscription`, but the orchestration between `SubscriptionPersistentStorage::LoadSubscriptions` and the `SubscriptionCollectionImpl` update cycle lacks explicit ordering for async cancellation. If a storage load returns an invalid set (e.g., corrupted files), the system must ensure the `SubscriptionCollection` transitions to the next best state (bundled or empty) without stale updates from previous async operations overwriting the recovery state. Minimal changes involve ensuring `UpdateSubscriptions` in the orchestrator (not fully shown, but implied) handles the 'invalid -> valid' transition by validating the loaded set before applying it to the collection, and ensuring `PreloadedSubscriptionProviderImpl` is re-triggered to fill gaps left by invalid storage entries.\",\n  \"architecture_observations\": [\n    \"`SubscriptionPersistentStorage` uses async `LoadSubscriptions` which can return an empty or partial list if files are corrupted.\",\n    \"`PreloadedSubscriptionProviderImpl` manages bundled subscriptions independently of disk storage, acting as a fallback.\",\n    \"The `SubscriptionCollectionImpl` is immutable once constructed; updates require replacing the entire collection instance.\",\n    \"There is no explicit versioning or sequence numbering in `LoadSubscriptions` to prevent stale async results from overwriting newer state.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"components/adblock/core/subscription/preloaded_subscription_provider_impl.cc\",\n      \"change\": \"Ensure `UpdatePreloadedSubscription` is called with the most recent `installed_subscriptions` and `pending_subscriptions` to prevent stale state during recovery transitions.\"\n    }\n  ],\n  \"patch\": \"\",\n  \"risks\": [\n    \"Async race condition: A slow `LoadSubscriptions` might return after a newer `UpdateSubscriptions` call, causing a rollback to an older/invalid state.\",\n    \"Identity mismatch: If bundled subscriptions have different schema versions than expected, they will be rejected, leaving the user with no protection.\"\n  ],\n  \"tests\": [\n    \"Unit test: Simulate `LoadSubscriptions` returning an empty list followed by a successful `UpdateSubscriptions` call to verify bundled fallback.\",\n    \"Integration test: Trigger a restart with corrupted disk files and verify `PreloadedSubscriptionProviderImpl` provides the expected fallback subscriptions.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Audit of Card05 restart recovery integration reveals a potential race condition and state mismatch during the transition from invalid current subscriptions to valid previous/bundled ones. The `PreloadedSubscriptionProviderImpl` correctly manages bundled fallback via `UpdatePreloadedSubscription`, but the orchestration between `SubscriptionPersistentStorage::LoadSubscriptions` and the `SubscriptionCollectionImpl` update cycle lacks explicit ordering for async cancellation. If a storage load returns an invalid set (e.g., corrupted files), the system must ensure the `SubscriptionCollection` transitions to the next best state (bundled or empty) without stale updates from previous async operations overwriting the recovery state. Minimal changes involve ensuring `UpdateSubscriptions` in the orchestrator (not fully shown, but implied) handles the 'invalid -> valid' transition by validating the loaded set before applying it to the collection, and ensuring `PreloadedSubscriptionProviderImpl` is re-triggered to fill gaps left by invalid storage entries.",
+    "architecture_observations": [
+      "`SubscriptionPersistentStorage` uses async `LoadSubscriptions` which can return an empty or partial list if files are corrupted.",
+      "`PreloadedSubscriptionProviderImpl` manages bundled subscriptions independently of disk storage, acting as a fallback.",
+      "The `SubscriptionCollectionImpl` is immutable once constructed; updates require replacing the entire collection instance.",
+      "There is no explicit versioning or sequence numbering in `LoadSubscriptions` to prevent stale async results from overwriting newer state."
+    ],
+    "proposed_changes": [
+      {
+        "file": "components/adblock/core/subscription/preloaded_subscription_provider_impl.cc",
+        "change": "Ensure `UpdatePreloadedSubscription` is called with the most recent `installed_subscriptions` and `pending_subscriptions` to prevent stale state during recovery transitions."
+      }
+    ],
+    "patch": "",
+    "risks": [
+      "Async race condition: A slow `LoadSubscriptions` might return after a newer `UpdateSubscriptions` call, causing a rollback to an older/invalid state.",
+      "Identity mismatch: If bundled subscriptions have different schema versions than expected, they will be rejected, leaving the user with no protection."
+    ],
+    "tests": [
+      "Unit test: Simulate `LoadSubscriptions` returning an empty list followed by a successful `UpdateSubscriptions` call to verify bundled fallback.",
+      "Integration test: Trigger a restart with corrupted disk files and verify `PreloadedSubscriptionProviderImpl` provides the expected fallback subscriptions."
+    ]
+  },
+  "isError": false
+}

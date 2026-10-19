@@ -1,0 +1,19 @@
+{
+  "chrome/browser/adblock/android/adblock_strings.grd": "8bf5d9ff4fed90134bee3a36c9ad96e3b2f1134e846807b7964c00c01a85483a",
+  "chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockSettingsFragment.java": "0eb5273feaa08edc2278edfab9a254fcfa3c6c5caf570ac6b4058a889ec8097d",
+  "components/adblock/android/BUILD.gn": "186ad886a3b8167b0e12c5eef937e0aa4c5b26786b54ce4d88158412542dbff1",
+  "components/adblock/android/filtering_configuration_android.cc": "8eed28a23890a80a2d6515e9150a3ea1332f4e8c2f64b3cca88bcff81ad24c0f",
+  "components/adblock/android/filtering_configuration_android.h": "5b968a707d1d664aaf40cf7674e2d301e26942a9efab86f9fa49105c989674a6",
+  "components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java": "61f14aec3f4bfc813b6ddef68453b77740c464dea602896c133e89e15c443f64",
+  "components/adblock/android/java/src/org/chromium/components/adblock/FilteringConfiguration.java": "291fc7601f6bec0ec62b9ad5c3421d8e79f41c349e5febe5999423dc996d9545",
+  "components/adblock/android/java/src/org/chromium/components/adblock/ShieldsPresets.java": "443ab4ce31a63b9f90efeefe54864c5afbc135a04ecf27bc2287acc6be21cdce",
+  "components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsPresetsTest.java": "803adc925fd03a705cc34100bffd185c81f8577e6248dce7520b74a70ed56490",
+  "components/adblock/core/configuration/filtering_configuration.h": "163f770a9f97c7a16eaa96ceb003a6b51a938b0cd1df84cf703298f58f0488a2",
+  "components/adblock/core/configuration/persistent_filtering_configuration.cc": "c4f4826283b5f1db00833427b04775c9252a36ac3c1e5ac0b090b2cd2c15574c",
+  "components/adblock/core/configuration/persistent_filtering_configuration.h": "d2d4060bea724474f55ea29bdb8f9f7f8622150710432c2602cd3e6ade8c0f40",
+  "components/adblock/core/configuration/test/fake_filtering_configuration.cc": "3c6c41428eecb1e270d5719e0f4142515e9624a3f8e0726fbb9918da662477e4",
+  "components/adblock/core/configuration/test/fake_filtering_configuration.h": "b30c2b6795d048d4aa251b767ad6d4573cf5bdc880b44668db0d787e0ca31255",
+  "components/adblock/core/subscription/BUILD.gn": "3618ba4c8845cfb52ac52c8ed333c8174af387eda211952fde365c09dbb163b4",
+  "components/adblock/test/shields_category_inputs.inc": "c3ccfd89f8531023a54d0be30fd836e5ab55895442ea6870e52c26c0d5a62031",
+  "components/adblock/test/shields_presets_unittest.cc": "149b49e62c00e04f0ddf46b0940085db309b2f83df3b5ab7dfca53f7b1a5129b"
+}

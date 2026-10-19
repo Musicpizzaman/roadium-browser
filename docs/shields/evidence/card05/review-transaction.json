@@ -1,0 +1,63 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The diff implements a robust, atomic transaction system for adblock subscription storage. It introduces a 'Commit' flow that ensures durability via a 'pending' file and 'ReplaceFile' (atomic rename), handles legacy migration with deterministic tie-breaking, and implements a 'Permit' system for cancellation. The architecture correctly separates disk generation limits from plaintext transport limits. Key features include multi-stage validation, directory syncing (fsync), and a 'Prune' mechanism to clean up orphaned files without risking data loss of valid records.\",\n  \"approved\": true,\n  \"bugs\": [\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"architecture_issues\": [\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"security_issues\": [\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"test_gaps\": [\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"recommended_changes\": [\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The diff implements a robust, atomic transaction system for adblock subscription storage. It introduces a 'Commit' flow that ensures durability via a 'pending' file and 'ReplaceFile' (atomic rename), handles legacy migration with deterministic tie-breaking, and implements a 'Permit' system for cancellation. The architecture correctly separates disk generation limits from plaintext transport limits. Key features include multi-stage validation, directory syncing (fsync), and a 'Prune' mechanism to clean up orphaned files without risking data loss of valid records.",
+    "approved": true,
+    "bugs": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "architecture_issues": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "security_issues": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "test_gaps": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "recommended_changes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "isError": false
+}

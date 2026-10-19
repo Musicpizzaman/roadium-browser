@@ -1,0 +1,105 @@
+{
+  "adblock": {
+    "install_first_run_subscriptions": false,
+    "last_used_schema_version": "Apu+MU09OCFx11xibV1gU0afrAVCmbvSp8K2NKDV2Yc=",
+    "privilegedfilters_enabled": true,
+    "subscription_metadata": {
+      "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": {
+        "download_count": 9,
+        "error_count": 0,
+        "expiration_time": "13437802613849241",
+        "last_installation_time": "13436593013849192",
+        "roadium_diagnostics": {
+          "active_privileged": true,
+          "active_rules": {
+            "accepted": 3,
+            "parser_rejected": 0,
+            "prohibited_privilege": 0,
+            "unsafe_arguments": 0,
+            "unsupported_commands": 0,
+            "unsupported_options": 0
+          },
+          "downloaded": true,
+          "error": "",
+          "fallback_attempted": true,
+          "fallback_outcome": "activated",
+          "last_success": "13436593013849340",
+          "last_success_source": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/abp-filters-anti-cv.txt",
+          "parsed": true,
+          "parsed_privileged": true,
+          "primary_failure": "Approved filter transport returned HTML",
+          "rules": {
+            "accepted": 3,
+            "parser_rejected": 0,
+            "prohibited_privilege": 0,
+            "unsafe_arguments": 0,
+            "unsupported_commands": 0,
+            "unsupported_options": 0
+          },
+          "source": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/abp-filters-anti-cv.txt",
+          "stage": 4
+        },
+        "version": "203001010007"
+      },
+      "https://uazo.github.io/cromite/filters/easylist.txt": {
+        "download_count": 8,
+        "error_count": 0,
+        "expiration_time": "13437802613793366",
+        "last_installation_time": "13436593013793346",
+        "roadium_diagnostics": {
+          "active_privileged": false,
+          "active_rules": {
+            "accepted": 2,
+            "parser_rejected": 0,
+            "prohibited_privilege": 0,
+            "unsafe_arguments": 0,
+            "unsupported_commands": 0,
+            "unsupported_options": 0
+          },
+          "downloaded": true,
+          "error": "",
+          "fallback_attempted": true,
+          "fallback_outcome": "activated",
+          "last_success": "13436593013793442",
+          "last_success_source": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylist.txt",
+          "parsed": true,
+          "parsed_privileged": false,
+          "primary_failure": "Approved filter transport returned HTML",
+          "rules": {
+            "accepted": 2,
+            "parser_rejected": 0,
+            "prohibited_privilege": 0,
+            "unsafe_arguments": 0,
+            "unsupported_commands": 0,
+            "unsupported_options": 0
+          },
+          "source": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylist.txt",
+          "stage": 4
+        },
+        "version": "203001010007"
+      }
+    },
+    "subscription_signatures": {
+      "06F686C88DC3BA12D1752DE303BF44E7.fb": "PfHWaU7oz82264FdjZi5ngsYPZik61v4UnEB7my4F4Q=",
+      "17842E3E152F17FFB80EF4762F0F4F5A.fb": "i023jGrZYFp/siudM6tjiDjKrOesuPGR8RdKFeFR52A="
+    }
+  },
+  "filtering": {
+    "configurations": {
+      "adblock": {
+        "domains": [
+          "card02-exception.invalid"
+        ],
+        "enabled": true,
+        "filters": [
+          "||card02-custom.invalid^"
+        ],
+        "subscriptions": [
+          "https://uazo.github.io/cromite/filters/easylist.txt",
+          "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt"
+        ],
+        "temp_filters": []
+      }
+    }
+  }
+}

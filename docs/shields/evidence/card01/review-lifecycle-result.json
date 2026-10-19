@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The PR introduces a manual update batching mechanism for adblock subscriptions. It adds `StartUpdateWithCallback` to `FilteringConfigurationMaintainer` to allow UI-driven updates with a 45-second timeout. The `SubscriptionService` aggregates these results into a `UpdateCheckResult` struct. Key features include handling of 'TimedOut' states where work continues in the background but the UI result is finalized, and preservation of old engine data during failed/cancelled updates. The implementation correctly uses `weak_ptr_factory_` for callbacks and handles sequence checking.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"No unit tests provided for the 45-second timeout logic.\",\n    \"No tests for concurrent `StartUpdateCheck` calls with different batch IDs.\"\n  ],\n  \"recommended_changes\": [\n    \"Consider using a `std::chrono::duration` for the timeout instead of a hardcoded 45 seconds to improve configurability.\",\n    \"Ensure `manual_result_` is cleared or reset properly if a batch fails to start entirely.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The PR introduces a manual update batching mechanism for adblock subscriptions. It adds `StartUpdateWithCallback` to `FilteringConfigurationMaintainer` to allow UI-driven updates with a 45-second timeout. The `SubscriptionService` aggregates these results into a `UpdateCheckResult` struct. Key features include handling of 'TimedOut' states where work continues in the background but the UI result is finalized, and preservation of old engine data during failed/cancelled updates. The implementation correctly uses `weak_ptr_factory_` for callbacks and handles sequence checking.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [],
+    "security_issues": [],
+    "test_gaps": [
+      "No unit tests provided for the 45-second timeout logic.",
+      "No tests for concurrent `StartUpdateCheck` calls with different batch IDs."
+    ],
+    "recommended_changes": [
+      "Consider using a `std::chrono::duration` for the timeout instead of a hardcoded 45 seconds to improve configurability.",
+      "Ensure `manual_result_` is cleared or reset properly if a batch fails to start entirely."
+    ]
+  },
+  "isError": false
+}

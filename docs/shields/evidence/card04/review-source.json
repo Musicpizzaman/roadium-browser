@@ -1,0 +1,23 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The diff implements a strict transport policy for approved filter subscriptions. Key changes include: 1) `ConvertForApprovedTransport` adds validation for file size (32MiB), header format (Adblock Plus versioning), and content (no redirects, valid schema, and rule presence). 2) `AdblockResourceRequestImpl` enforces `DoNotRetry`, a 60s timeout, and `kOmit` credentials for strict transports, while explicitly failing on redirects or offline status. 3) `SubscriptionDownloaderImpl` is refactored to use `UnguessableToken` for request tracking, preventing stale callback execution. 4) `DiscardDownloadedFile` ensures safe cleanup of absolute paths. The architecture correctly preserves the primary/fallback logic while enforcing the new security constraints.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"Verify `DiscardDownloadedFile` behavior with non-absolute paths in unit tests.\",\n    \"Test `OnStrictRedirect` ensures `loader_.reset()` is called to prevent subsequent fetches.\"\n  ],\n  \"recommended_changes\": [\n    \"Ensure `kMaximumApprovedFilterBytes` is consistently used across all validation points if the limit changes.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The diff implements a strict transport policy for approved filter subscriptions. Key changes include: 1) `ConvertForApprovedTransport` adds validation for file size (32MiB), header format (Adblock Plus versioning), and content (no redirects, valid schema, and rule presence). 2) `AdblockResourceRequestImpl` enforces `DoNotRetry`, a 60s timeout, and `kOmit` credentials for strict transports, while explicitly failing on redirects or offline status. 3) `SubscriptionDownloaderImpl` is refactored to use `UnguessableToken` for request tracking, preventing stale callback execution. 4) `DiscardDownloadedFile` ensures safe cleanup of absolute paths. The architecture correctly preserves the primary/fallback logic while enforcing the new security constraints.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [],
+    "security_issues": [],
+    "test_gaps": [
+      "Verify `DiscardDownloadedFile` behavior with non-absolute paths in unit tests.",
+      "Test `OnStrictRedirect` ensures `loader_.reset()` is called to prevent subsequent fetches."
+    ],
+    "recommended_changes": [
+      "Ensure `kMaximumApprovedFilterBytes` is consistently used across all validation points if the limit changes."
+    ]
+  },
+  "isError": false
+}

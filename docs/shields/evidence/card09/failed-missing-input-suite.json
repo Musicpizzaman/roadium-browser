@@ -1,0 +1,22 @@
+{
+  "format": 1,
+  "status": "failed",
+  "mode": "full",
+  "started_utc": "2026-10-18T21:18:29.222901+00:00",
+  "tools": {
+    "regression_checks.py": "a5d87550f4792b616faab8558b66f80dac15ab1cf28ccbbe15c204fc6791d970",
+    "run-regressions.py": "88ab7b3f8c9b15ace76a79dc684b0069541df5cf7123ec1c73a973e0ca02b9be",
+    "release-gates.py": "5590467f4270eac6a8eddc267609527a59d90b39f966f56ead0c9f84fad02e1c",
+    "regression-plan.json": "5f7c8fa1cd958b4f810717d97747988cdc383a98f51f565136c4ad03bebb3341",
+    "test-regression-gates.py": "3cd199710ce5cbf4ccb58b6cdfb34de8751302387b28fc2abb7b02a43e69baef",
+    "test-apply-overlay.py": "06e226e193cb19b188e0f8fcd88a0cced1dbf905612b56ebfa71724d5d2039b4",
+    "test-filter-artifacts.py": "293a506931eaa45c9c286b43cec7efa50492feacdc5daa912a40d665b43454fe",
+    "overlay_series.py": "ea23aae70ca7501348ee8011499f586cf730e01df773f7bea33ded2039cd0ba1",
+    "filter_artifacts.py": "d7178d37fd058d8175549ead2c3d9f05df41241be0bdc8de5824e7d418666b34",
+    "preset_inventory.py": "193a0e573ba5f7df23245bd8396e968e980f568dc9bb63b1f21282962c62481f",
+    "youtube_inventory.py": "72262bcc6d74942056886c6fb67939b4a15c65ca6b226b965b4009db1b42ce2c",
+    "verify-artifacts.py": "3b4c96d3f20f2e0b7209d4de94c5cf47e85ee57afe3cf7c341aac9bb610ef4fb"
+  },
+  "error": "[Errno 2] No such file or directory: '/home/lg/working_dir/roadium/build/roadium/filters/manifest.json'",
+  "completed_utc": "2026-10-18T21:18:29.233337+00:00"
+}

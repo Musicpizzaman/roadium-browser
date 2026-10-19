@@ -1,0 +1,40 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Propose implementation for Card09 regression and release gates. Focus on a deterministic, offline-capable CI pipeline using existing tools. The strategy uses `VerifiedSeries` for source provenance, `youtube_inventory.py` for rule-to-native mapping, and `filter_artifacts.py` for resource integrity. Automation is bounded to build-time and parser-level checks; physical/runtime gates (Automotive/Chevy) remain manual/unresolved. Negative controls are implemented via deliberate fixture corruption (e.g., hash drift, malformed FlatBuffers) to ensure the pipeline fails closed.\",\n  \"architecture_observations\": [\n    \"Existing `VerifiedSeries` provides a robust foundation for ensuring patch-series integrity before any testing occurs.\",\n    \"The `youtube_inventory.py` contract allows for a machine-readable link between static rules and native parser results, enabling 'evidence binding'.\",\n    \"Resource verification is already decoupled into `filter_artifacts.py`, which can be used to detect unauthorized 'Acceptable Ads' inclusions.\",\n    \"The architecture distinguishes between 'build-time' (automated) and 'runtime' (manual/physical) gates, preventing false completion claims.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"tools/roadium/ci_gate_runner.py\",\n      \"change\": \"New script: Orchestrates the 'fail-closed' pipeline. 1. Runs `overlay_series.py` to verify source. 2. Runs `filter_artifacts.py` against the build output. 3. Executes native parser tests using `youtube_inventory.py` results. 4. Validates `verify-artifacts.py` output. 5. Checks for 'negative control' failures (e.g., if a known-bad fixture passes, the gate fails).\"\n    },\n    {\n      \"file\": \"tools/roadium/fixtures/negative_controls.py\",\n      \"change\": \"New module: Provides 'poisoned' fixtures: a corrupt FlatBuffer, a rule with a mismatched SHA-256, and a manifest with an unauthorized fallback mapping. These are used by the CI runner to verify that the gates actually catch regressions.\"\n    }\n  ],\n  \"patch\": \"\",\n  \"risks\": [\n    \"CI runners in forks may lack the full Chromium/Android toolchain (GN, bundletool, aapt2), requiring pre-configured Docker images.\",\n    \"Native parser tests only verify syntax/policy; they do not guarantee JS execution behavior in a real browser engine.\",\n    \"Manual gates (Physical Car) are prone to human error if the evidence collection process is not strictly standardized.\"\n  ],\n  \"tests\": [\n    \"Verify `overlay_series.py` rejects a patch with a single bit-flip in the SHA-256.\",\n    \"Verify `filter_artifacts.py` detects an added 'Acceptable Ads' resource ID.\",\n    \"Verify `youtube_inventory.py` fails if the native test output does not match the frozen rule inventory exactly.\",\n    \"Verify the CI runner fails if `verify-artifacts.py` reports 'pending' for emulator/physical gates.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Propose implementation for Card09 regression and release gates. Focus on a deterministic, offline-capable CI pipeline using existing tools. The strategy uses `VerifiedSeries` for source provenance, `youtube_inventory.py` for rule-to-native mapping, and `filter_artifacts.py` for resource integrity. Automation is bounded to build-time and parser-level checks; physical/runtime gates (Automotive/Chevy) remain manual/unresolved. Negative controls are implemented via deliberate fixture corruption (e.g., hash drift, malformed FlatBuffers) to ensure the pipeline fails closed.",
+    "architecture_observations": [
+      "Existing `VerifiedSeries` provides a robust foundation for ensuring patch-series integrity before any testing occurs.",
+      "The `youtube_inventory.py` contract allows for a machine-readable link between static rules and native parser results, enabling 'evidence binding'.",
+      "Resource verification is already decoupled into `filter_artifacts.py`, which can be used to detect unauthorized 'Acceptable Ads' inclusions.",
+      "The architecture distinguishes between 'build-time' (automated) and 'runtime' (manual/physical) gates, preventing false completion claims."
+    ],
+    "proposed_changes": [
+      {
+        "file": "tools/roadium/ci_gate_runner.py",
+        "change": "New script: Orchestrates the 'fail-closed' pipeline. 1. Runs `overlay_series.py` to verify source. 2. Runs `filter_artifacts.py` against the build output. 3. Executes native parser tests using `youtube_inventory.py` results. 4. Validates `verify-artifacts.py` output. 5. Checks for 'negative control' failures (e.g., if a known-bad fixture passes, the gate fails)."
+      },
+      {
+        "file": "tools/roadium/fixtures/negative_controls.py",
+        "change": "New module: Provides 'poisoned' fixtures: a corrupt FlatBuffer, a rule with a mismatched SHA-256, and a manifest with an unauthorized fallback mapping. These are used by the CI runner to verify that the gates actually catch regressions."
+      }
+    ],
+    "patch": "",
+    "risks": [
+      "CI runners in forks may lack the full Chromium/Android toolchain (GN, bundletool, aapt2), requiring pre-configured Docker images.",
+      "Native parser tests only verify syntax/policy; they do not guarantee JS execution behavior in a real browser engine.",
+      "Manual gates (Physical Car) are prone to human error if the evidence collection process is not strictly standardized."
+    ],
+    "tests": [
+      "Verify `overlay_series.py` rejects a patch with a single bit-flip in the SHA-256.",
+      "Verify `filter_artifacts.py` detects an added 'Acceptable Ads' resource ID.",
+      "Verify `youtube_inventory.py` fails if the native test output does not match the frozen rule inventory exactly.",
+      "Verify the CI runner fails if `verify-artifacts.py` reports 'pending' for emulator/physical gates."
+    ]
+  },
+  "isError": false
+}

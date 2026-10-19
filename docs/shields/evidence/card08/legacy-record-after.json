@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "legacy_raw_unicode_record_preserved": true,
+  "inactive_legacy_entry_not_falsely_claimed_as_working_exception": true,
+  "canonical_punycode_exception_still_disables_and_restores_filtering": true,
+  "fixture_preset": "Standard with owned custom list"
+}

@@ -1,0 +1,33 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Cleanup script review confirms strict containment to user11 (ShieldsCard05) and the specific read-only emulator session. The script verifies the existence of own-server PIDs (8844, 8766) and the read-only emulator before execution. It removes only the specific Card05 temporary files, ADB reverse/forward mappings, and the user11 profile. It restores original network settings and switches back to user10 before terminating the emulator. No global ADB server or unrelated profile data is touched.\",\n  \"architecture_observations\": [\n    \"The script uses a 'prepare' phase to assert the environment state (user11, read-only flags) before any destructive actions.\",\n    \"Process verification is performed via 'netstat' and 'Get-CimInstance' to ensure only the script's own servers and the specific read-only emulator are targeted.\",\n    \"ADB reverse/forward mappings are explicitly removed only for the ports used by the test (443, 8844, 8766, 9223).\",\n    \"The script enforces a 'switch-user' back to 10 and waits for it to be 'RUNNING_UNLOCKED' before removing user11.\",\n    \"The script explicitly avoids modifying the AVD disk directly, relying on 'am stop-user' and 'am remove-user' for cleanup.\",\n    \"Network settings (wifi, mobile_data) are restored based on the 'runtime-state.json' captured at the start of the session.\"\n  ],\n  \"proposed_changes\": [],\n  \"patch\": \"\",\n  \"risks\": [\n    \"If the 'runtime-state.json' is corrupted or missing, the script will fail to start.\",\n    \"The 'adb emu kill' command is a hard stop; if the emulator is not the specific read-only instance, it could affect other sessions (though the 'prepare' check mitigates this).\",\n    \"The script assumes 'powershell.exe' is available and has permissions to query process info.\"\n  ],\n  \"tests\": [\n    \"Verify 'prepare' fails if user is not 11.\",\n    \"Verify 'prepare' fails if emulator is not in read-only mode.\",\n    \"Verify 'adb reverse --remove' only affects the specified ports.\",\n    \"Verify 'am remove-user' succeeds and user10 is active before final exit.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Cleanup script review confirms strict containment to user11 (ShieldsCard05) and the specific read-only emulator session. The script verifies the existence of own-server PIDs (8844, 8766) and the read-only emulator before execution. It removes only the specific Card05 temporary files, ADB reverse/forward mappings, and the user11 profile. It restores original network settings and switches back to user10 before terminating the emulator. No global ADB server or unrelated profile data is touched.",
+    "architecture_observations": [
+      "The script uses a 'prepare' phase to assert the environment state (user11, read-only flags) before any destructive actions.",
+      "Process verification is performed via 'netstat' and 'Get-CimInstance' to ensure only the script's own servers and the specific read-only emulator are targeted.",
+      "ADB reverse/forward mappings are explicitly removed only for the ports used by the test (443, 8844, 8766, 9223).",
+      "The script enforces a 'switch-user' back to 10 and waits for it to be 'RUNNING_UNLOCKED' before removing user11.",
+      "The script explicitly avoids modifying the AVD disk directly, relying on 'am stop-user' and 'am remove-user' for cleanup.",
+      "Network settings (wifi, mobile_data) are restored based on the 'runtime-state.json' captured at the start of the session."
+    ],
+    "proposed_changes": [],
+    "patch": "",
+    "risks": [
+      "If the 'runtime-state.json' is corrupted or missing, the script will fail to start.",
+      "The 'adb emu kill' command is a hard stop; if the emulator is not the specific read-only instance, it could affect other sessions (though the 'prepare' check mitigates this).",
+      "The script assumes 'powershell.exe' is available and has permissions to query process info."
+    ],
+    "tests": [
+      "Verify 'prepare' fails if user is not 11.",
+      "Verify 'prepare' fails if emulator is not in read-only mode.",
+      "Verify 'adb reverse --remove' only affects the specified ports.",
+      "Verify 'am remove-user' succeeds and user10 is active before final exit."
+    ]
+  },
+  "isError": false
+}

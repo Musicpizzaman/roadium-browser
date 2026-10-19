@@ -1,0 +1,72 @@
+{
+  "kind": "page",
+  "time": "2026-10-18T03:48:50.807Z",
+  "result": {
+    "url": "https://www.youtube.com/watch?v=M7lc1UVf-VE",
+    "title": "YouTube Developers Live: Embedded Web Player Customization - YouTube",
+    "video": true,
+    "error": null,
+    "before": {
+      "time": 1.910842,
+      "duration": 1343.661,
+      "paused": false,
+      "ready": 4
+    },
+    "play": true,
+    "after": {
+      "time": 2.91981,
+      "paused": false,
+      "ready": 4
+    },
+    "captions": {
+      "button": true,
+      "disabled": null,
+      "before": "false",
+      "tracks": [
+        {
+          "languageCode": "en",
+          "id": null
+        }
+      ],
+      "after": "true"
+    },
+    "qualities": [
+      "hd720",
+      "large",
+      "medium",
+      "small",
+      "tiny",
+      "auto"
+    ],
+    "qualityBefore": "large",
+    "qualityRequested": "tiny",
+    "qualityAfter": "tiny",
+    "qualityMenu": [
+      "Stable Volume",
+      "Voice boost",
+      "Annotations",
+      "Subtitles/CCOff",
+      "Sleep timerOff",
+      "Playback speedNormal",
+      "Quality144p"
+    ],
+    "qualityOptions": [
+      "Stable Volume",
+      "Voice boost",
+      "Annotations",
+      "Subtitles/CCOff",
+      "Sleep timerOff",
+      "Playback speedNormal",
+      "Quality144p",
+      "720p",
+      "480p",
+      "360p",
+      "240p",
+      "144p",
+      "Auto"
+    ],
+    "selectedQuality": "Quality144p",
+    "qualityAfterUi": "tiny"
+  },
+  "exception": null
+}

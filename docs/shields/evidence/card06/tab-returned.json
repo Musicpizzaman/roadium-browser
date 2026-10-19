@@ -1,0 +1,101 @@
+{
+  "action": "tab-back",
+  "target": "4",
+  "time": "2026-10-18T03:51:47.908Z",
+  "state": {
+    "visibility": "visible",
+    "roadiumProbe": "undefined",
+    "rejectedProbe": "fixture-value",
+    "badValue": "fixture-value",
+    "propertyAd": "undefined",
+    "object": {
+      "playerResponse": {
+        "videoDetails": {
+          "title": "normal"
+        }
+      },
+      "ordinary": true
+    },
+    "array": [
+      {
+        "playerResponse": {
+          "videoDetails": {
+            "title": "array content"
+          }
+        }
+      }
+    ],
+    "response": {
+      "playerResponse": {
+        "videoDetails": {
+          "title": "response content"
+        }
+      }
+    },
+    "missing": {
+      "ordinary": true
+    },
+    "removalGrammar": {
+      "entries": [
+        {
+          "command": {
+            "reelWatchEndpoint": {
+              "adClientParams": {
+                "isAd": true
+              }
+            }
+          }
+        },
+        {
+          "ordinary": true
+        }
+      ]
+    },
+    "malformed": true,
+    "aborted": true,
+    "domHidden": true,
+    "frames": [
+      {
+        "probe": "undefined",
+        "json": {
+          "playerResponse": {
+            "videoDetails": {
+              "title": "frame content"
+            }
+          }
+        }
+      }
+    ],
+    "videos": [
+      {
+        "id": "ad1",
+        "time": 1.001,
+        "duration": 1.001,
+        "paused": true,
+        "ended": true,
+        "error": null
+      },
+      {
+        "id": "ad2",
+        "time": 1.001,
+        "duration": 1.001,
+        "paused": true,
+        "ended": true,
+        "error": null
+      },
+      {
+        "id": "ordinary",
+        "time": 0.677148,
+        "duration": 1.001,
+        "paused": false,
+        "ended": false,
+        "error": null
+      }
+    ],
+    "errors": []
+  },
+  "operation": {
+    "activated": "4"
+  },
+  "exceptions": []
+}

@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "real_blocked_request_refresh": 3,
+  "embedded_frame_requests_counted_in_own_page": 5,
+  "same_document_count_retained_and_old_panel_closed": true,
+  "reload_resets_document_counter": true,
+  "navigation_closes_panel_and_diagnostics_and_changes_counter_owner": true,
+  "light_dark_labels_and_touch_targets_checked": true
+}

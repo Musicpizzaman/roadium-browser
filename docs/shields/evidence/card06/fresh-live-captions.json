@@ -1,0 +1,30 @@
+{
+  "action": "live-captions",
+  "target": "1",
+  "time": "2026-10-18T03:48:45.052Z",
+  "state": {
+    "url": "https://www.youtube.com/watch?v=M7lc1UVf-VE",
+    "title": "YouTube Developers Live: Embedded Web Player Customization - YouTube",
+    "ready": "complete",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+    "videos": [
+      {
+        "time": 0,
+        "duration": 1343.661,
+        "paused": true,
+        "ready": 4,
+        "error": null
+      }
+    ],
+    "adShowing": false,
+    "errorText": null,
+    "consent": false,
+    "frames": [
+      {
+        "src": "about:blank",
+        "title": ""
+      }
+    ]
+  },
+  "exceptions": []
+}

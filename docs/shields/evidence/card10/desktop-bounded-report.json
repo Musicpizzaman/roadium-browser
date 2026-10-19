@@ -1,0 +1,2645 @@
+{
+  "schema": 1,
+  "samples": [
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:00.290Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:00.550Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:00.811Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:01.075Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:01.336Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:01.600Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:01.880Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:02.145Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:02.405Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:02.680Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:02.940Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:03.205Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:03.480Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:03.740Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:04.005Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:04.280Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:04.545Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:04.815Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:05.076Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:05.335Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:05.605Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:05.880Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:06.145Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:06.410Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:06.675Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:06.935Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:07.205Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:07.480Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:07.740Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:08.005Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:08.275Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:08.546Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:08.810Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:09.075Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:09.335Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:09.600Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:09.875Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:10.135Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:10.400Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    },
+    {
+      "reason": "manual",
+      "time": "2026-10-18T04:35:10.675Z",
+      "window": {
+        "innerWidth": 1988,
+        "innerHeight": 964,
+        "outerWidth": 4082,
+        "outerHeight": 1098,
+        "devicePixelRatio": 1.25
+      },
+      "screen": {
+        "width": 4096,
+        "height": 1152,
+        "availWidth": 4096,
+        "availHeight": 1112
+      },
+      "document": {
+        "clientWidth": 1988,
+        "clientHeight": 964
+      },
+      "visualViewport": {
+        "width": 1988,
+        "height": 964,
+        "scale": 1,
+        "offsetLeft": 0,
+        "offsetTop": 0
+      },
+      "rects": {
+        "surface": {
+          "x": 0,
+          "y": 0,
+          "width": 1988,
+          "height": 964,
+          "right": 1988,
+          "bottom": 964
+        },
+        "player": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        },
+        "video": {
+          "x": 18,
+          "y": 319.6000061035156,
+          "width": 1233.9124755859375,
+          "height": 528.8125,
+          "right": 1251.9124755859375,
+          "bottom": 848.4125061035156
+        }
+      },
+      "fullscreen": null,
+      "fullscreenEnabled": true,
+      "containerShape": "wide",
+      "media": {
+        "intrinsicWidth": 320,
+        "intrinsicHeight": 180,
+        "currentTime": 0,
+        "paused": true,
+        "readyState": 4,
+        "errorCode": null,
+        "qualitySelection": "single-source; not tested"
+      }
+    }
+  ]
+}

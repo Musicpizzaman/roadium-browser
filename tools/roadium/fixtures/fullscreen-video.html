@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roadium fullscreen diagnostics</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #000; color: #fff; font: 16px system-ui; }
+  #surface { position: relative; width: 100%; height: 100%; overflow: auto; padding: 18px; background: #000; }
+  #surface::before { content: ""; position: fixed; inset: 0; pointer-events: none;
+    border: 8px solid; border-color: #ff4040 #40ff40 #4080ff #ffe040; z-index: 2; }
+  #surface:fullscreen { width: 100%; height: 100%; overflow: auto; }
+  h1 { font-size: 1.3rem; margin: 0 0 8px; }
+  p { max-width: 70ch; }
+  button, select, input { font: inherit; padding: 10px; margin: 4px; max-width: 100%; }
+  #player { position: relative; width: min(100%, 96vh); aspect-ratio: 16 / 9; background: #000;
+    outline: 2px solid #c080ff; margin: 12px 0; }
+  #player.portrait { aspect-ratio: 9 / 16; width: min(100%, 30vh); }
+  #player.wide { aspect-ratio: 21 / 9; width: min(100%, 128vh); }
+  #player:fullscreen { width: 100%; height: 100%; aspect-ratio: auto; outline: none; }
+  video { display: block; width: 100%; height: 100%; object-fit: contain; background: #000; }
+  video:fullscreen { object-fit: contain; background: #000; }
+  #leave { position: absolute; top: 8px; right: 8px; z-index: 3; display: none; }
+  #player:fullscreen #leave { display: block; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid #777;
+    padding: 8px; max-height: 16rem; overflow: auto; }
+  #status { min-height: 1.5em; }
+</style>
+<main id="surface">
+  <h1>Roadium fullscreen diagnostics</h1>
+  <p>Use while parked. The page edge is red at the top, green at the right,
+    blue at the bottom and yellow at the left. Compare these edges with the
+    app boundary and the vehicle controls in a photo and a system screenshot.</p>
+  <p>This uses one supplied video file. Container shape changes do not change
+    its intrinsic aspect ratio or select a 720p stream. Black video bars are expected.</p>
+  <div>
+    <button id="rootFullscreen">Page fullscreen</button>
+    <button id="playerFullscreen">Player fullscreen</button>
+    <button id="videoFullscreen">Video fullscreen</button>
+    <button id="exitFullscreen">Exit fullscreen</button>
+    <button id="refresh">Record measurements</button>
+    <button id="download">Save report</button>
+  </div>
+  <label>Container shape <select id="shape">
+    <option value="">Landscape 16:9</option>
+    <option value="portrait">Portrait 9:16</option>
+    <option value="wide">Ultrawide 21:9</option>
+  </select></label>
+  <label>Keyboard test <input id="keyboard" placeholder="Open and close the keyboard"></label>
+  <div id="player">
+    <video id="video" controls playsinline preload="metadata" src="bear.mp4"></video>
+    <button id="leave">Exit player fullscreen</button>
+  </div>
+  <p id="status" role="status"></p>
+  <p>Reports contain only this fixture's geometry and media state. Page-visible
+    values cannot establish native window bounds, OEM ownership or keyboard privacy.</p>
+  <pre id="report" tabindex="0" aria-label="Measurement report"></pre>
+</main>
+<script>
+'use strict';
+(() => {
+  const surface = document.getElementById('surface');
+  const player = document.getElementById('player');
+  const video = document.getElementById('video');
+  const report = document.getElementById('report');
+  const status = document.getElementById('status');
+  const history = [];
+  const rect = element => {
+    const r = element.getBoundingClientRect();
+    return { x: r.x, y: r.y, width: r.width, height: r.height,
+      right: r.right, bottom: r.bottom };
+  };
+  function snapshot(reason) {
+    const vv = window.visualViewport;
+    return {
+      reason, time: new Date().toISOString(),
+      window: { innerWidth, innerHeight, outerWidth, outerHeight, devicePixelRatio },
+      screen: { width: screen.width, height: screen.height,
+        availWidth: screen.availWidth, availHeight: screen.availHeight },
+      document: { clientWidth: document.documentElement.clientWidth,
+        clientHeight: document.documentElement.clientHeight },
+      visualViewport: vv ? { width: vv.width, height: vv.height, scale: vv.scale,
+        offsetLeft: vv.offsetLeft, offsetTop: vv.offsetTop } : null,
+      rects: { surface: rect(surface), player: rect(player), video: rect(video) },
+      fullscreen: document.fullscreenElement?.id || null,
+      fullscreenEnabled: document.fullscreenEnabled,
+      containerShape: document.getElementById('shape').value || 'landscape',
+      media: { intrinsicWidth: video.videoWidth, intrinsicHeight: video.videoHeight,
+        currentTime: video.currentTime, paused: video.paused, readyState: video.readyState,
+        errorCode: video.error?.code || null, qualitySelection: 'single-source; not tested' }
+    };
+  }
+  function record(reason) {
+    history.push(snapshot(reason));
+    if (history.length > 40) history.shift();
+    report.textContent = JSON.stringify({ schema: 1, samples: history }, null, 2);
+  }
+  // Resize signals can arrive in bursts. Keep a bounded log, without polling.
+  let queued = false;
+  function schedule(event) {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; record(event.type); });
+  }
+  async function enter(element) {
+    try {
+      await element.requestFullscreen();
+      status.textContent = 'Fullscreen requested. Use Back or Exit to return.';
+    } catch (error) {
+      status.textContent = `Fullscreen unavailable: ${error.name || 'unsupported'}`;
+      record('fullscreen-request-failed');
+    }
+  }
+  async function exit() {
+    try { if (document.fullscreenElement) await document.exitFullscreen(); }
+    catch (error) { status.textContent = `Exit failed: ${error.name}`; }
+  }
+  document.getElementById('rootFullscreen').onclick = () => enter(surface);
+  document.getElementById('playerFullscreen').onclick = () => enter(player);
+  document.getElementById('videoFullscreen').onclick = () => enter(video);
+  document.getElementById('exitFullscreen').onclick = exit;
+  document.getElementById('leave').onclick = exit;
+  document.getElementById('refresh').onclick = () => record('manual');
+  document.getElementById('shape').onchange = event => {
+    player.className = event.target.value;
+    requestAnimationFrame(() => record('shape-change'));
+  };
+  document.getElementById('download').onclick = () => {
+    record('export');
+    const url = URL.createObjectURL(new Blob([report.textContent], { type: 'application/json' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'roadium-fullscreen-report.json';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    status.textContent = 'Report download requested. You can also select the report text.';
+  };
+  window.addEventListener('resize', schedule);
+  window.visualViewport?.addEventListener('resize', schedule);
+  document.addEventListener('fullscreenchange', schedule);
+  document.addEventListener('fullscreenerror', () => record('fullscreen-error'));
+  for (const type of ['loadedmetadata', 'error', 'play', 'pause', 'seeked']) {
+    video.addEventListener(type, event => record(event.type));
+  }
+  record('initial');
+})();
+</script>
+</html>

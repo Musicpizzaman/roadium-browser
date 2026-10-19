@@ -12,6 +12,9 @@ import sys
 import xml.etree.ElementTree as ET
 import zipfile
 
+from overlay_series import VerifiedSeries
+from filter_artifacts import verify_filter_package
+
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--arch', choices=('arm64', 'x64'), required=True)
 parser.add_argument('--workspace', type=Path, default=os.environ.get('WORKSPACE'))
@@ -33,8 +36,9 @@ actual_gn_code = subprocess.check_output(
     [str(src / 'buildtools/linux64/gn'), 'args', f'out/{arch}',
      '--list=android_override_version_code', '--short'], cwd=src, text=True).strip()
 assert actual_gn_code == f'android_override_version_code = "{expected_code}"', actual_gn_code
-diff = subprocess.check_output(['git', 'diff', '--binary', 'HEAD'], cwd=src)
-assert hashlib.sha256(diff).hexdigest() == metadata['patches'][0]['sha256']
+with VerifiedSeries(src, workspace / 'roadium', metadata) as series:
+    source_overlay_sha256 = series.verify_applied()
+    source_overlay_tree = series.trees[-1]
 android = '{http://schemas.android.com/apk/res/android}'
 bundletool = src / 'third_party/android_build_tools/bundletool/cipd/bundletool.jar'
 java = src / 'third_party/jdk/current/bin/java'
@@ -95,7 +99,7 @@ assert browser_entry, "Missing exported MAIN + APP_BROWSER entry"
 artifacts = []
 for name in ('ChromePublic.apk', 'ChromePublic.aab'):
     path = src / f'out/{arch}/apks/{name}'
-    item = {'file': name}
+    item = {'file': name, 'bundled_filters': verify_filter_package(path, src, src / f'out/{arch}')}
     with zipfile.ZipFile(path) as z:
         assert z.testzip() is None
         library_paths = [entry for entry in z.namelist() if entry.endswith('.so')]
@@ -149,7 +153,9 @@ result = {
     'roadium_version_code_offset': metadata.get('roadium_version_code_offset', 0),
     'baseline_source_tree': metadata['baseline_source_tree'],
     'cromite_commit': metadata['cromite_commit'],
-    'source_patch_sha256': metadata['patches'][0]['sha256'],
+    'source_patch_sha256': source_overlay_sha256,
+    'source_patches': metadata['patches'],
+    'source_overlay_tree': source_overlay_tree,
     'compiler_exit': 0, 'build_attempt': attempt.name,
     'started_utc': (attempt / 'started-utc').read_text().strip(),
     'native_toolchain_min_sdk': 29, 'target_sdk': 36,

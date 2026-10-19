@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roadium Shields verification fixture</title>
+<style>body{font:24px system-ui; margin:32px}button{font:inherit;padding:20px}pre{white-space:pre-wrap}</style>
+<h1>Roadium Shields verification</h1>
+<p>This controlled fixture tests a known advertising resource. It fetches bytes without executing the downloaded script.</p>
+<button onclick="shieldsProbe()">Probe advertising resource</button>
+<pre id="result">Ready. Compare engine enabled and disabled; capture the network error through developer tools.</pre>
+<script>
+window.shieldsProbe = async function() {
+  const resource='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?roadium_fixture=1';
+  document.getElementById('result').textContent='Probe pending';
+  try {
+    await fetch(resource,{mode:'no-cors',cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(10000)});
+    document.getElementById('result').textContent='Fetch completed (opaque response; downloaded code was not executed).';
+  } catch(error) {
+    document.getElementById('result').textContent='Fetch failed: '+error.name+'. Developer tools distinguish filtering from connectivity errors.';
+  }
+  return document.getElementById('result').textContent;
+};
+</script>

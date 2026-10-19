@@ -1,0 +1,61 @@
+Ad blocking: Enabled
+Advanced filtering: Disabled
+EasyList: loaded in the active engine
+Anti-circumvention: loaded in the active engine. Privileged scriptlets: not eligible
+Tap for local update errors and conversion counts.
+
+No manual check requested in this session
+
+EasyList
+https://uazo.github.io/cromite/filters/easylist.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 202610130952
+Stored version: 202610130952
+Last installation: 10/17/26 7:31:13 PM
+Last successful activation/update: 10/17/26 7:31:13 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://uazo.github.io/cromite/filters/easylist.txt
+Storage recovery: current
+Active data source: https://uazo.github.io/cromite/filters/easylist.txt
+Successful requests: 1 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 81698 accepted; rejected — parser 5, unsupported commands 0, privilege 37, arguments 0, unsupported options/no operation 0
+
+ABP filters
+https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 202610130952
+Stored version: 202610130952
+Last installation: 10/17/26 7:31:13 PM
+Last successful activation/update: 10/17/26 7:31:13 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Storage recovery: current
+Active data source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Successful requests: 1 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 2492 accepted; rejected — parser 48, unsupported commands 0, privilege 1915, arguments 0, unsupported options/no operation 0
+
+Cromite experimental filters
+https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt
+Engine: selected; no active data
+State: Unknown
+Loaded version: not available
+Stored version: not recorded/provided
+Last installation: not recorded
+Last successful activation/update: not recorded
+Latest attempt: failed; downloaded Yes, parsed Yes
+Latest source: https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt
+Storage recovery: unavailable; update scheduled
+Active data source: none; no valid data
+Successful requests: 0 (includes HEAD)
+Recorded consecutive download failures: 1
+Fallback: not attempted
+Latest error: Storage or validation failed; previous filtering data retained
+Latest conversion: 0 accepted; rejected — parser 0, unsupported commands 0, privilege 17, arguments 0, unsupported options/no operation 0

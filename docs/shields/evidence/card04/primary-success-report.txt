@@ -1,0 +1,44 @@
+Ad blocking: Enabled
+Advanced filtering: Enabled
+EasyList: loaded in the active engine
+Anti-circumvention: loaded in the active engine. Privileged scriptlets: eligible for supported rules
+Tap for local update errors and conversion counts.
+
+Checked 2: 2 activated, 0 failed, 0 cancelled, 0 timed out
+Manual check results:
+https://uazo.github.io/cromite/filters/easylist.txt: activated
+https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt: activated
+
+Roadium Card04 controlled list
+https://uazo.github.io/cromite/filters/easylist.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 203001010005
+Stored version: 203001010005
+Last installation: 10/15/26 9:41:58 PM
+Last successful activation/update: 10/15/26 9:41:58 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://uazo.github.io/cromite/filters/easylist.txt
+Active data source: https://uazo.github.io/cromite/filters/easylist.txt
+Successful requests: 6 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 2 accepted; rejected — parser 0, unsupported commands 0, privilege 0, arguments 0, unsupported options/no operation 0
+
+Roadium Card04 controlled list
+https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 203001010005
+Stored version: 203001010005
+Last installation: 10/15/26 9:41:58 PM
+Last successful activation/update: 10/15/26 9:41:58 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Active data source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Successful requests: 7 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 3 accepted; rejected — parser 0, unsupported commands 0, privilege 0, arguments 0, unsupported options/no operation 0

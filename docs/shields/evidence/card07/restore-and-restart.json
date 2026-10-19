@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "restored_mode": "Balanced",
+  "selected": 6,
+  "custom_and_experimental_lists_kept": true,
+  "manual_rules_and_exceptions_kept": true,
+  "homepage_kept": true,
+  "global_disabled_kept": true,
+  "advanced_disabled_kept": true,
+  "mode_after_restart": "Balanced\nApplies to managed lists. Other lists and custom rules stay unchanged. Strict may break more sites. Check filter diagnostics for active and pending lists.\nProtection is paused. These selections apply when it is enabled.",
+  "partial_tracking_before_restore": "1 of 2 lists selected"
+}

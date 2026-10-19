@@ -1,4 +1,6 @@
 * text eol=lf
+# Verification records bind the complete manifest bytes.
+baseline.json -text whitespace=cr-at-eol,-blank-at-eof
 patches/*.patch -text whitespace=-blank-at-eol
 # Keep captured PNG evidence byte-for-byte.
 design-screenshots/*.png binary

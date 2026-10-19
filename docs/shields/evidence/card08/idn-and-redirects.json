@@ -1,0 +1,6 @@
+{
+  "status": "passed",
+  "idn_fixture_preset": "Standard, isolating domain-scope checks from the existing BadBlock Lite ||xn--$document rule; Balanced restored afterwards",
+  "unicode_navigation_canonical_idn_exception_and_subdomains": true,
+  "cross_site_redirect_does_not_leak_exception": true
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "architecture": "x64",
+    "file": "ChromePublic.apk",
+    "sha256": "002c2eb636653496fdd1804958f92bcc66fcf5a4293f7e8585d56987acf2ce6b",
+    "bytes": 351866356
+  },
+  {
+    "architecture": "x64",
+    "file": "ChromePublic.aab",
+    "sha256": "bc11d292e0438c2425eee535723a62553f5475e67c2dcb9c2a833ceb1bc98e84",
+    "bytes": 153574951
+  },
+  {
+    "architecture": "arm64",
+    "file": "ChromePublic.apk",
+    "sha256": "f05cbafdc2ce1719c64a9ef5b1be56b66ff21fd91dfa3a636d882f5d3c4539e4",
+    "bytes": 325616429
+  },
+  {
+    "architecture": "arm64",
+    "file": "ChromePublic.aab",
+    "sha256": "f6f126a3302719251b6f50943ca0ffda0be658be6f4913b40acb090756f9e407",
+    "bytes": 142666565
+  }
+]

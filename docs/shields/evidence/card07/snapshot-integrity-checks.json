@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "checks": [
+    "original_include",
+    "byte_exact_regeneration",
+    "wrong_text_hash_refused",
+    "wrong_size_refused",
+    "wrong_gzip_hash_refused",
+    "tampered_include_refused"
+  ]
+}

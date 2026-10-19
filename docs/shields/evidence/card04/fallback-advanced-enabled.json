@@ -1,0 +1,20 @@
+{
+  "fixture": "http://127.0.0.1:8765/card04.html",
+  "action": "advertising",
+  "state": {
+    "href": "http://127.0.0.1:8765/card04.html",
+    "ready": "complete",
+    "probeType": "undefined",
+    "probeString": "undefined",
+    "probeIsUndefined": true,
+    "unsupportedClicks": 0,
+    "cosmeticDisplay": "none"
+  },
+  "advertising": "fetch failed: TypeError",
+  "advertisingFailures": [
+    {
+      "errorText": "net::ERR_BLOCKED_BY_ADMINISTRATOR",
+      "blockedReason": null
+    }
+  ]
+}

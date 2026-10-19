@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "invalid_url_not_added": true,
+  "submitted_input_cleared": true,
+  "app_validation_error": "10-18 10:49:00.390 24818 24818 E AdblockCustomFilterListsFragment: Invalid url: not-a-url",
+  "existing_custom_subscription_kept": true
+}

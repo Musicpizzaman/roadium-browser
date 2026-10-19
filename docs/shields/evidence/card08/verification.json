@@ -1,0 +1,95 @@
+{
+  "card": 8,
+  "date": "2026-10-18",
+  "status": "implemented and locally verified; physical/release gates remain open",
+  "overlay": {
+    "path": "build/roadium/patches/0009-roadium-site-controls.patch",
+    "sha256": "c22996e7566fc8e188d5b3f79aead1bae57b238c8d4120a66e296d1d13e8ece2"
+  },
+  "first_eight_overlays_unchanged": true,
+  "source_patch_sha256": "341ddbe7d5d3885f8fc93c68d0e781a6a620200a33c1b7810d7b2db0ae1c6960",
+  "source_overlay_tree": "6aa2d7a3c56cc89cdc401ac116481b80ab01d93b",
+  "affected_source_files": "affected-source-files.json",
+  "tests": {
+    "native_executions": 231,
+    "java_executions": 54,
+    "media_executions": 26,
+    "focused_total": 311,
+    "overlay_loader": 16,
+    "packaged_filter_resources": 8,
+    "all_passed": true,
+    "last_code_change": "Legacy Unicode matching guard; final54 Java executions passed. Native/media source unchanged since their passing checks. Last revision was scope help text only, rebuilt on both architectures and verified installed."
+  },
+  "builds": {
+    "x64": "x64-build-manifest.json",
+    "arm64": "arm64-build-manifest.json"
+  },
+  "installed_package": "installed-final-package.json",
+  "runtime": {
+    "api": 33,
+    "architecture": "x64",
+    "device": "read-only RoadiumAAOS33",
+    "resolution": "1280x720",
+    "density": 160,
+    "owned_disposable_user": 11,
+    "all_acceptance_records": [
+      "session-controls.json",
+      "persistence-and-ownership.json",
+      "global-and-preset-state.json",
+      "idn-and-redirects.json",
+      "activity-and-lifecycle.json",
+      "legacy-record-after.json",
+      "final-normal-controls.json",
+      "private-shared-scope.json",
+      "incognito-policy.json",
+      "internal-page-policy.json",
+      "final-scope-caption.json"
+    ]
+  },
+  "scope": {
+    "panel": "Regular HTTP(S) DNS/IPv4 pages in existing PageInfo",
+    "exceptions": "Canonical host and subdomains, across schemes and ports; original profile includes regular and Incognito filtering",
+    "temporary_lifetime": "Memory-only native configuration/browser-process lifetime; tab closure does not expire it",
+    "other_tabs": "Reload or navigation applies changed policy; current action reloads current tab",
+    "restore": "Only explicitly selected saved/session entry; other ownership and global/advanced choices remain unchanged",
+    "counter": "Bounded integer per content::Page; real frame-backed block decisions including child frames; no URL/rule history",
+    "attribution": "Not retained in the page snapshot; explicitly unavailable in the panel",
+    "legacy_entries": "Raw Unicode records preserved but not falsely inferred as recognized punycode exceptions"
+  },
+  "independent_local_records": [
+    "local-native-review.json",
+    "local-java-review.json",
+    "local-final-ui-review.json",
+    "local-ui-reorder-review.json",
+    "local-domain-audit.json",
+    "local-domain-review.json",
+    "local-private-scope-audit.json"
+  ],
+  "fixture": "fixture-manifest.json",
+  "cleanup": "cleanup.json",
+  "release_gates": [
+    "Physical Android12 2024 Chevrolet Blazer EV focus/touch/rotary and parked-only regression",
+    "Production signing and release integration",
+    "Extended storage/update soak",
+    "Existing Card06 live-service gates if included in release",
+    "Card10 geometry/preferred720p implementation and acceptance remain separate and open"
+  ],
+  "limitations": [
+    "No new mutating Shields panel in Incognito; existing original-profile filtering and exception sharing preserved and disclosed",
+    "No internal/file/non-HTTP or IPv6 controls",
+    "No separate cosmetic/advanced per-site switches",
+    "No retained rule/list attribution, cosmetic/popup or detached-worker count",
+    "Controlled HTTPS fixture evidence does not establish live website or physical vehicle acceptance",
+    "Build manifests retain their original build-time runtime-pending fields; this record supplies later installed acceptance"
+  ],
+  "final_record_checks": {
+    "all_focused_result_statuses": "passed",
+    "documentation_links": "passed",
+    "first_eight_patch_identity": "unchanged and hashes verified",
+    "final_exported_package_hashes": "all four matched",
+    "installed_final_apk_hash": "matched final x64 manifest",
+    "installed_final_scope_caption": "passed",
+    "guarded_owned_lab_cleanup": "passed",
+    "git_diff_check": "passed"
+  }
+}

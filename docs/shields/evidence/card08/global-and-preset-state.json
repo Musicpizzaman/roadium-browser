@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "site_restore_does_not_override_global_pause": true,
+  "preset_summary_updates_without_overriding_pause": true,
+  "advanced_opt_out_and_unrelated_saved_exception_preserved": true,
+  "existing_settings_route_works": true
+}

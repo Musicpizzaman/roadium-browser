@@ -1,0 +1,87 @@
+Ad blocking: Disabled
+Advanced filtering: Enabled
+EasyList: paused (ad blocking off)
+Anti-circumvention: paused (ad blocking off). Privileged scriptlets: not eligible
+Tap for local update errors and conversion counts.
+
+No manual check requested in this session
+
+EasyList
+https://uazo.github.io/cromite/filters/easylist.txt
+Engine: paused (ad blocking off)
+State: Unknown
+Loaded version: not available
+Stored version: 202610130952
+Last installation: 10/14/26 5:21:45 AM
+Last successful activation/update: 10/14/26 5:21:45 AM
+Latest attempt: interrupted; downloaded No, parsed No
+Latest source: https://uazo.github.io/cromite/filters/easylist.txt
+Active data source: https://uazo.github.io/cromite/filters/easylist.txt
+Successful requests: 2 (includes HEAD)
+Recorded consecutive download failures: 0
+Latest error: Previous attempt interrupted before activation
+Latest conversion counts: not recorded
+
+Celenity/BadBlock Lite
+https://uazo.github.io/cromite/filters/badblock_lite.txt
+Engine: paused (ad blocking off)
+State: Unknown
+Loaded version: not available
+Stored version: 04October2026v1
+Last installation: 10/14/26 5:21:44 AM
+Last successful activation/update: 10/14/26 5:21:44 AM
+Latest attempt: interrupted; downloaded No, parsed No
+Latest source: https://uazo.github.io/cromite/filters/badblock_lite.txt
+Active data source: https://uazo.github.io/cromite/filters/badblock_lite.txt
+Successful requests: 2 (includes HEAD)
+Recorded consecutive download failures: 0
+Latest error: Previous attempt interrupted before activation
+Latest conversion counts: not recorded
+
+badmojr/1Hosts
+https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt
+Engine: paused (ad blocking off)
+State: Unknown
+Loaded version: not available
+Stored version: not recorded/provided
+Last installation: 10/14/26 5:21:46 AM
+Last successful activation/update: 10/14/26 5:21:46 AM
+Latest attempt: interrupted; downloaded No, parsed No
+Latest source: https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt
+Active data source: https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt
+Successful requests: 2 (includes HEAD)
+Recorded consecutive download failures: 0
+Latest error: Previous attempt interrupted before activation
+Latest conversion counts: not recorded
+
+ABP filters
+https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Engine: paused (ad blocking off)
+State: Unknown
+Loaded version: not available
+Stored version: 202610130952
+Last installation: 10/14/26 5:21:45 AM
+Last successful activation/update: 10/14/26 5:21:45 AM
+Latest attempt: interrupted; downloaded No, parsed No
+Latest source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Active data source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Successful requests: 2 (includes HEAD)
+Recorded consecutive download failures: 0
+Latest error: Previous attempt interrupted before activation
+Latest conversion counts: not recorded
+
+Cromite experimental filters
+https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt
+Engine: paused (ad blocking off)
+State: Unknown
+Loaded version: not available
+Stored version: not recorded/provided
+Last installation: 10/14/26 5:21:44 AM
+Last successful activation/update: 10/14/26 5:21:44 AM
+Latest attempt: interrupted; downloaded No, parsed No
+Latest source: https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt
+Active data source: https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt
+Successful requests: 2 (includes HEAD)
+Recorded consecutive download failures: 0
+Latest error: Previous attempt interrupted before activation
+Latest conversion counts: not recorded

@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "displayed_text": "Exceptions cover this host and its subdomains in regular and Incognito tabs. Temporary exceptions last until the browser restarts. Closing a tab keeps the exception. Reload other open tabs to apply changes.",
+  "actual_native_blocked_requests": 2,
+  "verified_installed_apk_sha256": "ace4cca1b84d6ccac5d1d445da9714af8df9f4e76c62e815889a8ff7d8537400",
+  "executable_logic_unchanged_since_passing_focused_suites": true
+}

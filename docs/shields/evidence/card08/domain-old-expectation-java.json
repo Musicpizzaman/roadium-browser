@@ -1,0 +1,605 @@
+{
+  "global_tags": [],
+  "all_tests": [
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#advancedReadinessRequiresCurrentActivePermittedData[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#advancedReadinessRequiresCurrentActivePermittedData[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#conversionReasonsAreVisibleWithoutRuleContents[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#conversionReasonsAreVisibleWithoutRuleContents[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#downloadedAndParsedAreNotActivation[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#downloadedAndParsedAreNotActivation[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#emptyAndUnavailableStatesCannotRemainChecking[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#emptyAndUnavailableStatesCannotRemainChecking[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#failedUpdateRetainsIndependentActiveState[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#failedUpdateRetainsIndependentActiveState[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#fallbackFailureAndActiveSourceAreIndependent[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#fallbackFailureAndActiveSourceAreIndependent[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#globalDisableAndAdvancedEligibilityRemainIndependent[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#globalDisableAndAdvancedEligibilityRemainIndependent[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacyHistoryStaysUnknownRatherThanFalse[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacyHistoryStaysUnknownRatherThanFalse[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#manualBatchShowsActualMixedResultAndTimeout[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#manualBatchShowsActualMixedResultAndTimeout[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListKeepsCapturedManualCancellationResult[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListKeepsCapturedManualCancellationResult[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListRetainsCapturedFallbackDetails[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListRetainsCapturedFallbackDetails[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#selectedPendingListDoesNotClaimActiveFiltering[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#selectedPendingListDoesNotClaimActiveFiltering[36]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[29]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[36]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#canonicalIdentityIsExactAndExperimentalIsNeverAdded[29]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#canonicalIdentityIsExactAndExperimentalIsNeverAdded[36]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#categoryDeviationAndRecoveryAreDerivedFromActualSelections[29]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#categoryDeviationAndRecoveryAreDerivedFromActualSelections[36]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#customCannotResetManagedChoices[29]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#customCannotResetManagedChoices[36]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#everyCategoryOnlyChangesItsOwnedLists[29]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#everyCategoryOnlyChangesItsOwnedLists[36]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#existingFourDefaultsAreBalancedWithoutMigration[29]",
+    "org.chromium.components.adblock.ShieldsPresetsTest#existingFourDefaultsAreBalancedWithoutMigration[36]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#concurrentExceptionsRemainDistinctReasons[29]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#concurrentExceptionsRemainDistinctReasons[36]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#globalPauseAlwaysWinsOverEitherException[29]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#globalPauseAlwaysWinsOverEitherException[36]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[29]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[36]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#malformedHostsAndRuleInjectionAreRejected[29]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#malformedHostsAndRuleInjectionAreRejected[36]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#nonWebPagesHaveNoSiteControls[29]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#nonWebPagesHaveNoSiteControls[36]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#suffixRequiresDnsLabelBoundary[29]",
+    "org.chromium.components.adblock.ShieldsSiteStateTest#suffixRequiresDnsLabelBoundary[36]"
+  ],
+  "disabled_tests": [],
+  "per_iteration_data": [
+    {
+      "org.chromium.components.adblock.ShieldsPresetsTest#allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 36,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacyHistoryStaysUnknownRatherThanFalse[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#globalPauseAlwaysWinsOverEitherException[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#emptyAndUnavailableStatesCannotRemainChecking[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 17,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#advancedReadinessRequiresCurrentActivePermittedData[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#suffixRequiresDnsLabelBoundary[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#customCannotResetManagedChoices[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListKeepsCapturedManualCancellationResult[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 15,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#manualBatchShowsActualMixedResultAndTimeout[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#everyCategoryOnlyChangesItsOwnedLists[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 38,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#everyCategoryOnlyChangesItsOwnedLists[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 15,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#malformedHostsAndRuleInjectionAreRejected[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#categoryDeviationAndRecoveryAreDerivedFromActualSelections[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#suffixRequiresDnsLabelBoundary[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#downloadedAndParsedAreNotActivation[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#conversionReasonsAreVisibleWithoutRuleContents[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 19,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#categoryDeviationAndRecoveryAreDerivedFromActualSelections[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#fallbackFailureAndActiveSourceAreIndependent[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 15,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListRetainsCapturedFallbackDetails[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 16,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 28,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#downloadedAndParsedAreNotActivation[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 15,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#existingFourDefaultsAreBalancedWithoutMigration[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 44,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#selectedPendingListDoesNotClaimActiveFiltering[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2645,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#globalDisableAndAdvancedEligibilityRemainIndependent[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#concurrentExceptionsRemainDistinctReasons[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#customCannotResetManagedChoices[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacyHistoryStaysUnknownRatherThanFalse[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 15,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#selectedPendingListDoesNotClaimActiveFiltering[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1060,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#failedUpdateRetainsIndependentActiveState[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#advancedReadinessRequiresCurrentActivePermittedData[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListRetainsCapturedFallbackDetails[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 18,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListKeepsCapturedManualCancellationResult[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 19,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#emptyAndUnavailableStatesCannotRemainChecking[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 16,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#nonWebPagesHaveNoSiteControls[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#malformedHostsAndRuleInjectionAreRejected[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 19,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#fallbackFailureAndActiveSourceAreIndependent[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 16,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#canonicalIdentityIsExactAndExperimentalIsNeverAdded[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#manualBatchShowsActualMixedResultAndTimeout[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#conversionReasonsAreVisibleWithoutRuleContents[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 20,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#concurrentExceptionsRemainDistinctReasons[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36]": [
+        {
+          "status": "FAILURE",
+          "elapsed_time_ms": 24,
+          "output_snippet": " 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36]\n 1| I/cr_CommandLineFlags: Java command line set to: \n 1| java.lang.AssertionError: expected:<[B\u00dcCHER.example]> but was:<[]>\n 1| \tat org.junit.Assert.fail(Assert.java:89)\n 1| \tat org.junit.Assert.failNotEquals(Assert.java:835)\n 1| \tat org.junit.Assert.assertEquals(Assert.java:120)\n 1| \tat org.junit.Assert.assertEquals(Assert.java:146)\n 1| \tat org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope(ShieldsSiteStateTest.java:21)\n 1| \tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)\n 1| \tat java.base/java.lang.reflect.Method.invoke(Method.java:565)\n 1| \tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)\n 1| \tat org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)\n 1| \tat org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:61)\n 1| \tat org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)\n 1| \tat org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)\n 1| \tat org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:542)\n 1| \tat org.chromium.base.test.BaseRobolectricTestRunner$HelperTestRunner$1.evaluate(BaseRobolectricTestRunner.java:48)\n 1| \tat org.chromium.base.test.BaseTimeLimitedStatement.evaluate(BaseTimeLimitedStatement.java:53)\n 1| \tat org.robolectric.internal.SandboxTestRunner.lambda$executeInSandbox$4(SandboxTestRunner.java:429)\n 1| \tat org.robolectric.internal.SandboxTestRunner.runInSandbox(SandboxTestRunner.java:455)\n 1| \tat org.robolectric.internal.SandboxTestRunner.executeInSandbox(SandboxTestRunner.java:420)\n 1| \tat org.robolectric.internal.SandboxTestRunner$5.evaluate(SandboxTestRunner.java:405)\n 1| \tat org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)\n 1| \tat org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)\n 1| \tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)\n 1| \tat org.robolectric.internal.SandboxTestRunner.access$000(SandboxTestRunner.java:64)\n 1| \tat org.robolectric.internal.SandboxTestRunner$4.evaluate(SandboxTestRunner.java:294)\n 1| \tat org.robolectric.internal.SandboxTestRunner$2.evaluate(SandboxTestRunner.java:260)\n 1| \tat org.robolectric.internal.SandboxTestRunner$3.lambda$evaluate$0(SandboxTestRunner.java:280)\n 1| \tat org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThreadWithClassLoader$1(Sandbox.java:112)\n 1| \tat java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)\n 1| \tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)\n 1| \tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)\n 1| \tat java.base/java.lang.Thread.run(Thread.java:1474)\n 1| [   FAILED ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36] (24 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29]": [
+        {
+          "status": "FAILURE",
+          "elapsed_time_ms": 25,
+          "output_snippet": " 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29]\n 0| I/cr_CommandLineFlags: Java command line set to: \n 0| java.lang.AssertionError: expected:<[B\u00dcCHER.example]> but was:<[]>\n 0| \tat org.junit.Assert.fail(Assert.java:89)\n 0| \tat org.junit.Assert.failNotEquals(Assert.java:835)\n 0| \tat org.junit.Assert.assertEquals(Assert.java:120)\n 0| \tat org.junit.Assert.assertEquals(Assert.java:146)\n 0| \tat org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope(ShieldsSiteStateTest.java:21)\n 0| \tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)\n 0| \tat java.base/java.lang.reflect.Method.invoke(Method.java:565)\n 0| \tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)\n 0| \tat org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)\n 0| \tat org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:61)\n 0| \tat org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)\n 0| \tat org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)\n 0| \tat org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:542)\n 0| \tat org.chromium.base.test.BaseRobolectricTestRunner$HelperTestRunner$1.evaluate(BaseRobolectricTestRunner.java:48)\n 0| \tat org.chromium.base.test.BaseTimeLimitedStatement.evaluate(BaseTimeLimitedStatement.java:53)\n 0| \tat org.robolectric.internal.SandboxTestRunner.lambda$executeInSandbox$4(SandboxTestRunner.java:429)\n 0| \tat org.robolectric.internal.SandboxTestRunner.runInSandbox(SandboxTestRunner.java:455)\n 0| \tat org.robolectric.internal.SandboxTestRunner.executeInSandbox(SandboxTestRunner.java:420)\n 0| \tat org.robolectric.internal.SandboxTestRunner$5.evaluate(SandboxTestRunner.java:405)\n 0| \tat org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)\n 0| \tat org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)\n 0| \tat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)\n 0| \tat org.robolectric.internal.SandboxTestRunner.access$000(SandboxTestRunner.java:64)\n 0| \tat org.robolectric.internal.SandboxTestRunner$4.evaluate(SandboxTestRunner.java:294)\n 0| \tat org.robolectric.internal.SandboxTestRunner$2.evaluate(SandboxTestRunner.java:260)\n 0| \tat org.robolectric.internal.SandboxTestRunner$3.lambda$evaluate$0(SandboxTestRunner.java:280)\n 0| \tat org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThreadWithClassLoader$1(Sandbox.java:112)\n 0| \tat java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)\n 0| \tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)\n 0| \tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)\n 0| \tat java.base/java.lang.Thread.run(Thread.java:1474)\n 0| [   FAILED ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29] (25 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#globalPauseAlwaysWinsOverEitherException[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#nonWebPagesHaveNoSiteControls[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 11,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 21,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#globalDisableAndAdvancedEligibilityRemainIndependent[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsSiteStateTest#legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 10,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#existingFourDefaultsAreBalancedWithoutMigration[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 17,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsPresetsTest#canonicalIdentityIsExactAndExperimentalIsNeverAdded[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#failedUpdateRetainsIndependentActiveState[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 13,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ]
+    }
+  ],
+  "links": {}
+}

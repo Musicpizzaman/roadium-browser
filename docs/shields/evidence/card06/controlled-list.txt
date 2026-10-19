@@ -1,0 +1,14 @@
+[Adblock Plus 2.0]
+! Title: Card06 controlled command fixtures (not an upstream filter release)
+! Version: 203001060002
+! Expires: 365 days
+||unused.card06.invalid^
+127.0.0.1#$#json-prune 'playerResponse.adPlacements playerResponse.playerAds playerResponse.adSlots [].playerResponse.adPlacements [].playerResponse.playerAds'
+127.0.0.1#$#override-property-read roadiumProbe undefined
+127.0.0.1#$#override-property-read ytInitialPlayerResponse.adPlacements undefined
+127.0.0.1#$#abort-on-property-write adBreakHeartbeatParams
+127.0.0.1#$#skip-video '.ad-video' './/div[@id="card06-ad-marker"]' '-run-once:true' '-mute-video-when-skipping:false'
+127.0.0.1#$#hide-if-matches-xpath './/div[@id="card06-dom-ad"]'
+127.0.0.1#$#json-prune 'entries.[-].command.reelWatchEndpoint.adClientParams.isAd'
+127.0.0.1#$#override-property-read rejectedProbe undefined; simulate-mouse-event 'button'
+127.0.0.1#$#override-property-read badValue arbitraryJavascript

@@ -1,0 +1,132 @@
+{
+  "project": "Roadium Browser",
+  "architecture": "arm64",
+  "package": "io.github.musicpizzaman.roadium",
+  "version": "153.0.8010.37",
+  "version_code": 801003712,
+  "roadium_version_code_offset": 10,
+  "baseline_source_tree": "56400c5406d8f83533c151e122b19f3f745c0892",
+  "cromite_commit": "11507ac1061b5ea227806f5e84db5a57df6ccf6a",
+  "source_patch_sha256": "eb6fbe801190d11fb9a5303033540fe8ed33316bc658d476b1b8a3079cb09f4f",
+  "source_patches": [
+    {
+      "path": "build/roadium/patches/0001-roadium-aaos-foundation.patch",
+      "sha256": "3f0fedee04363332ccfe8fb2bbd2ba1f4ed8127e187f04c5bd2104a33debd0df"
+    },
+    {
+      "path": "build/roadium/patches/0002-roadium-shields-diagnostics.patch",
+      "sha256": "9a4a39651200f465f52ffa1e3d0ccade4a035a07fc0a97cd0f0b5745535eff58"
+    },
+    {
+      "path": "build/roadium/patches/0003-roadium-bundled-filters.patch",
+      "sha256": "eb4f85d293ea50d4e69cb25f633f86d1539a8caae71752d44ebbdc3662513df4"
+    },
+    {
+      "path": "build/roadium/patches/0004-roadium-advanced-filtering.patch",
+      "sha256": "fa0e7a57e72696158efca236c66666b52dda20449a6a4ab77c7344d2d46f2b69"
+    }
+  ],
+  "source_overlay_tree": "827c5751427f01b0ac1dca82a66886bb1dbf2e29",
+  "compiler_exit": 0,
+  "build_attempt": "run.Fpx2KFLm",
+  "started_utc": "2026-10-14T12:26:17Z",
+  "native_toolchain_min_sdk": 29,
+  "target_sdk": 36,
+  "required_automotive": true,
+  "picture_in_picture": false,
+  "signing": "APK verified with diagnostic development certificate; AAB status recorded per artifact",
+  "bundle_modules": {
+    "base": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "on_demand": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "stack_unwinder": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "xr": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "chrome": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    }
+  },
+  "bundletool_validation": "passed",
+  "bundletool_exit": 0,
+  "packaged_abi": "arm64-v8a",
+  "artifacts": [
+    {
+      "file": "ChromePublic.apk",
+      "bundled_filters": {
+        "revision": "338336d9e640489c648d47d606cb0030064c4e0f",
+        "resources": {
+          "IDR_ADBLOCK_FLATBUFFER_EASYLIST": [
+            "assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FLATBUFFER_ANTICV": [
+            "assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_BUNDLED_MANIFEST": [
+            "assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FILTER_NOTICES": [
+            "assets/resources.pak+40064988+"
+          ]
+        },
+        "manifest_sha256": "ae9962a71715c6a4e4eb29a38121ebdeea9c39d68db313c90488bf9b1fe0e59b",
+        "notices_sha256": "b74bcf5e169f438b8e61ef6a81e281ebcac1e68784d0d8c0f3b86c31d90fd4d4"
+      },
+      "native_abis": [
+        "arm64-v8a"
+      ],
+      "native_library_count": 7,
+      "apk_signature_verification": "passed",
+      "apk_signature_v2": true,
+      "certificate_sha256": "32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0",
+      "min_sdk": 31,
+      "target_sdk": 36,
+      "bytes": 325551269,
+      "sha256": "c40e3464c98192122e7a2ae78b505157374f5bbe14cd0c81fd43ea5dd13af7a9",
+      "zip_crc": "passed"
+    },
+    {
+      "file": "ChromePublic.aab",
+      "bundled_filters": {
+        "revision": "338336d9e640489c648d47d606cb0030064c4e0f",
+        "resources": {
+          "IDR_ADBLOCK_FLATBUFFER_EASYLIST": [
+            "base/assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FLATBUFFER_ANTICV": [
+            "base/assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_BUNDLED_MANIFEST": [
+            "base/assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FILTER_NOTICES": [
+            "base/assets/resources.pak+40064988+"
+          ]
+        },
+        "manifest_sha256": "ae9962a71715c6a4e4eb29a38121ebdeea9c39d68db313c90488bf9b1fe0e59b",
+        "notices_sha256": "b74bcf5e169f438b8e61ef6a81e281ebcac1e68784d0d8c0f3b86c31d90fd4d4"
+      },
+      "native_abis": [
+        "arm64-v8a"
+      ],
+      "native_library_count": 7,
+      "jar_signing_entries": [],
+      "jar_signature_status": "unsigned",
+      "bytes": 142626908,
+      "sha256": "13e38ea582645c17a5fe208bf78cadd3cc065626423d98bb81915f1450080722",
+      "zip_crc": "passed"
+    }
+  ],
+  "emulator_runtime_verification": "pending",
+  "physical_car_verification": "pending"
+}

@@ -10,4 +10,10 @@ fi
 export PATH="$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH"
 cd "$WORKSPACE/chromium/src"
 test -f "out/$arch/args.gn"
+python3 "$WORKSPACE/roadium/tools/roadium/apply-overlay.py" "$WORKSPACE/chromium/src" "$WORKSPACE/cromite"
+if [[ -f components/adblock/core/resources/roadium/manifest.json ]]; then
+  python3 components/adblock/core/resources/roadium/verify_inputs.py \
+    --root components/adblock/core/resources/roadium \
+    --output "out/$arch/roadium-filter-inputs.verified.json"
+fi
 python3 "$WORKSPACE/depot_tools/siso.py" ninja -C "out/$arch" --offline --local_jobs="$jobs" chrome_public_apk chrome_public_bundle

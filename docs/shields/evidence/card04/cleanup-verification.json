@@ -1,0 +1,20 @@
+{
+  "user": 13,
+  "original_preferences_byte_identical": true,
+  "original_shared_preference_files_byte_identical": 7,
+  "original_cached_lists_hash_verified": 5,
+  "original_explicit_opt_out_and_global_choice_restored": true,
+  "original_selected_lists_custom_rules_and_exceptions_restored": true,
+  "profile_owner_and_selinux_label_restored": true,
+  "developer_flags_removed": true,
+  "temporary_capture_helper_removed": true,
+  "test_ports_removed": true,
+  "wifi": 1,
+  "mobile_data": 1,
+  "existing_androidwifi_network_reconnected": true,
+  "selinux": "Enforcing",
+  "vehicle_properties_modified_by_card04": false,
+  "driving_state_reverification": "pending; CarService unavailable",
+  "host_tls_server_stopped": true,
+  "fixture_listener_closed": true
+}

@@ -1,0 +1,87 @@
+Ad blocking: Enabled
+Advanced filtering: Disabled
+EasyList: loaded in the active engine
+Anti-circumvention: loaded in the active engine. Privileged scriptlets: not eligible
+Tap for local update errors and conversion counts.
+
+No manual check requested in this session
+
+EasyList
+https://uazo.github.io/cromite/filters/easylist.txt
+Engine: loaded in the active engine
+State: Preloaded
+Loaded version: 202610130952
+Stored version: not recorded/provided
+Last installation: not recorded
+Last successful activation/update: not recorded
+Latest attempt: download requested/in progress; downloaded No, parsed No
+Latest source: https://uazo.github.io/cromite/filters/easylist.txt
+Active data source: bundled: Cromite pages 338336d9e640489c648d47d606cb0030064c4e0f
+Successful requests: 0 (includes HEAD)
+Recorded consecutive download failures: 0
+Latest error: none recorded
+Latest conversion counts: not recorded
+
+Celenity/BadBlock Lite
+https://uazo.github.io/cromite/filters/badblock_lite.txt
+Engine: selected; no active data
+State: Installing
+Loaded version: not available
+Stored version: not recorded/provided
+Last installation: not recorded
+Last successful activation/update: not recorded
+Latest attempt: download requested/in progress; downloaded No, parsed No
+Latest source: https://uazo.github.io/cromite/filters/badblock_lite.txt
+Active data source: not recorded
+Successful requests: 0 (includes HEAD)
+Recorded consecutive download failures: 0
+Latest error: none recorded
+Latest conversion counts: not recorded
+
+badmojr/1Hosts
+https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt
+Engine: selected; no active data
+State: Installing
+Loaded version: not available
+Stored version: not recorded/provided
+Last installation: not recorded
+Last successful activation/update: not recorded
+Latest attempt: download requested/in progress; downloaded No, parsed No
+Latest source: https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt
+Active data source: not recorded
+Successful requests: 0 (includes HEAD)
+Recorded consecutive download failures: 0
+Latest error: none recorded
+Latest conversion counts: not recorded
+
+ABP filters
+https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Engine: loaded in the active engine
+State: Preloaded
+Loaded version: 202610130952
+Stored version: not recorded/provided
+Last installation: not recorded
+Last successful activation/update: not recorded
+Latest attempt: download requested/in progress; downloaded No, parsed No
+Latest source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Active data source: bundled: Cromite pages 338336d9e640489c648d47d606cb0030064c4e0f
+Successful requests: 0 (includes HEAD)
+Recorded consecutive download failures: 0
+Latest error: none recorded
+Latest conversion counts: not recorded
+
+Cromite experimental filters
+https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt
+Engine: selected; no active data
+State: Installing
+Loaded version: not available
+Stored version: not recorded/provided
+Last installation: not recorded
+Last successful activation/update: not recorded
+Latest attempt: download requested/in progress; downloaded No, parsed No
+Latest source: https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt
+Active data source: not recorded
+Successful requests: 0 (includes HEAD)
+Recorded consecutive download failures: 0
+Latest error: none recorded
+Latest conversion counts: not recorded

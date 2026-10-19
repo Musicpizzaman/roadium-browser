@@ -1,0 +1,29 @@
+{
+  "format": 1,
+  "purpose": "Card06 audit only; not packaged browser resources",
+  "revision": "338336d9e640489c648d47d606cb0030064c4e0f",
+  "inputs": [
+    {
+      "file": "badblock_lite.txt.gz",
+      "canonical_url": "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+      "source_url": "https://raw.githubusercontent.com/uazo/cromite/338336d9e640489c648d47d606cb0030064c4e0f/filters/badblock_lite.txt",
+      "version": "04October2026v1",
+      "sha256": "f9239ee34fbfcb4c59075ea5708498770ccde8be13f64d5ce7874cc9e1d014a0",
+      "bytes": 424236,
+      "gzip_sha256": "ca8b06aca2812e8aaf9a23ff1b8cbbcb1cbbaced105559c51a4cd5358eb992ca",
+      "license": "GPL-3.0-or-later",
+      "attribution": "Celenity and the BadBlock contributors"
+    },
+    {
+      "file": "badmojr-1Hosts-master-Lite-adblock.txt.gz",
+      "canonical_url": "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+      "source_url": "https://raw.githubusercontent.com/uazo/cromite/338336d9e640489c648d47d606cb0030064c4e0f/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+      "version": "",
+      "sha256": "f2d89a0f4b60d420a852419352473c2d3bde02b4a9772dd2cc7eb448200bd070",
+      "bytes": 2347853,
+      "gzip_sha256": "aafd03197fd7dea4507ff41dd1e537f3f38c1401a7f6c15da20dc207e372c144",
+      "license": "MPL-2.0",
+      "attribution": "badmojr and the 1Hosts contributors"
+    }
+  ]
+}

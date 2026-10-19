@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "list_endpoints_failed": true,
+  "same_profile_restarted": true,
+  "strict_only_examples_still_filtered": true,
+  "custom_rule_and_custom_subscription_still_filtering": true,
+  "ordinary_content_visible": true,
+  "advanced_opt_out_preserved": true
+}

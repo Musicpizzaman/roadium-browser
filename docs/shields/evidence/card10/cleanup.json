@@ -1,0 +1,10 @@
+{
+  "own_lab_user_removed": true,
+  "original_foreground_user_restored": 10,
+  "own_flags_removed": true,
+  "own_ports_removed": [
+    8870,
+    9224
+  ],
+  "read_only_emulator_closed": true
+}

@@ -1,0 +1,9 @@
+{
+  "experimental-cromite-filters.txt:6": {"decision": "superseded", "replacement": "abp-filters-anti-cv.txt:3556", "reason": "Same command, argument and domain list"},
+  "experimental-cromite-filters.txt:7": {"decision": "superseded", "replacement": "abp-filters-anti-cv.txt:3557", "reason": "Same command, argument and domain list"},
+  "experimental-cromite-filters.txt:15": {"decision": "superseded", "replacement": "abp-filters-anti-cv.txt:3565", "reason": "Same command and arguments; maintained youtube.com covers experimental www/m/music subdomains"},
+  "experimental-cromite-filters.txt:16": {"decision": "superseded", "replacement": "abp-filters-anti-cv.txt:3566", "reason": "Same command and arguments; maintained youtube.com covers experimental www/m/music subdomains"},
+  "abp-filters-anti-cv.txt:3572": {"decision": "accepted syntax, unsupported runtime path grammar", "reason": "Installed controlled copy preserves entries/isAd for [-]; pinned runtime only handles [] and {} traversal. Rewriting removal to leaf deletion changes semantics and was not done."},
+  "experimental-cromite-filters.txt:8": {"decision": "legacy overlap, not automatically selected for fresh profiles", "reason": "Desktop property override undefined conflicts with maintained3555 emptyArray; mobile maintained3558 has undefined. Do not label entire domain scope superseded."},
+  "experimental-cromite-filters.txt:9": {"decision": "legacy overlap, not automatically selected for fresh profiles", "reason": "Desktop property override undefined conflicts with maintained3555 emptyArray; mobile maintained3559 has undefined. Do not label entire domain scope superseded."}
+}

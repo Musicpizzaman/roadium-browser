@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-18",
+  "owned_read_only_avd": "RoadiumAAOS33 emulator-5554",
+  "guards_passed": true,
+  "owned_launch_pid": 29528,
+  "launch_path_and_read_only_flags_verified": true,
+  "console_name_query": "RoadiumAAOS33\r\r\nOK",
+  "owned_user_removed": 11,
+  "original_user_ids_preserved": [
+    0,
+    10
+  ],
+  "night_mode_restored": "no",
+  "foreground_after_restore": "0",
+  "remove_user_output": "Success: removed user",
+  "remaining_users": "Users:\r\n\tUserInfo{0:Driver:813} running\r\n\tUserInfo{10:Driver:412}",
+  "remaining_forwards": "",
+  "remaining_reverses": "",
+  "owned_helpers_removed": true,
+  "emulator_shutdown_output": "OK: killing emulator, bye bye\r\r\nOK",
+  "status": "passed",
+  "owned_fixture_server_stopped": true,
+  "closed_host_port": 8848,
+  "owned_emulator_transport_gone": true,
+  "task_created_container_local_adb_server_stopped": true,
+  "build_containers_preserved": true
+}

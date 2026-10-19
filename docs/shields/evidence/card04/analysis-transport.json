@@ -1,0 +1,43 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Audit of transport seam for strict policy compliance. Identified issues: 1. Redirects are allowed before follow check (violates 'no redirects before follow'). 2. Timeout is 15s (requirement is 60s). 3. Retry logic persists after strict failure. 4. No explicit check for max 32MiB on non-strict requests. Fixes: Update timeout, enforce redirect count/pre-check, and ensure strict failure clears all retry state.\",\n  \"architecture_observations\": [\n    \"Strict transport policy is partially implemented but allows redirects before validation.\",\n    \"Timeout constant kApprovedFilterAttemptTimeoutSeconds is 15s, violating the 60s requirement.\",\n    \"Retry logic is not explicitly invalidated upon strict transport failure.\",\n    \"Redirects are processed via `Redirect()` without checking if the target is a valid mapped identity.\",\n    \"SimpleURLLoader is correctly deleted in redirect callback to prevent follow-through.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"components/adblock/core/net/adblock_resource_request_impl.cc\",\n      \"change\": \"Update kApprovedFilterAttemptTimeoutSeconds to 60s (via constants).\"\n    },\n    {\n      \"file\": \"components/adblock/core/net/adblock_resource_request_impl.cc\",\n      \"change\": \"Add check in Redirect() to prevent redirects if strict_transport_ is true or count > 0.\"\n    },\n    {\n      \"file\": \"components/adblock/core/net/adblock_resource_request_impl.cc\",\n      \"change\": \"Ensure FailStrictTransport() clears retry_timer_ and backoff_entry_ state.\"\n    }\n  ],\n  \"patch\": \"\",\n  \"risks\": [\n    \"Modifying constants might affect non-strict requests if not scoped.\",\n    \"Strict redirect logic might block legitimate multi-hop paths if not carefully mapped.\"\n  ],\n  \"tests\": [\n    \"Verify 60s timeout.\",\n    \"Verify Redirect() fails on strict policy.\",\n    \"Verify retry_timer_ is stopped on strict failure.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Audit of transport seam for strict policy compliance. Identified issues: 1. Redirects are allowed before follow check (violates 'no redirects before follow'). 2. Timeout is 15s (requirement is 60s). 3. Retry logic persists after strict failure. 4. No explicit check for max 32MiB on non-strict requests. Fixes: Update timeout, enforce redirect count/pre-check, and ensure strict failure clears all retry state.",
+    "architecture_observations": [
+      "Strict transport policy is partially implemented but allows redirects before validation.",
+      "Timeout constant kApprovedFilterAttemptTimeoutSeconds is 15s, violating the 60s requirement.",
+      "Retry logic is not explicitly invalidated upon strict transport failure.",
+      "Redirects are processed via `Redirect()` without checking if the target is a valid mapped identity.",
+      "SimpleURLLoader is correctly deleted in redirect callback to prevent follow-through."
+    ],
+    "proposed_changes": [
+      {
+        "file": "components/adblock/core/net/adblock_resource_request_impl.cc",
+        "change": "Update kApprovedFilterAttemptTimeoutSeconds to 60s (via constants)."
+      },
+      {
+        "file": "components/adblock/core/net/adblock_resource_request_impl.cc",
+        "change": "Add check in Redirect() to prevent redirects if strict_transport_ is true or count > 0."
+      },
+      {
+        "file": "components/adblock/core/net/adblock_resource_request_impl.cc",
+        "change": "Ensure FailStrictTransport() clears retry_timer_ and backoff_entry_ state."
+      }
+    ],
+    "patch": "",
+    "risks": [
+      "Modifying constants might affect non-strict requests if not scoped.",
+      "Strict redirect logic might block legitimate multi-hop paths if not carefully mapped."
+    ],
+    "tests": [
+      "Verify 60s timeout.",
+      "Verify Redirect() fails on strict policy.",
+      "Verify retry_timer_ is stopped on strict failure."
+    ]
+  },
+  "isError": false
+}

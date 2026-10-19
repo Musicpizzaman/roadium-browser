@@ -1,0 +1,1120 @@
+diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
+index 50bf7c0..ebe80cb 100644
+--- a/chrome/android/chrome_java_sources.gni
++++ b/chrome/android/chrome_java_sources.gni
+@@ -959,6 +959,7 @@ chrome_java_sources = [
+   "java/src/org/chromium/chrome/browser/omaha/UpdateMenuItemHelper.java",
+   "java/src/org/chromium/chrome/browser/page_info/ChromePageInfo.java",
+   "java/src/org/chromium/chrome/browser/page_info/ChromePageInfoControllerDelegate.java",
++  "java/src/org/chromium/chrome/browser/page_info/ShieldsPageInfoController.java",
+   "java/src/org/chromium/chrome/browser/page_info/PageInfoAboutThisSiteController.java",
+   "java/src/org/chromium/chrome/browser/page_info/PageInfoHistoryController.java",
+   "java/src/org/chromium/chrome/browser/page_info/SiteSettingsHelper.java",
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/page_info/ChromePageInfoControllerDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/page_info/ChromePageInfoControllerDelegate.java
+index b33f94d..3a52fcc 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/page_info/ChromePageInfoControllerDelegate.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/page_info/ChromePageInfoControllerDelegate.java
+@@ -282,6 +282,21 @@ public class ChromePageInfoControllerDelegate extends PageInfoControllerDelegate
+             PageInfoMainController mainController, ViewGroup rowWrapper) {
+         Collection<PageInfoSubpageController> controllers = new ArrayList<>();
+ 
++        // Regular HTTP(S) pages reuse the profile's existing filtering engine.
++        if (!isIncognito()
++                && org.chromium.components.adblock.ShieldsSiteState.supports(
++                        mainController.getURL().getScheme(), mainController.getURL().getHost())) {
++            var shieldsRow = new PageInfoRowView(rowWrapper.getContext(), null);
++            rowWrapper.addView(shieldsRow);
++            controllers.add(
++                    new ShieldsPageInfoController(
++                            mainController,
++                            shieldsRow,
++                            mWebContents,
++                            org.chromium.components.adblock.AdblockController.getInstance(
++                                    mProfile)));
++        }
++
+         // Add history row.
+         final Tab tab = TabUtils.fromWebContents(mWebContents);
+         var historyRow = new PageInfoRowView(rowWrapper.getContext(), null);
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/page_info/ShieldsPageInfoController.java b/chrome/android/java/src/org/chromium/chrome/browser/page_info/ShieldsPageInfoController.java
+new file mode 100644
+index 0000000..36263ef
+--- /dev/null
++++ b/chrome/android/java/src/org/chromium/chrome/browser/page_info/ShieldsPageInfoController.java
+@@ -0,0 +1,278 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++package org.chromium.chrome.browser.page_info;
++
++import android.content.Context;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.Button;
++import android.widget.LinearLayout;
++import android.widget.ScrollView;
++import android.widget.TextView;
++
++import org.chromium.chrome.browser.adblock.R;
++import org.chromium.chrome.browser.adblock.settings.AdblockSettingsFragment;
++import org.chromium.chrome.browser.settings.SettingsNavigationFactory;
++import org.chromium.components.adblock.AdblockController;
++import org.chromium.components.adblock.ShieldsPresets;
++import org.chromium.components.adblock.ShieldsSiteState;
++import org.chromium.components.page_info.PageInfoMainController;
++import org.chromium.components.page_info.PageInfoRowView;
++import org.chromium.components.page_info.PageInfoSubpageController;
++import org.chromium.content_public.browser.NavigationHandle;
++import org.chromium.content_public.browser.WebContents;
++import org.chromium.content_public.browser.WebContentsObserver;
++
++import java.util.List;
++
++/** Local, synchronous snapshot. No request logging, uploads or background activity observer. */
++public final class ShieldsPageInfoController implements PageInfoSubpageController {
++    private final PageInfoMainController mMain;
++    private final PageInfoRowView mRow;
++    private final WebContents mContents;
++    private final AdblockController mController;
++    private final String mHost;
++    private final String mUrl;
++    private ScrollView mView;
++    private LinearLayout mBody;
++    private WebContentsObserver mObserver;
++    private boolean mInvalidated;
++    private android.app.AlertDialog mDiagnostics;
++
++    public ShieldsPageInfoController(
++            PageInfoMainController main,
++            PageInfoRowView row,
++            WebContents contents,
++            AdblockController controller) {
++        mMain = main;
++        mRow = row;
++        mContents = contents;
++        mController = controller;
++        mHost = ShieldsSiteState.canonicalHost(main.getURL().getHost());
++        mUrl = main.getURL().getSpec();
++        updateRowIfNeeded();
++    }
++
++    private String text(int id) {
++        return mRow.getContext().getString(id);
++    }
++
++    private boolean isCurrent() {
++        return !mInvalidated
++                && !mContents.isDestroyed()
++                && mUrl.equals(mContents.getLastCommittedUrl().getSpec());
++    }
++
++    @Override
++    public String getSubpageTitle() {
++        return text(R.string.roadium_shields_site_panel_title);
++    }
++
++    @Override
++    public View createViewForSubpage(ViewGroup parent) {
++        mInvalidated = false;
++        Context context = parent.getContext();
++        mView = new ScrollView(context);
++        mBody = new LinearLayout(context);
++        mBody.setOrientation(LinearLayout.VERTICAL);
++        int pad = Math.round(16 * context.getResources().getDisplayMetrics().density);
++        mBody.setPadding(pad, pad, pad, pad);
++        mView.addView(mBody);
++        mObserver =
++                new WebContentsObserver(mContents) {
++                    @Override
++                    public void didStartNavigationInPrimaryMainFrame(NavigationHandle navigation) {
++                        mInvalidated = true;
++                        mMain.dismiss();
++                    }
++
++                    @Override
++                    public void webContentsDestroyed() {
++                        mInvalidated = true;
++                        mMain.dismiss();
++                    }
++                };
++        render();
++        return mView;
++    }
++
++    private void line(String value) {
++        TextView view = new TextView(mBody.getContext());
++        view.setText(value);
++        view.setTextSize(16);
++        view.setPadding(0, 8, 0, 8);
++        view.setTextIsSelectable(true);
++        mBody.addView(view);
++    }
++
++    private void button(int title, Runnable action) {
++        Button button = new Button(mBody.getContext());
++        button.setText(title);
++        button.setAllCaps(false);
++        button.setMinHeight(Math.round(56 * button.getResources().getDisplayMetrics().density));
++        button.setOnClickListener(
++                v -> {
++                    if (isCurrent()) action.run();
++                    else mMain.dismiss();
++                });
++        mBody.addView(
++                button,
++                new LinearLayout.LayoutParams(
++                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
++    }
++
++    private int levelName() {
++        switch (ShieldsPresets.currentLevel(mController.getSelectedFilterLists())) {
++            case STANDARD:
++                return R.string.roadium_shields_standard;
++            case BALANCED:
++                return R.string.roadium_shields_balanced;
++            case STRICT:
++                return R.string.roadium_shields_strict;
++            default:
++                return R.string.roadium_shields_custom;
++        }
++    }
++
++    private int status(List<String> saved, List<String> session) {
++        switch (ShieldsSiteState.effective(
++                mController.isEnabled(), !saved.isEmpty(), !session.isEmpty())) {
++            case GLOBAL_PAUSED:
++                return R.string.roadium_shields_site_global_paused;
++            case SAVED_EXCEPTION:
++                return R.string.roadium_shields_site_saved_off;
++            case SESSION_EXCEPTION:
++                return R.string.roadium_shields_site_session_off;
++            default:
++                return R.string.roadium_shields_site_enabled;
++        }
++    }
++
++    private void render() {
++        if (!isCurrent() || mBody == null) {
++            mMain.dismiss();
++            return;
++        }
++        mBody.removeAllViews();
++        List<String> saved = ShieldsSiteState.covering(mHost, mController.getAllowedDomains());
++        List<String> session =
++                ShieldsSiteState.covering(mHost, mController.getTemporaryAllowedDomains());
++        line(mHost);
++        line(text(status(saved, session)));
++        line(text(R.string.roadium_shields_site_level) + ": " + text(levelName()));
++        int count = AdblockController.getPageBlockedRequests(mContents);
++        line(
++                count < 0
++                        ? text(R.string.roadium_shields_site_activity_unavailable)
++                        : text(R.string.roadium_shields_site_activity) + ": " + count);
++        if (saved.isEmpty()) {
++            button(
++                    R.string.roadium_shields_site_save_off,
++                    () -> {
++                        mController.addAllowedDomain(mHost);
++                        reload();
++                    });
++        }
++        if (session.isEmpty() && saved.isEmpty()) {
++            button(
++                    R.string.roadium_shields_site_session_action,
++                    () -> {
++                        mController.addTemporaryAllowedDomain(mHost);
++                        reload();
++                    });
++        }
++        for (String domain : saved) {
++            line(text(R.string.roadium_shields_site_exception_scope) + " " + domain);
++            button(
++                    R.string.roadium_shields_site_remove_saved,
++                    () -> {
++                        mController.removeAllowedDomain(domain);
++                        reload();
++                    });
++        }
++        for (String domain : session) {
++            line(text(R.string.roadium_shields_site_exception_scope) + " " + domain);
++            button(
++                    R.string.roadium_shields_site_remove_session,
++                    () -> {
++                        mController.removeTemporaryAllowedDomain(domain);
++                        reload();
++                    });
++        }
++        line(text(R.string.roadium_shields_site_scope));
++        line(text(R.string.roadium_shields_site_activity_scope));
++        line(text(R.string.roadium_shields_site_attribution));
++        button(R.string.roadium_shields_site_refresh, this::render);
++        button(R.string.roadium_shields_site_reload, this::reload);
++        button(
++                R.string.roadium_shields_site_settings,
++                () -> {
++                    mMain.dismiss();
++                    SettingsNavigationFactory.createSettingsNavigation()
++                            .startSettings(mRow.getContext(), AdblockSettingsFragment.class);
++                });
++        button(
++                R.string.roadium_shields_site_diagnostics,
++                () -> {
++                    // Read-only existing local diagnostics, no submission path.
++                    TextView report = new TextView(mRow.getContext());
++                    report.setText(mController.getDiagnostics().getFullReport());
++                    report.setTextIsSelectable(true);
++                    ScrollView scroll = new ScrollView(mRow.getContext());
++                    scroll.addView(report);
++                    mDiagnostics =
++                            new android.app.AlertDialog.Builder(mRow.getContext())
++                                    .setTitle(R.string.roadium_shields_site_diagnostics)
++                                    .setView(scroll)
++                                    .setPositiveButton(android.R.string.ok, null)
++                                    .show();
++                });
++        line(text(R.string.roadium_shields_site_help));
++    }
++
++    private void reload() {
++        mMain.dismiss();
++        if (!mContents.isDestroyed()) mContents.getNavigationController().reload(true);
++    }
++
++    @Override
++    public View getCurrentSubpageView() {
++        return mView;
++    }
++
++    @Override
++    public void onSubpageRemoved() {
++        if (mObserver != null) {
++            mObserver.observe(null);
++            mObserver = null;
++        }
++        if (mDiagnostics != null) {
++            mDiagnostics.dismiss();
++            mDiagnostics = null;
++        }
++        mView = null;
++        mBody = null;
++    }
++
++    @Override
++    public void clearData() {}
++
++    @Override
++    public void updateRowIfNeeded() {
++        PageInfoRowView.ViewParams params = new PageInfoRowView.ViewParams();
++        params.visible = isCurrent();
++        params.title = getSubpageTitle();
++        params.subtitle = mHost;
++        params.iconResId = org.chromium.components.browser_ui.styles.R.drawable.ic_shield_24dp;
++        params.clickCallback =
++                () -> {
++                    if (isCurrent()) mMain.launchSubpage(this);
++                };
++        mRow.setParams(params);
++    }
++
++    @Override
++    public void updateSubpageIfNeeded() {
++        if (mView != null) render();
++    }
++}
+diff --git a/chrome/browser/adblock/android/adblock_strings.grd b/chrome/browser/adblock/android/adblock_strings.grd
+index ebdf13d..6d2440f 100644
+--- a/chrome/browser/adblock/android/adblock_strings.grd
++++ b/chrome/browser/adblock/android/adblock_strings.grd
+@@ -300,6 +300,27 @@
+       <message name="IDS_ROADIUM_SHIELDS_CATEGORY_SELECTED" desc="Number of configured lists selected in a category, not necessarily loaded">
+         <ph name="SELECTED">%1$d<ex>2</ex></ph> of <ph name="TOTAL">%2$d<ex>3</ex></ph> lists selected
+       </message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_PANEL_TITLE" desc="Shields per-site panel: panel title">Shields</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_SCOPE" desc="Shields per-site panel: scope">Exceptions cover this host and its subdomains in regular and Incognito tabs. Temporary exceptions last until the browser restarts. Closing a tab keeps the exception. Reload other open tabs to apply changes.</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_GLOBAL_PAUSED" desc="Shields per-site panel: global paused">Protection is paused globally. Removing a site exception will not enable global protection.</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_SAVED_OFF" desc="Shields per-site panel: saved off">Protection is off because of a saved site exception.</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_SESSION_OFF" desc="Shields per-site panel: session off">Protection is off for this browser session.</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_ENABLED" desc="Shields per-site panel: enabled">Site filtering is enabled. Actual coverage depends on loaded lists and their rules.</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_LEVEL" desc="Shields per-site panel: level">Protection level</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_SAVE_OFF" desc="Shields per-site panel: save off">Disable for this site and subdomains, then reload</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_SESSION_ACTION" desc="Shields per-site panel: session action">Disable for this browser session, then reload</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_REMOVE_SAVED" desc="Shields per-site panel: remove saved">Remove saved exception and reload</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_REMOVE_SESSION" desc="Shields per-site panel: remove session">Remove session exception and reload</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_EXCEPTION_SCOPE" desc="Shields per-site panel: exception scope">Exception applies to this host and its subdomains:</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_ACTIVITY" desc="Shields per-site panel: activity">Blocked network requests in this page</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_ACTIVITY_UNAVAILABLE" desc="Shields per-site panel: activity unavailable">Page activity is unavailable.</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_ACTIVITY_SCOPE" desc="Shields per-site panel: activity scope">Counts cover network requests blocked on this page and its embedded content. Reloading or opening a new page starts a new count; returning to a cached page keeps its count. Hidden page elements, pop-ups and some background requests are excluded. This panel stores no request history.</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_ATTRIBUTION" desc="Shields per-site panel: attribution">Matching rule and list details are unavailable in this panel.</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_REFRESH" desc="Shields per-site panel: refresh">Refresh activity and status</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_RELOAD" desc="Shields per-site panel: reload">Reload page</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_SETTINGS" desc="Shields per-site panel: settings">Protection settings and saved site exceptions</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_DIAGNOSTICS" desc="Shields per-site panel: diagnostics">Local filter diagnostics</message>
++      <message name="IDS_ROADIUM_SHIELDS_SITE_HELP" desc="Shields per-site panel: help">To troubleshoot a broken site, disable protection and reload. To restore it, remove the covering site exception below and reload. Global protection and advanced filtering are managed independently in settings. Nothing is submitted or uploaded from this panel.</message>
+     </messages>
+   </release>
+ </grit>
+diff --git a/components/adblock/android/BUILD.gn b/components/adblock/android/BUILD.gn
+index 69281b1..53d250e 100644
+--- a/components/adblock/android/BUILD.gn
++++ b/components/adblock/android/BUILD.gn
+@@ -56,6 +56,7 @@ android_library("adblock_controller_java") {
+     "java/src/org/chromium/components/adblock/ResourceFilteringCounters.java",
+     "java/src/org/chromium/components/adblock/ShieldsDiagnostics.java",
+     "java/src/org/chromium/components/adblock/ShieldsPresets.java",
++    "java/src/org/chromium/components/adblock/ShieldsSiteState.java",
+   ]
+ 
+   srcjar_deps = [ ":jni_headers" ]
+@@ -112,6 +113,7 @@ robolectric_binary("roadium_shields_junit_tests") {
+   sources = [
+     "junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java",
+     "junit/src/org/chromium/components/adblock/ShieldsPresetsTest.java",
++    "junit/src/org/chromium/components/adblock/ShieldsSiteStateTest.java",
+   ]
+   deps = [
+     ":adblock_controller_java",
+diff --git a/components/adblock/android/adblock_controller_jni.cc b/components/adblock/android/adblock_controller_jni.cc
+index c07fbb7..2d4bc28 100644
+--- a/components/adblock/android/adblock_controller_jni.cc
++++ b/components/adblock/android/adblock_controller_jni.cc
+@@ -24,16 +24,18 @@
+ #include "base/android/jni_string.h"
+ #include "base/android/jni_weak_ref.h"
+ #include "base/i18n/time_formatting.h"
+-#include "base/strings/utf_string_conversions.h"
+-#include "base/logging.h"
+ #include "base/json/json_writer.h"
+-#include "components/adblock/content/browser/factories/subscription_persistent_metadata_factory.h"
++#include "base/logging.h"
++#include "base/strings/utf_string_conversions.h"
+ #include "components/adblock/android/jni_headers/AdblockController_jni.h"
++#include "components/adblock/content/browser/eyeo_page_info.h"
++#include "components/adblock/content/browser/factories/subscription_persistent_metadata_factory.h"
+ #include "components/adblock/content/browser/factories/subscription_service_factory.h"
+ #include "components/adblock/core/common/adblock_constants.h"
+ #include "components/adblock/core/subscription/subscription_config.h"
+ #include "content/public/browser/android/browser_context_handle.h"
+ #include "content/public/browser/browser_thread.h"
++#include "content/public/browser/web_contents.h"
+ 
+ using base::android::CheckException;
+ using base::android::ConvertUTF8ToJavaString;
+@@ -313,4 +315,16 @@ JNI_AdblockController_GetDiagnosticSnapshot(JNIEnv* env,
+   return ConvertUTF8ToJavaString(env, json);
+ }
+ 
++static jint JNI_AdblockController_GetPageBlockedRequests(
++    JNIEnv* env,
++    const base::android::JavaRef<jobject>& j_contents) {
++  DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
++  auto* contents = content::WebContents::FromJavaWebContents(j_contents);
++  if (!contents || contents->IsBeingDestroyed()) {
++    return -1;
++  }
++  auto* info = adblock::EyeoPageInfo::GetForPage(contents->GetPrimaryPage());
++  return info ? info->GetBlockedRequests() : 0;
++}
++
+ DEFINE_JNI(AdblockController)
+diff --git a/components/adblock/android/filtering_configuration_android.cc b/components/adblock/android/filtering_configuration_android.cc
+index 22046f8..17855b5 100644
+--- a/components/adblock/android/filtering_configuration_android.cc
++++ b/components/adblock/android/filtering_configuration_android.cc
+@@ -146,6 +146,24 @@ FilteringConfigurationAndroid::GetAllowedDomains(JNIEnv* env) const {
+                               filtering_configuration_ptr->GetAllowedDomains());
+ }
+ 
++void FilteringConfigurationAndroid::AddTemporaryAllowedDomain(
++    JNIEnv* env,
++    const JavaRef<jstring>& domain) {
++  filtering_configuration_ptr->AddTemporaryAllowedDomain(
++      ConvertJavaStringToUTF8(domain));
++}
++void FilteringConfigurationAndroid::RemoveTemporaryAllowedDomain(
++    JNIEnv* env,
++    const JavaRef<jstring>& domain) {
++  filtering_configuration_ptr->RemoveTemporaryAllowedDomain(
++      ConvertJavaStringToUTF8(domain));
++}
++ScopedJavaLocalRef<jobjectArray>
++FilteringConfigurationAndroid::GetTemporaryAllowedDomains(JNIEnv* env) const {
++  return ToJavaArrayOfStrings(
++      env, filtering_configuration_ptr->GetTemporaryAllowedDomains());
++}
++
+ void FilteringConfigurationAndroid::AddCustomFilter(
+     JNIEnv* env,
+     const JavaRef<jstring>& custom_filter) {
+diff --git a/components/adblock/android/filtering_configuration_android.h b/components/adblock/android/filtering_configuration_android.h
+index 9b45c98..fca298a 100644
+--- a/components/adblock/android/filtering_configuration_android.h
++++ b/components/adblock/android/filtering_configuration_android.h
+@@ -58,6 +58,13 @@ class FilteringConfigurationAndroid
+                            const base::android::JavaRef<jstring>& domain);
+   base::android::ScopedJavaLocalRef<jobjectArray> GetAllowedDomains(
+       JNIEnv* env) const;
++  void AddTemporaryAllowedDomain(JNIEnv* env,
++                                 const base::android::JavaRef<jstring>& domain);
++  void RemoveTemporaryAllowedDomain(
++      JNIEnv* env,
++      const base::android::JavaRef<jstring>& domain);
++  base::android::ScopedJavaLocalRef<jobjectArray> GetTemporaryAllowedDomains(
++      JNIEnv* env) const;
+   void AddCustomFilter(JNIEnv* env,
+                        const base::android::JavaRef<jstring>& filter);
+   void RemoveCustomFilter(JNIEnv* env,
+diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java b/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
+index d0e894f..0335a2e 100644
+--- a/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
++++ b/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
+@@ -336,8 +336,33 @@ public class AdblockController {
+         mFilteringConfiguration.removeSubscriptionUpdateObserver(observer);
+     }
+ 
++    /** Memory-only exceptions shared by regular tabs until this profile session ends. */
++    @UiThread
++    public void addTemporaryAllowedDomain(String domain) {
++        mFilteringConfiguration.addTemporaryAllowedDomain(domain);
++    }
++
++    @UiThread
++    public void removeTemporaryAllowedDomain(String domain) {
++        mFilteringConfiguration.removeTemporaryAllowedDomain(domain);
++    }
++
++    @UiThread
++    public List<String> getTemporaryAllowedDomains() {
++        return mFilteringConfiguration.getTemporaryAllowedDomains();
++    }
++
++    /** Current content::Page snapshot. No URL/rule history is collected. */
++    @UiThread
++    public static int getPageBlockedRequests(
++            org.chromium.content_public.browser.WebContents contents) {
++        return AdblockControllerJni.get().getPageBlockedRequests(contents);
++    }
++
+     @NativeMethods
+     public interface Natives {
++        int getPageBlockedRequests(org.chromium.content_public.browser.WebContents contents);
++
+         void startUpdate(BrowserContextHandle contextHandle);
+         String getDiagnosticSnapshot(BrowserContextHandle contextHandle);
+         boolean isPrivilegedFiltersEnabled(BrowserContextHandle contextHandle);
+diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/FilteringConfiguration.java b/components/adblock/android/java/src/org/chromium/components/adblock/FilteringConfiguration.java
+index ef3b431..6cd513e 100644
+--- a/components/adblock/android/java/src/org/chromium/components/adblock/FilteringConfiguration.java
++++ b/components/adblock/android/java/src/org/chromium/components/adblock/FilteringConfiguration.java
+@@ -333,6 +333,27 @@ public final class FilteringConfiguration {
+         return FilteringConfigurationJni.get().isAutoInstallEnabled(browserContextHandle);
+     }
+ 
++    @UiThread
++    public void addTemporaryAllowedDomain(String domain) {
++        ValidateConfiguration();
++        String host = ShieldsSiteState.canonicalHost(domain);
++        if (host != null)
++            FilteringConfigurationJni.get().addTemporaryAllowedDomain(mNativeController, host);
++    }
++
++    @UiThread
++    public void removeTemporaryAllowedDomain(String domain) {
++        ValidateConfiguration();
++        FilteringConfigurationJni.get().removeTemporaryAllowedDomain(mNativeController, domain);
++    }
++
++    @UiThread
++    public List<String> getTemporaryAllowedDomains() {
++        ValidateConfiguration();
++        return Arrays.asList(
++                FilteringConfigurationJni.get().getTemporaryAllowedDomains(mNativeController));
++    }
++
+     private String sanitizeSite(String site) {
+         // |site| is raw user input. We expect it to be either a domain or a URL.
+         try {
+@@ -399,6 +420,12 @@ public final class FilteringConfiguration {
+ 
+         void addAllowedDomain(long nativeFilteringConfigurationAndroid, String domain);
+ 
++        void addTemporaryAllowedDomain(long nativeFilteringConfigurationAndroid, String domain);
++
++        void removeTemporaryAllowedDomain(long nativeFilteringConfigurationAndroid, String domain);
++
++        String[] getTemporaryAllowedDomains(long nativeFilteringConfigurationAndroid);
++
+         void removeAllowedDomain(long nativeFilteringConfigurationAndroid, String domain);
+ 
+         String[] getAllowedDomains(long nativeFilteringConfigurationAndroid);
+diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsSiteState.java b/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsSiteState.java
+new file mode 100644
+index 0000000..9e530e4
+--- /dev/null
++++ b/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsSiteState.java
+@@ -0,0 +1,68 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++package org.chromium.components.adblock;
++
++import java.net.IDN;
++import java.util.ArrayList;
++import java.util.List;
++import java.util.Locale;
++
++/** Read-only site scope model. Matches existing domain allowlisting, including subdomains. */
++public final class ShieldsSiteState {
++    private ShieldsSiteState() {}
++
++    /** DNS/IPv4 host only. No paths, ports, wildcards or rule syntax. IPv6 is unsupported here. */
++    public static String canonicalHost(String host) {
++        if (host == null || host.isEmpty() || !host.equals(host.trim())) return null;
++        if (host.endsWith(".")) host = host.substring(0, host.length() - 1);
++        try {
++            String ascii = IDN.toASCII(host, IDN.USE_STD3_ASCII_RULES).toLowerCase(Locale.ROOT);
++            if (ascii.isEmpty() || ascii.length() > 253 || ascii.contains("..")) return null;
++            return ascii;
++        } catch (IllegalArgumentException e) {
++            return null;
++        }
++    }
++
++    public static boolean supports(String scheme, String host) {
++        return ("http".equals(scheme) || "https".equals(scheme)) && canonicalHost(host) != null;
++    }
++
++    /** Returns original stored entries, so restoring never rewrites another owner's record. */
++    public static List<String> covering(String host, List<String> domains) {
++        List<String> matching = new ArrayList<>();
++        String canonical = canonicalHost(host);
++        if (canonical == null) return matching;
++        for (String entry : domains) {
++            // The engine rejects Unicode in stored domain options. Do not silently
++            // reinterpret a legacy record as a working punycode exception.
++            String domain = isAscii(entry) ? canonicalHost(entry) : null;
++            if (domain != null && (canonical.equals(domain) || canonical.endsWith("." + domain))) {
++                matching.add(entry);
++            }
++        }
++        return matching;
++    }
++
++    private static boolean isAscii(String value) {
++        if (value == null) return false;
++        for (int i = 0; i < value.length(); i++) {
++            if (value.charAt(i) > 0x7f) return false;
++        }
++        return true;
++    }
++
++    public enum Effective {
++        GLOBAL_PAUSED,
++        SAVED_EXCEPTION,
++        SESSION_EXCEPTION,
++        FILTERING_ENABLED
++    }
++
++    public static Effective effective(boolean enabled, boolean saved, boolean temporary) {
++        if (!enabled) return Effective.GLOBAL_PAUSED;
++        if (saved) return Effective.SAVED_EXCEPTION;
++        if (temporary) return Effective.SESSION_EXCEPTION;
++        return Effective.FILTERING_ENABLED;
++    }
++}
+diff --git a/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsSiteStateTest.java b/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsSiteStateTest.java
+new file mode 100644
+index 0000000..a767005
+--- /dev/null
++++ b/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsSiteStateTest.java
+@@ -0,0 +1,103 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++package org.chromium.components.adblock;
++
++import static org.junit.Assert.*;
++
++import org.chromium.base.test.BaseRobolectricTestRunner;
++import org.chromium.base.test.util.Batch;
++import org.junit.Test;
++import org.junit.runner.RunWith;
++
++import java.util.Arrays;
++import java.util.List;
++
++@RunWith(BaseRobolectricTestRunner.class)
++@Batch(Batch.UNIT_TESTS)
++public class ShieldsSiteStateTest {
++    @Test
++    public void idnCaseAndFinalDotCanonicalizeWithoutWideningScope() {
++        assertEquals("xn--bcher-kva.example", ShieldsSiteState.canonicalHost("Bücher.Example."));
++        assertEquals(
++                Arrays.asList("XN--BCHER-KVA.example"),
++                ShieldsSiteState.covering(
++                        "shop.xn--bcher-kva.example",
++                        Arrays.asList("XN--BCHER-KVA.example", "other.example")));
++    }
++
++    @Test
++    public void legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException() {
++        List<String> original = Arrays.asList("B\u00dcCHER.example", "XN--BCHER-KVA.example");
++        assertEquals(
++                Arrays.asList("XN--BCHER-KVA.example"),
++                ShieldsSiteState.covering("shop.xn--bcher-kva.example", original));
++        assertEquals(Arrays.asList("B\u00dcCHER.example", "XN--BCHER-KVA.example"), original);
++        assertTrue(
++                ShieldsSiteState.covering("xn--bcher-kva.example", Arrays.asList("B\u00dcCHER.example"))
++                        .isEmpty());
++    }
++
++    @Test
++    public void suffixRequiresDnsLabelBoundary() {
++        List<String> domains = Arrays.asList("example.com", "shop.example.com", "other.com");
++        assertEquals(
++                Arrays.asList("example.com", "shop.example.com"),
++                ShieldsSiteState.covering("shop.example.com", domains));
++        assertTrue(ShieldsSiteState.covering("badexample.com", domains).isEmpty());
++        assertTrue(ShieldsSiteState.covering("example.com.evil.test", domains).isEmpty());
++        assertEquals(3, domains.size());
++    }
++
++    @Test
++    public void malformedHostsAndRuleInjectionAreRejected() {
++        for (String host :
++                Arrays.asList(
++                        "",
++                        " ",
++                        " example.com",
++                        "example.com ",
++                        ".",
++                        "a..example",
++                        "example.com:443",
++                        "example.com/path",
++                        "example.com^$document",
++                        "user@example.com",
++                        "[::1]",
++                        "*.example.com",
++                        "example.com\n")) {
++            assertNull(host, ShieldsSiteState.canonicalHost(host));
++        }
++    }
++
++    @Test
++    public void nonWebPagesHaveNoSiteControls() {
++        for (String scheme : Arrays.asList("chrome", "file", "data", "about", "javascript", "ftp"))
++            assertFalse(ShieldsSiteState.supports(scheme, "example.com"));
++        assertTrue(ShieldsSiteState.supports("https", "example.com"));
++        assertTrue(ShieldsSiteState.supports("http", "127.0.0.1"));
++        assertFalse(ShieldsSiteState.supports("https", "[::1]"));
++    }
++
++    @Test
++    public void globalPauseAlwaysWinsOverEitherException() {
++        for (boolean saved : new boolean[] {false, true})
++            for (boolean temporary : new boolean[] {false, true}) {
++                assertEquals(
++                        ShieldsSiteState.Effective.GLOBAL_PAUSED,
++                        ShieldsSiteState.effective(false, saved, temporary));
++            }
++    }
++
++    @Test
++    public void concurrentExceptionsRemainDistinctReasons() {
++        assertEquals(
++                ShieldsSiteState.Effective.SAVED_EXCEPTION,
++                ShieldsSiteState.effective(true, true, true));
++        assertEquals(
++                ShieldsSiteState.Effective.SESSION_EXCEPTION,
++                ShieldsSiteState.effective(true, false, true));
++        assertEquals(
++                ShieldsSiteState.Effective.FILTERING_ENABLED,
++                ShieldsSiteState.effective(true, false, false));
++    }
++}
+diff --git a/components/adblock/content/browser/eyeo_page_info.cc b/components/adblock/content/browser/eyeo_page_info.cc
+index 169b6f3..120ebdc 100644
+--- a/components/adblock/content/browser/eyeo_page_info.cc
++++ b/components/adblock/content/browser/eyeo_page_info.cc
+@@ -17,6 +17,8 @@
+ 
+ #include "components/adblock/content/browser/eyeo_page_info.h"
+ 
++#include <limits>
++
+ namespace adblock {
+ 
+ PAGE_USER_DATA_KEY_IMPL(EyeoPageInfo);
+@@ -26,6 +28,12 @@ EyeoPageInfo::EyeoPageInfo(content::Page& page)
+ 
+ EyeoPageInfo::~EyeoPageInfo() = default;
+ 
++void EyeoPageInfo::IncrementBlockedRequests() {
++  if (blocked_requests_ < std::numeric_limits<int>::max()) {
++    ++blocked_requests_;
++  }
++}
++
+ bool EyeoPageInfo::SetMatchedPageView(PageViewStats::Metric metric) {
+   auto result = page_views_.insert(metric);
+   return result.second;
+diff --git a/components/adblock/content/browser/eyeo_page_info.h b/components/adblock/content/browser/eyeo_page_info.h
+index 6787ab3..b63bd85 100644
+--- a/components/adblock/content/browser/eyeo_page_info.h
++++ b/components/adblock/content/browser/eyeo_page_info.h
+@@ -30,6 +30,8 @@ namespace adblock {
+ class EyeoPageInfo final : public content::PageUserData<EyeoPageInfo> {
+  public:
+   ~EyeoPageInfo() final;
++  void IncrementBlockedRequests();
++  int GetBlockedRequests() const { return blocked_requests_; }
+ 
+   // Marks that document has matched specified page view metric.
+   // |key| is a base::PersistentHash() of a metric name.
+@@ -43,6 +45,7 @@ class EyeoPageInfo final : public content::PageUserData<EyeoPageInfo> {
+   explicit EyeoPageInfo(content::Page& page);
+ 
+   std::set<PageViewStats::Metric> page_views_ = {};
++  int blocked_requests_ = 0;
+ 
+   friend PageUserData;
+   PAGE_USER_DATA_KEY_DECL();
+diff --git a/components/adblock/content/browser/resource_classification_runner_impl.cc b/components/adblock/content/browser/resource_classification_runner_impl.cc
+index 1bb01d8..56e5365 100644
+--- a/components/adblock/content/browser/resource_classification_runner_impl.cc
++++ b/components/adblock/content/browser/resource_classification_runner_impl.cc
+@@ -22,6 +22,7 @@
+ #include "base/task/thread_pool.h"
+ #include "base/trace_event/trace_event.h"
+ #include "components/adblock/content/browser/eyeo_document_info.h"
++#include "components/adblock/content/browser/eyeo_page_info.h"
+ #include "components/adblock/content/browser/frame_opener_info.h"
+ #include "components/adblock/content/browser/request_initiator.h"
+ #include "components/adblock/core/common/sitekey.h"
+@@ -249,12 +250,16 @@ void ResourceClassificationRunnerImpl::CheckRequestFilterMatch(
+       base::BindOnce(
+           &ResourceClassificationRunnerImpl::CheckRequestFilterMatchInternal,
+           resource_classifier_, std::move(subscription_collections),
+-          request_url, std::move(dns_aliases), frame_hierarchy, adblock_resource_type,
+-          std::move(site_key)),
++          request_url, std::move(dns_aliases), frame_hierarchy,
++          adblock_resource_type, std::move(site_key)),
+       base::BindOnce(
+           &ResourceClassificationRunnerImpl::OnCheckResourceFilterMatchComplete,
+           weak_ptr_factory_.GetWeakPtr(), request_url, frame_hierarchy,
+-          adblock_resource_type, request_initiator, std::move(callback)));
++          adblock_resource_type, request_initiator,
++          request_initiator.IsFrame() && request_initiator.GetRenderFrameHost()
++              ? request_initiator.GetRenderFrameHost()->GetWeakDocumentPtr()
++              : content::WeakDocumentPtr(),
++          std::move(callback)));
+ }
+ 
+ // static
+@@ -317,8 +322,16 @@ void ResourceClassificationRunnerImpl::OnCheckResourceFilterMatchComplete(
+     const std::vector<GURL> frame_hierarchy,
+     ContentType adblock_resource_type,
+     const RequestInitiator& request_initiator,
++    content::WeakDocumentPtr activity_document,
+     CheckFilterMatchCallback callback,
+     const CheckResourceFilterMatchResult result) {
++  // Bind to the dispatching document, never a reused frame after navigation.
++  if (result.status == FilterMatchResult::kBlockRule) {
++    if (auto* document = activity_document.AsRenderFrameHostIfValid()) {
++      EyeoPageInfo::GetOrCreateForPage(document->GetPage())
++          ->IncrementBlockedRequests();
++    }
++  }
+   // Notify |callback| as soon as we know whether we should block, as this
+   // unblocks loading of network resources.
+   std::move(callback).Run(result.status);
+@@ -407,7 +420,11 @@ void ResourceClassificationRunnerImpl::CheckResponseFilterMatch(
+       base::BindOnce(
+           &ResourceClassificationRunnerImpl::OnCheckResourceFilterMatchComplete,
+           weak_ptr_factory_.GetWeakPtr(), response_url, frame_hierarchy,
+-          adblock_resource_type, request_initiator, std::move(callback)));
++          adblock_resource_type, request_initiator,
++          request_initiator.IsFrame() && request_initiator.GetRenderFrameHost()
++              ? request_initiator.GetRenderFrameHost()->GetWeakDocumentPtr()
++              : content::WeakDocumentPtr(),
++          std::move(callback)));
+ }
+ 
+ // static
+diff --git a/components/adblock/content/browser/resource_classification_runner_impl.h b/components/adblock/content/browser/resource_classification_runner_impl.h
+index 3864578..8ac8246 100644
+--- a/components/adblock/content/browser/resource_classification_runner_impl.h
++++ b/components/adblock/content/browser/resource_classification_runner_impl.h
+@@ -28,6 +28,7 @@
+ #include "components/adblock/core/common/sitekey.h"
+ #include "components/adblock/core/sitekey_storage.h"
+ #include "content/public/browser/global_routing_id.h"
++#include "content/public/browser/weak_document_ptr.h"
+ 
+ namespace adblock {
+ 
+@@ -105,6 +106,7 @@ class ResourceClassificationRunnerImpl final
+       const std::vector<GURL> frame_hierarchy,
+       ContentType adblock_resource_type,
+       const RequestInitiator& request_initiator,
++      content::WeakDocumentPtr activity_document,
+       CheckFilterMatchCallback callback,
+       const CheckResourceFilterMatchResult result);
+ 
+diff --git a/components/adblock/core/configuration/filtering_configuration.h b/components/adblock/core/configuration/filtering_configuration.h
+index 792e806..69a0d35 100644
+--- a/components/adblock/core/configuration/filtering_configuration.h
++++ b/components/adblock/core/configuration/filtering_configuration.h
+@@ -87,6 +87,12 @@ class FilteringConfiguration {
+   virtual void RemoveAllowedDomain(const std::string& domain) = 0;
+   virtual std::vector<std::string> GetAllowedDomains() const = 0;
+ 
++  // Profile-session exceptions. Separate from all persisted configuration.
++  // Existing domain allowlisting semantics, including subdomains, apply.
++  virtual void AddTemporaryAllowedDomain(const std::string& domain) = 0;
++  virtual void RemoveTemporaryAllowedDomain(const std::string& domain) = 0;
++  virtual std::vector<std::string> GetTemporaryAllowedDomains() const = 0;
++
+   // Adding an existing custom filter, or removing a non-existing custom filter,
+   // are NOPs and do not notify observers.
+   virtual void AddCustomFilter(const std::string& filter) = 0;
+diff --git a/components/adblock/core/configuration/persistent_filtering_configuration.cc b/components/adblock/core/configuration/persistent_filtering_configuration.cc
+index 22a1023..7acf853 100644
+--- a/components/adblock/core/configuration/persistent_filtering_configuration.cc
++++ b/components/adblock/core/configuration/persistent_filtering_configuration.cc
+@@ -240,6 +240,34 @@ std::vector<std::string> PersistentFilteringConfiguration::GetAllowedDomains()
+   return GetFromList<std::string>(dictionary_, kDomainsKey);
+ }
+ 
++void PersistentFilteringConfiguration::AddTemporaryAllowedDomain(
++    const std::string& domain) {
++  // Only canonical hosts are accepted; never interpolate rule syntax from
++  // input.
++  GURL url("https://" + domain + "/");
++  if (domain.empty() || !url.is_valid() || url.host() != domain ||
++      !url.username().empty() || !url.password().empty() || url.has_port() ||
++      url.path() != "/" || url.has_query() || url.has_ref() ||
++      std::ranges::find(temporary_allowed_domains_, domain) !=
++          temporary_allowed_domains_.end()) {
++    return;
++  }
++  temporary_allowed_domains_.push_back(domain);
++  NotifyAllowedDomainsChanged();
++}
++
++void PersistentFilteringConfiguration::RemoveTemporaryAllowedDomain(
++    const std::string& domain) {
++  if (std::erase(temporary_allowed_domains_, domain)) {
++    NotifyAllowedDomainsChanged();
++  }
++}
++
++std::vector<std::string>
++PersistentFilteringConfiguration::GetTemporaryAllowedDomains() const {
++  return temporary_allowed_domains_;
++}
++
+ void PersistentFilteringConfiguration::AddCustomFilter(
+     const std::string& filter) {
+   if (AppendToList(dictionary_, kCustomFiltersKey, filter)) {
+diff --git a/components/adblock/core/configuration/persistent_filtering_configuration.h b/components/adblock/core/configuration/persistent_filtering_configuration.h
+index 55e3aea..9367822 100644
+--- a/components/adblock/core/configuration/persistent_filtering_configuration.h
++++ b/components/adblock/core/configuration/persistent_filtering_configuration.h
+@@ -61,6 +61,9 @@ class PersistentFilteringConfiguration final : public FilteringConfiguration {
+   void AddAllowedDomain(const std::string& domain) final;
+   void RemoveAllowedDomain(const std::string& domain) final;
+   std::vector<std::string> GetAllowedDomains() const final;
++  void AddTemporaryAllowedDomain(const std::string& domain) final;
++  void RemoveTemporaryAllowedDomain(const std::string& domain) final;
++  std::vector<std::string> GetTemporaryAllowedDomains() const final;
+ 
+   void AddCustomFilter(const std::string& filter) final;
+   void RemoveCustomFilter(const std::string& filter) final;
+@@ -86,6 +89,7 @@ class PersistentFilteringConfiguration final : public FilteringConfiguration {
+   std::string name_;
+   base::ObserverList<Observer> observers_;
+   base::DictValue dictionary_;
++  std::vector<std::string> temporary_allowed_domains_;
+   PrefChangeRegistrar privileged_pref_registrar_;
+ };
+ 
+diff --git a/components/adblock/core/configuration/test/fake_filtering_configuration.cc b/components/adblock/core/configuration/test/fake_filtering_configuration.cc
+index 25e7093..898ffe1 100644
+--- a/components/adblock/core/configuration/test/fake_filtering_configuration.cc
++++ b/components/adblock/core/configuration/test/fake_filtering_configuration.cc
+@@ -122,6 +122,27 @@ std::vector<std::string> FakeFilteringConfiguration::GetAllowedDomains() const {
+   return allowed_domains;
+ }
+ 
++void FakeFilteringConfiguration::AddTemporaryAllowedDomain(
++    const std::string& domain) {
++  if (std::ranges::find(temporary_allowed_domains, domain) ==
++      temporary_allowed_domains.end()) {
++    temporary_allowed_domains.push_back(domain);
++    if (observer) {
++      observer->OnAllowedDomainsChanged(this);
++    }
++  }
++}
++void FakeFilteringConfiguration::RemoveTemporaryAllowedDomain(
++    const std::string& domain) {
++  if (std::erase(temporary_allowed_domains, domain) && observer) {
++    observer->OnAllowedDomainsChanged(this);
++  }
++}
++std::vector<std::string>
++FakeFilteringConfiguration::GetTemporaryAllowedDomains() const {
++  return temporary_allowed_domains;
++}
++
+ void FakeFilteringConfiguration::AddCustomFilter(const std::string& filter) {
+   custom_filters.push_back(filter);
+   if (observer) {
+diff --git a/components/adblock/core/configuration/test/fake_filtering_configuration.h b/components/adblock/core/configuration/test/fake_filtering_configuration.h
+index 8085537..d7abb1b 100644
+--- a/components/adblock/core/configuration/test/fake_filtering_configuration.h
++++ b/components/adblock/core/configuration/test/fake_filtering_configuration.h
+@@ -51,6 +51,9 @@ class FakeFilteringConfiguration : public FilteringConfiguration {
+   void AddAllowedDomain(const std::string& domain) override;
+   void RemoveAllowedDomain(const std::string& domain) override;
+   std::vector<std::string> GetAllowedDomains() const override;
++  void AddTemporaryAllowedDomain(const std::string& domain) override;
++  void RemoveTemporaryAllowedDomain(const std::string& domain) override;
++  std::vector<std::string> GetTemporaryAllowedDomains() const override;
+ 
+   void AddCustomFilter(const std::string& filter) override;
+   void RemoveCustomFilter(const std::string& filter) override;
+@@ -61,6 +64,7 @@ class FakeFilteringConfiguration : public FilteringConfiguration {
+   bool is_enabled = true;
+   std::vector<GURL> filter_lists;
+   std::vector<std::string> allowed_domains;
++  std::vector<std::string> temporary_allowed_domains;
+   std::vector<std::string> custom_filters;
+ };
+ 
+diff --git a/components/adblock/core/subscription/BUILD.gn b/components/adblock/core/subscription/BUILD.gn
+index d77d17e..7d5be27 100644
+--- a/components/adblock/core/subscription/BUILD.gn
++++ b/components/adblock/core/subscription/BUILD.gn
+@@ -224,6 +224,7 @@ test("roadium_shields_unit_tests") {
+     "../../test/shields_diagnostics_unittest.cc",
+     "../../test/shields_presets_unittest.cc",
+     "../../test/shields_recovery_unittest.cc",
++    "../../test/shields_sites_unittest.cc",
+     "../../test/shields_transport_unittest.cc",
+     "../../test/shields_youtube_unittest.cc",
+   ]
+diff --git a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
+index fa880ca..0233f3f 100644
+--- a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
++++ b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
+@@ -681,8 +681,11 @@ void FilteringConfigurationMaintainerImpl::SetCustomFilters() {
+   std::vector<std::string> temp_filters = configuration_->GetTemporaryCustomFilters();
+   filters.insert(filters.end(), temp_filters.begin(), temp_filters.end());
+   std::ranges::transform(configuration_->GetAllowedDomains(),
+-                          std::back_inserter(filters),
+-                          &CreateDomainAllowlistingFilter);
++                         std::back_inserter(filters),
++                         &CreateDomainAllowlistingFilter);
++  std::ranges::transform(configuration_->GetTemporaryAllowedDomains(),
++                         std::back_inserter(filters),
++                         &CreateDomainAllowlistingFilter);
+   for (const auto& filter : filters) {
+     VLOG(1) << "[eyeo] Setting custom filter: " << filter;
+   }
+diff --git a/components/adblock/test/shields_sites_unittest.cc b/components/adblock/test/shields_sites_unittest.cc
+new file mode 100644
+index 0000000..45365fd
+--- /dev/null
++++ b/components/adblock/test/shields_sites_unittest.cc
+@@ -0,0 +1,93 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++#include "components/adblock/core/common/adblock_prefs.h"
++#include "components/adblock/core/configuration/persistent_filtering_configuration.h"
++#include "components/prefs/testing_pref_service.h"
++#include "testing/gtest/include/gtest/gtest.h"
++
++namespace adblock {
++namespace {
++class SiteObserver : public FilteringConfiguration::Observer {
++ public:
++  void OnAllowedDomainsChanged(FilteringConfiguration*) override { ++changed; }
++  int changed = 0;
++};
++
++TEST(ShieldsSites, SessionChangesNeverPersistOrEraseSavedOwnership) {
++  TestingPrefServiceSimple prefs;
++  common::prefs::RegisterProfilePrefs(prefs.registry());
++  {
++    PersistentFilteringConfiguration config(&prefs, "adblock");
++    config.AddAllowedDomain("saved.example");
++    config.AddCustomFilter("||ads.example^");
++    config.SetEnabled(false);
++    config.SetPrivilegedFiltersEnabled(false);
++    const auto before =
++        prefs.GetValue(common::prefs::kConfigurationsPrefsPath).Clone();
++    SiteObserver observer;
++    config.AddObserver(&observer);
++    config.AddTemporaryAllowedDomain("saved.example");
++    config.AddTemporaryAllowedDomain("session.example");
++    config.AddTemporaryAllowedDomain("session.example");
++    config.RemoveTemporaryAllowedDomain("missing.example");
++    EXPECT_EQ(2, observer.changed);
++    EXPECT_EQ(before, prefs.GetValue(common::prefs::kConfigurationsPrefsPath));
++    EXPECT_EQ((std::vector<std::string>{"saved.example"}),
++              config.GetAllowedDomains());
++    config.RemoveTemporaryAllowedDomain("saved.example");
++    EXPECT_EQ(3, observer.changed);
++    EXPECT_EQ((std::vector<std::string>{"saved.example"}),
++              config.GetAllowedDomains());
++    config.AddAllowedDomain("session.example");
++    config.RemoveTemporaryAllowedDomain("session.example");
++    EXPECT_EQ((std::vector<std::string>{"saved.example", "session.example"}),
++              config.GetAllowedDomains());
++    config.AddTemporaryAllowedDomain("never-written.example");
++    config.AddCustomFilter("##.unrelated-change");
++    config.SetFilterLists({GURL("https://example.test/custom.txt")});
++    EXPECT_FALSE(config.IsEnabled());
++    EXPECT_FALSE(config.IsPrivilegedFiltersEnabled());
++    config.RemoveObserver(&observer);
++  }
++  PersistentFilteringConfiguration restarted(&prefs, "adblock");
++  EXPECT_TRUE(restarted.GetTemporaryAllowedDomains().empty());
++  EXPECT_EQ((std::vector<std::string>{"saved.example", "session.example"}),
++            restarted.GetAllowedDomains());
++  EXPECT_EQ(2u, restarted.GetCustomFilters().size());
++  EXPECT_FALSE(restarted.IsEnabled());
++  EXPECT_FALSE(restarted.IsPrivilegedFiltersEnabled());
++}
++
++TEST(ShieldsSites, RemovingSavedExceptionDoesNotClearConcurrentSession) {
++  TestingPrefServiceSimple prefs;
++  common::prefs::RegisterProfilePrefs(prefs.registry());
++  PersistentFilteringConfiguration config(&prefs, "adblock");
++  config.AddTemporaryAllowedDomain("same.example");
++  config.AddAllowedDomain("same.example");
++  config.RemoveAllowedDomain("same.example");
++  EXPECT_EQ((std::vector<std::string>{"same.example"}),
++            config.GetTemporaryAllowedDomains());
++  EXPECT_TRUE(config.GetAllowedDomains().empty());
++}
++
++TEST(ShieldsSites, InvalidSessionHostCannotInjectRuleSyntaxOrNotify) {
++  TestingPrefServiceSimple prefs;
++  common::prefs::RegisterProfilePrefs(prefs.registry());
++  PersistentFilteringConfiguration config(&prefs, "adblock");
++  const auto before =
++      prefs.GetValue(common::prefs::kConfigurationsPrefsPath).Clone();
++  SiteObserver observer;
++  config.AddObserver(&observer);
++  for (const auto* host :
++       {"", "bad.example/path", "bad.example#x", "bad.example?x",
++        "bad.example:443", "user@bad.example", "bad.example^$document",
++        "bad.example\n@@||other.example", "UPPER.example"}) {
++    config.AddTemporaryAllowedDomain(host);
++  }
++  EXPECT_TRUE(config.GetTemporaryAllowedDomains().empty());
++  EXPECT_EQ(0, observer.changed);
++  EXPECT_EQ(before, prefs.GetValue(common::prefs::kConfigurationsPrefsPath));
++  config.RemoveObserver(&observer);
++}
++}  // namespace
++}  // namespace adblock

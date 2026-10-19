@@ -1,0 +1,23 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The PR introduces a diagnostic system for adblock subscriptions, tracking lifecycle stages (Downloading, Parsed, etc.) and rule statistics without storing sensitive content. It implements an immutable sidecar for rule counters, adds a unique token to ongoing downloads to prevent stale conversion results, and ensures metadata persistence is bounded by size limits. The architecture correctly separates diagnostic collection from the core conversion logic.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"The new `roadium_shields_unit_tests` should be verified to cover all `DiagnosticStage` transitions, specifically the 'Interrupted' state logic during `LoadFromPrefs`.\"\n  ],\n  \"recommended_changes\": [\n    \"Ensure `RuleStatistics::Increment` is used consistently across all new rejection paths to maintain accurate telemetry.\",\n    \"Verify that `data:` URI source scrubbing is sufficient for all possible inline subscription types.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The PR introduces a diagnostic system for adblock subscriptions, tracking lifecycle stages (Downloading, Parsed, etc.) and rule statistics without storing sensitive content. It implements an immutable sidecar for rule counters, adds a unique token to ongoing downloads to prevent stale conversion results, and ensures metadata persistence is bounded by size limits. The architecture correctly separates diagnostic collection from the core conversion logic.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [],
+    "security_issues": [],
+    "test_gaps": [
+      "The new `roadium_shields_unit_tests` should be verified to cover all `DiagnosticStage` transitions, specifically the 'Interrupted' state logic during `LoadFromPrefs`."
+    ],
+    "recommended_changes": [
+      "Ensure `RuleStatistics::Increment` is used consistently across all new rejection paths to maintain accurate telemetry.",
+      "Verify that `data:` URI source scrubbing is sufficient for all possible inline subscription types."
+    ]
+  },
+  "isError": false
+}

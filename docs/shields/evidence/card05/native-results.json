@@ -1,0 +1,973 @@
+{
+  "global_tags": [],
+  "all_tests": [
+    "ShieldsApprovedContentTest.HeaderlessDomainFormatIsLimitedAndNeedsRealRules",
+    "ShieldsApprovedContentTest.RealConversionRejectsErrorDocumentsEmptyAndUnsupportedData",
+    "ShieldsBundlesTest.CorruptOrWrongIdentityResourceNeverBecomesActive",
+    "ShieldsBundlesTest.InstalledDataTakesPrecedenceAndOptOutIsRespected",
+    "ShieldsBundlesTest.SelectedMissingDataSurvivesWithoutPendingDownload",
+    "ShieldsBundlesTest.SimilarUntrustedIdentityDoesNotGetBundledData",
+    "ShieldsConverterTest.InvalidArgumentsAreCountedWithoutPartialExecution",
+    "ShieldsConverterTest.UnsupportedCompoundRuleIsRejectedAsOneRule",
+    "ShieldsConverterTest.UntrustedListCannotExecuteSupportedPrivilegedSnippet",
+    "ShieldsDefaultsTest.AdvancedPreferencePreservesGlobalOffAndIndependentSelections",
+    "ShieldsDefaultsTest.ExistingSnapshotsHonorLiveOptOutAndKeepBasicBlocking",
+    "ShieldsDefaultsTest.InheritedDefaultChangesWithoutOverwritingExplicitChoices",
+    "ShieldsDefaultsTest.UnknownRawAliasAndManualBuffersNeverGainPrivilege",
+    "ShieldsFallbackMappingTest.CompleteKnownInventoryRequiresReviewedMapping",
+    "ShieldsFallbackMappingTest.OnlyExactReviewedIdentitiesMap",
+    "ShieldsFallbackTest.BothSourceFailuresKeepInstalledDataAndManualCompletionOnce",
+    "ShieldsFallbackTest.BothTransportsFailOnceAndNextUpdateStartsAtPrimary",
+    "ShieldsFallbackTest.CancelFallbackSuppressesItsResponseAndReplacementIsIndependent",
+    "ShieldsFallbackTest.ConversionFailureAndMalformedBuffersNeverActivatePrimary",
+    "ShieldsFallbackTest.EmbeddedIdentityMismatchFallsBackWithoutChangingSelection",
+    "ShieldsFallbackTest.HtmlSuccessResponseFallsBackBeforeConversion",
+    "ShieldsFallbackTest.HttpFailureUsesOneFallbackWithCanonicalIdentity",
+    "ShieldsFallbackTest.LiveOptOutDuringFallbackConversionCannotInstallPrivilegedData",
+    "ShieldsFallbackTest.MetadataRedirectCannotChangeApprovedIdentity",
+    "ShieldsFallbackTest.PrimarySuccessDoesNotRequestFallback",
+    "ShieldsFallbackTest.StalePrimaryCannotConvertAndItsTemporaryFileIsRemoved",
+    "ShieldsFallbackTest.SuccessfulFallbackRecordsSourceOnlyAfterStorageActivation",
+    "ShieldsFallbackTest.UnknownRedirectCannotGainTrustedIdentityOrFallback",
+    "ShieldsLifecycleTest.CancelDuringStorageHandlesNullResultWithoutCrash",
+    "ShieldsLifecycleTest.ChangedPolicyDiscardsConversionAndAllowsReentrantRefresh",
+    "ShieldsLifecycleTest.ConversionPolicyHistorySurvivesReload",
+    "ShieldsLifecycleTest.DestructionCompletesCancellationOnce",
+    "ShieldsLifecycleTest.DiagnosticSidecarOmitsInlineRulePayloadAndBoundsErrors",
+    "ShieldsLifecycleTest.EmptyAndUninitializedChecksFinishTruthfully",
+    "ShieldsLifecycleTest.FallbackDiagnosticsPersistWithBoundedTextAndInterruptedOutcome",
+    "ShieldsLifecycleTest.HttpFailureHasReasonAndDoesNotClaimParsedOrActive",
+    "ShieldsLifecycleTest.MetadataSurvivesReloadAndMarksInterruptedAttempts",
+    "ShieldsLifecycleTest.NewerDownloadReplacesBundleOnlyAfterStorageActivation",
+    "ShieldsLifecycleTest.NewerInstalledDataIsNeverDowngradedToBundleAfterFailure",
+    "ShieldsLifecycleTest.OfflineBundleSurvivesTerminalFailureUntilExplicitOptOut",
+    "ShieldsLifecycleTest.PolicyChangeDuringStorageQueuesOneRefreshWithoutRemovingSelection",
+    "ShieldsLifecycleTest.PreferenceOptOutAndDestructionReachExistingSnapshot",
+    "ShieldsLifecycleTest.RoutineUpdatesRunWithoutRecommendedInstaller",
+    "ShieldsLifecycleTest.StaleConversionCannotCompleteReplacementDownload",
+    "ShieldsLifecycleTest.StorageFailureRetainsPreviousWorkingData",
+    "ShieldsLifecycleTest.SuccessWaitsForStorageAndCollectionActivation",
+    "ShieldsLifecycleTest.TimeoutIsFiniteAndLateActivationDoesNotRewriteBatch",
+    "ShieldsLifecycleTest.UnknownPrivilegeCacheRefreshesOnceThroughExistingScheduler",
+    "ShieldsRecoveryTest.AtomicPublicationSurvivesEveryInterruptedBoundary",
+    "ShieldsRecoveryTest.BothInvalidYieldsNoFalseOperationalState",
+    "ShieldsRecoveryTest.CancellationBeforeAndDuringCommitPreservesCurrent",
+    "ShieldsRecoveryTest.CorruptCurrentRecordRecoversPrevious",
+    "ShieldsRecoveryTest.CorruptCurrentRecoversPreviousWithRealFiltering",
+    "ShieldsRecoveryTest.CurrentRenameFailureRetainsOldData",
+    "ShieldsRecoveryTest.DiscardCannotRollBackNewerPublication",
+    "ShieldsRecoveryTest.DiscardCurrentRestoresPreviousButUnsubscribeRemovesBoth",
+    "ShieldsRecoveryTest.InvalidCandidatesCannotReplaceValidData",
+    "ShieldsRecoveryTest.LegacySignatureRequiredAndFirstUpdateRetainsLegacy",
+    "ShieldsRecoveryTest.MissingStorageDirectoryFailsWithoutInventingSuccess",
+    "ShieldsRecoveryTest.PreviousPublicationFailureRetainsCurrent",
+    "ShieldsRecoveryTest.ProductionGuardAndRetireDiscardPreservePriorVersion",
+    "ShieldsRecoveryTest.RealPersistentStoreRecoversWithoutPreferenceSignature",
+    "ShieldsRecoveryTest.RepeatedUpdatesKeepTwoGenerationsAndLatestVersion",
+    "ShieldsRecoveryTest.UnpublishedOrphanNeverActivatesOrDeletesUnownedFile",
+    "ShieldsRecoveryTest.WrongIdentityAndSchemaRecordsFallBack",
+    "ShieldsServiceTest.AdvancedSwitchPreservesGlobalOffAndIndependentListOptOut",
+    "ShieldsServiceTest.BatchAggregatesOutcomesAndRepeatedTapsJoin",
+    "ShieldsTransportTest.DeadlineTerminatesOnceWithoutInnerRetries",
+    "ShieldsTransportTest.DestructionCancelsDeadlineAndPendingNetworkResponse",
+    "ShieldsTransportTest.HttpRedirectIsRejectedBeforeFollow",
+    "ShieldsTransportTest.IncompleteResponseCannotReturnPartialData",
+    "ShieldsTransportTest.OfflineFailsImmediatelyWithoutQueuedRetry",
+    "ShieldsTransportTest.OversizedResponseDoesNotDeliverTemporaryFile",
+    "ShieldsTransportTest.ThrottleQueueIsBoundedAndReleasedStaleClosureCannotStart"
+  ],
+  "disabled_tests": [],
+  "per_iteration_data": [
+    {
+      "ShieldsTransportTest.ThrottleQueueIsBoundedAndReleasedStaleClosureCannotStart": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsTransportTest.ThrottleQueueIsBoundedAndReleasedStaleClosureCannotStart\n[       OK ] ShieldsTransportTest.ThrottleQueueIsBoundedAndReleasedStaleClosureCannotStart (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.DiscardCannotRollBackNewerPublication": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 35,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.DiscardCannotRollBackNewerPublication\n[       OK ] ShieldsRecoveryTest.DiscardCannotRollBackNewerPublication (35 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.AtomicPublicationSurvivesEveryInterruptedBoundary": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 76,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.AtomicPublicationSurvivesEveryInterruptedBoundary\n[       OK ] ShieldsRecoveryTest.AtomicPublicationSurvivesEveryInterruptedBoundary (76 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.LegacySignatureRequiredAndFirstUpdateRetainsLegacy": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 35,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.LegacySignatureRequiredAndFirstUpdateRetainsLegacy\n[       OK ] ShieldsRecoveryTest.LegacySignatureRequiredAndFirstUpdateRetainsLegacy (35 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.BothSourceFailuresKeepInstalledDataAndManualCompletionOnce": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.BothSourceFailuresKeepInstalledDataAndManualCompletionOnce\n[       OK ] ShieldsFallbackTest.BothSourceFailuresKeepInstalledDataAndManualCompletionOnce (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsBundlesTest.SelectedMissingDataSurvivesWithoutPendingDownload": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2,
+          "output_snippet": "[ RUN      ] ShieldsBundlesTest.SelectedMissingDataSurvivesWithoutPendingDownload\n[INFO:components/adblock/core/subscription/preloaded_subscription_provider_impl.cc:88] [eyeo] Preloaded subscription now in use: https://uazo.github.io/cromite/filters/easylist.txt\n[       OK ] ShieldsBundlesTest.SelectedMissingDataSurvivesWithoutPendingDownload (2 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.EmptyAndUninitializedChecksFinishTruthfully": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.EmptyAndUninitializedChecksFinishTruthfully\n[       OK ] ShieldsLifecycleTest.EmptyAndUninitializedChecksFinishTruthfully (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsBundlesTest.InstalledDataTakesPrecedenceAndOptOutIsRespected": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2,
+          "output_snippet": "[ RUN      ] ShieldsBundlesTest.InstalledDataTakesPrecedenceAndOptOutIsRespected\n[INFO:components/adblock/core/subscription/preloaded_subscription_provider_impl.cc:88] [eyeo] Preloaded subscription now in use: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt\n[INFO:components/adblock/core/subscription/preloaded_subscription_provider_impl.cc:91] [eyeo] Preloaded subscription no longer in use: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt\n[       OK ] ShieldsBundlesTest.InstalledDataTakesPrecedenceAndOptOutIsRespected (2 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.EmbeddedIdentityMismatchFallsBackWithoutChangingSelection": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.EmbeddedIdentityMismatchFallsBackWithoutChangingSelection\n[       OK ] ShieldsFallbackTest.EmbeddedIdentityMismatchFallsBackWithoutChangingSelection (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.SuccessWaitsForStorageAndCollectionActivation": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 3,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.SuccessWaitsForStorageAndCollectionActivation\n[       OK ] ShieldsLifecycleTest.SuccessWaitsForStorageAndCollectionActivation (3 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.MetadataSurvivesReloadAndMarksInterruptedAttempts": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.MetadataSurvivesReloadAndMarksInterruptedAttempts\n[       OK ] ShieldsLifecycleTest.MetadataSurvivesReloadAndMarksInterruptedAttempts (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.BothInvalidYieldsNoFalseOperationalState": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 31,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.BothInvalidYieldsNoFalseOperationalState\n[       OK ] ShieldsRecoveryTest.BothInvalidYieldsNoFalseOperationalState (31 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.LiveOptOutDuringFallbackConversionCannotInstallPrivilegedData": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.LiveOptOutDuringFallbackConversionCannotInstallPrivilegedData\n[       OK ] ShieldsFallbackTest.LiveOptOutDuringFallbackConversionCannotInstallPrivilegedData (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.UnknownPrivilegeCacheRefreshesOnceThroughExistingScheduler": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 3,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.UnknownPrivilegeCacheRefreshesOnceThroughExistingScheduler\n[INFO:components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc:419] [eyeo] Running update check\n[INFO:components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc:419] [eyeo] Running update check\n[INFO:components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc:419] [eyeo] Running update check\n[       OK ] ShieldsLifecycleTest.UnknownPrivilegeCacheRefreshesOnceThroughExistingScheduler (3 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsBundlesTest.CorruptOrWrongIdentityResourceNeverBecomesActive": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 3,
+          "output_snippet": "[ RUN      ] ShieldsBundlesTest.CorruptOrWrongIdentityResourceNeverBecomesActive\n[ERROR:components/adblock/core/subscription/preloaded_subscription_provider_impl.cc:72] Invalid bundled subscription: https://uazo.github.io/cromite/filters/easylist.txt\n[ERROR:components/adblock/core/subscription/preloaded_subscription_provider_impl.cc:81] Bundled subscription identity mismatch: https://uazo.github.io/cromite/filters/easylist.txt\n[       OK ] ShieldsBundlesTest.CorruptOrWrongIdentityResourceNeverBecomesActive (3 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.NewerInstalledDataIsNeverDowngradedToBundleAfterFailure": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.NewerInstalledDataIsNeverDowngradedToBundleAfterFailure\n[       OK ] ShieldsLifecycleTest.NewerInstalledDataIsNeverDowngradedToBundleAfterFailure (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.PolicyChangeDuringStorageQueuesOneRefreshWithoutRemovingSelection": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 3,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.PolicyChangeDuringStorageQueuesOneRefreshWithoutRemovingSelection\n[WARNING:components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc:539] [eyeo] Failed to add subscription, current number of subscriptions: 0\n[       OK ] ShieldsLifecycleTest.PolicyChangeDuringStorageQueuesOneRefreshWithoutRemovingSelection (3 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsApprovedContentTest.HeaderlessDomainFormatIsLimitedAndNeedsRealRules": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsApprovedContentTest.HeaderlessDomainFormatIsLimitedAndNeedsRealRules\n[       OK ] ShieldsApprovedContentTest.HeaderlessDomainFormatIsLimitedAndNeedsRealRules (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.PrimarySuccessDoesNotRequestFallback": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.PrimarySuccessDoesNotRequestFallback\n[       OK ] ShieldsFallbackTest.PrimarySuccessDoesNotRequestFallback (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.StalePrimaryCannotConvertAndItsTemporaryFileIsRemoved": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.StalePrimaryCannotConvertAndItsTemporaryFileIsRemoved\n[       OK ] ShieldsFallbackTest.StalePrimaryCannotConvertAndItsTemporaryFileIsRemoved (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.HtmlSuccessResponseFallsBackBeforeConversion": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.HtmlSuccessResponseFallsBackBeforeConversion\n[       OK ] ShieldsFallbackTest.HtmlSuccessResponseFallsBackBeforeConversion (2 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.RealPersistentStoreRecoversWithoutPreferenceSignature": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 35,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.RealPersistentStoreRecoversWithoutPreferenceSignature\n[       OK ] ShieldsRecoveryTest.RealPersistentStoreRecoversWithoutPreferenceSignature (35 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackMappingTest.CompleteKnownInventoryRequiresReviewedMapping": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsFallbackMappingTest.CompleteKnownInventoryRequiresReviewedMapping\n[       OK ] ShieldsFallbackMappingTest.CompleteKnownInventoryRequiresReviewedMapping (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.StorageFailureRetainsPreviousWorkingData": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.StorageFailureRetainsPreviousWorkingData\n[WARNING:components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc:539] [eyeo] Failed to add subscription, current number of subscriptions: 1\n[       OK ] ShieldsLifecycleTest.StorageFailureRetainsPreviousWorkingData (2 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.HttpFailureUsesOneFallbackWithCanonicalIdentity": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.HttpFailureUsesOneFallbackWithCanonicalIdentity\n[       OK ] ShieldsFallbackTest.HttpFailureUsesOneFallbackWithCanonicalIdentity (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.RoutineUpdatesRunWithoutRecommendedInstaller": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 4,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.RoutineUpdatesRunWithoutRecommendedInstaller\n[INFO:components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc:419] [eyeo] Running update check\n[       OK ] ShieldsLifecycleTest.RoutineUpdatesRunWithoutRecommendedInstaller (4 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.ProductionGuardAndRetireDiscardPreservePriorVersion": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 34,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.ProductionGuardAndRetireDiscardPreservePriorVersion\n[       OK ] ShieldsRecoveryTest.ProductionGuardAndRetireDiscardPreservePriorVersion (34 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.CancelDuringStorageHandlesNullResultWithoutCrash": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 3,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.CancelDuringStorageHandlesNullResultWithoutCrash\n[INFO:components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc:620] [eyeo] Removing subscription https://uazo.github.io/cromite/filters/easylist.txt\n[INFO:components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc:633] [eyeo] Removed subscription https://uazo.github.io/cromite/filters/easylist.txt\n[       OK ] ShieldsLifecycleTest.CancelDuringStorageHandlesNullResultWithoutCrash (3 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsTransportTest.IncompleteResponseCannotReturnPartialData": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2,
+          "output_snippet": "[ RUN      ] ShieldsTransportTest.IncompleteResponseCannotReturnPartialData\n[INFO:components/adblock/core/net/adblock_resource_request_impl.cc:137] [eyeo] Downloading https://uazo.github.io/cromite/filters/easylist.txt\n[       OK ] ShieldsTransportTest.IncompleteResponseCannotReturnPartialData (2 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.DiagnosticSidecarOmitsInlineRulePayloadAndBoundsErrors": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.DiagnosticSidecarOmitsInlineRulePayloadAndBoundsErrors\n[       OK ] ShieldsLifecycleTest.DiagnosticSidecarOmitsInlineRulePayloadAndBoundsErrors (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.UnpublishedOrphanNeverActivatesOrDeletesUnownedFile": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 14,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.UnpublishedOrphanNeverActivatesOrDeletesUnownedFile\n[       OK ] ShieldsRecoveryTest.UnpublishedOrphanNeverActivatesOrDeletesUnownedFile (14 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.StaleConversionCannotCompleteReplacementDownload": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.StaleConversionCannotCompleteReplacementDownload\n[       OK ] ShieldsLifecycleTest.StaleConversionCannotCompleteReplacementDownload (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsDefaultsTest.InheritedDefaultChangesWithoutOverwritingExplicitChoices": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsDefaultsTest.InheritedDefaultChangesWithoutOverwritingExplicitChoices\n[       OK ] ShieldsDefaultsTest.InheritedDefaultChangesWithoutOverwritingExplicitChoices (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsConverterTest.UntrustedListCannotExecuteSupportedPrivilegedSnippet": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsConverterTest.UntrustedListCannotExecuteSupportedPrivilegedSnippet\n[INFO:components/adblock/core/converter/serializer/flatbuffer_serializer.cc:205] [eyeo] Snippet filters not allowed\n[       OK ] ShieldsConverterTest.UntrustedListCannotExecuteSupportedPrivilegedSnippet (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.HttpFailureHasReasonAndDoesNotClaimParsedOrActive": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.HttpFailureHasReasonAndDoesNotClaimParsedOrActive\n[       OK ] ShieldsLifecycleTest.HttpFailureHasReasonAndDoesNotClaimParsedOrActive (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.NewerDownloadReplacesBundleOnlyAfterStorageActivation": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.NewerDownloadReplacesBundleOnlyAfterStorageActivation\n[INFO:components/adblock/core/subscription/preloaded_subscription_provider_impl.cc:88] [eyeo] Preloaded subscription now in use: https://uazo.github.io/cromite/filters/easylist.txt\n[INFO:components/adblock/core/subscription/preloaded_subscription_provider_impl.cc:91] [eyeo] Preloaded subscription no longer in use: https://uazo.github.io/cromite/filters/easylist.txt\n[       OK ] ShieldsLifecycleTest.NewerDownloadReplacesBundleOnlyAfterStorageActivation (2 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.ChangedPolicyDiscardsConversionAndAllowsReentrantRefresh": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.ChangedPolicyDiscardsConversionAndAllowsReentrantRefresh\n[       OK ] ShieldsLifecycleTest.ChangedPolicyDiscardsConversionAndAllowsReentrantRefresh (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.ConversionPolicyHistorySurvivesReload": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.ConversionPolicyHistorySurvivesReload\n[       OK ] ShieldsLifecycleTest.ConversionPolicyHistorySurvivesReload (2 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.MetadataRedirectCannotChangeApprovedIdentity": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.MetadataRedirectCannotChangeApprovedIdentity\n[       OK ] ShieldsFallbackTest.MetadataRedirectCannotChangeApprovedIdentity (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.UnknownRedirectCannotGainTrustedIdentityOrFallback": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.UnknownRedirectCannotGainTrustedIdentityOrFallback\n[       OK ] ShieldsFallbackTest.UnknownRedirectCannotGainTrustedIdentityOrFallback (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsServiceTest.BatchAggregatesOutcomesAndRepeatedTapsJoin": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2,
+          "output_snippet": "[ RUN      ] ShieldsServiceTest.BatchAggregatesOutcomesAndRepeatedTapsJoin\n[       OK ] ShieldsServiceTest.BatchAggregatesOutcomesAndRepeatedTapsJoin (2 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.CorruptCurrentRecoversPreviousWithRealFiltering": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 26,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.CorruptCurrentRecoversPreviousWithRealFiltering\n[       OK ] ShieldsRecoveryTest.CorruptCurrentRecoversPreviousWithRealFiltering (26 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.PreferenceOptOutAndDestructionReachExistingSnapshot": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.PreferenceOptOutAndDestructionReachExistingSnapshot\n[       OK ] ShieldsLifecycleTest.PreferenceOptOutAndDestructionReachExistingSnapshot (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsConverterTest.UnsupportedCompoundRuleIsRejectedAsOneRule": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsConverterTest.UnsupportedCompoundRuleIsRejectedAsOneRule\n[INFO:components/adblock/core/converter/serializer/flatbuffer_serializer.cc:212] [eyeo] Unsupported snippet command\n[       OK ] ShieldsConverterTest.UnsupportedCompoundRuleIsRejectedAsOneRule (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsDefaultsTest.ExistingSnapshotsHonorLiveOptOutAndKeepBasicBlocking": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsDefaultsTest.ExistingSnapshotsHonorLiveOptOutAndKeepBasicBlocking\n[       OK ] ShieldsDefaultsTest.ExistingSnapshotsHonorLiveOptOutAndKeepBasicBlocking (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.FallbackDiagnosticsPersistWithBoundedTextAndInterruptedOutcome": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.FallbackDiagnosticsPersistWithBoundedTextAndInterruptedOutcome\n[       OK ] ShieldsLifecycleTest.FallbackDiagnosticsPersistWithBoundedTextAndInterruptedOutcome (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.PreviousPublicationFailureRetainsCurrent": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 43,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.PreviousPublicationFailureRetainsCurrent\n[       OK ] ShieldsRecoveryTest.PreviousPublicationFailureRetainsCurrent (43 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsDefaultsTest.UnknownRawAliasAndManualBuffersNeverGainPrivilege": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsDefaultsTest.UnknownRawAliasAndManualBuffersNeverGainPrivilege\n[       OK ] ShieldsDefaultsTest.UnknownRawAliasAndManualBuffersNeverGainPrivilege (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsTransportTest.DestructionCancelsDeadlineAndPendingNetworkResponse": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2,
+          "output_snippet": "[ RUN      ] ShieldsTransportTest.DestructionCancelsDeadlineAndPendingNetworkResponse\n[INFO:components/adblock/core/net/adblock_resource_request_impl.cc:137] [eyeo] Downloading https://uazo.github.io/cromite/filters/easylist.txt\n[       OK ] ShieldsTransportTest.DestructionCancelsDeadlineAndPendingNetworkResponse (2 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsServiceTest.AdvancedSwitchPreservesGlobalOffAndIndependentListOptOut": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsServiceTest.AdvancedSwitchPreservesGlobalOffAndIndependentListOptOut\n[       OK ] ShieldsServiceTest.AdvancedSwitchPreservesGlobalOffAndIndependentListOptOut (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackMappingTest.OnlyExactReviewedIdentitiesMap": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsFallbackMappingTest.OnlyExactReviewedIdentitiesMap\n[       OK ] ShieldsFallbackMappingTest.OnlyExactReviewedIdentitiesMap (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.TimeoutIsFiniteAndLateActivationDoesNotRewriteBatch": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.TimeoutIsFiniteAndLateActivationDoesNotRewriteBatch\n[       OK ] ShieldsLifecycleTest.TimeoutIsFiniteAndLateActivationDoesNotRewriteBatch (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsTransportTest.OfflineFailsImmediatelyWithoutQueuedRetry": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsTransportTest.OfflineFailsImmediatelyWithoutQueuedRetry\n[       OK ] ShieldsTransportTest.OfflineFailsImmediatelyWithoutQueuedRetry (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.DestructionCompletesCancellationOnce": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.DestructionCompletesCancellationOnce\n[       OK ] ShieldsLifecycleTest.DestructionCompletesCancellationOnce (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.CorruptCurrentRecordRecoversPrevious": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 25,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.CorruptCurrentRecordRecoversPrevious\n[       OK ] ShieldsRecoveryTest.CorruptCurrentRecordRecoversPrevious (25 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsBundlesTest.SimilarUntrustedIdentityDoesNotGetBundledData": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsBundlesTest.SimilarUntrustedIdentityDoesNotGetBundledData\n[       OK ] ShieldsBundlesTest.SimilarUntrustedIdentityDoesNotGetBundledData (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsTransportTest.OversizedResponseDoesNotDeliverTemporaryFile": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 47,
+          "output_snippet": "[ RUN      ] ShieldsTransportTest.OversizedResponseDoesNotDeliverTemporaryFile\n[INFO:components/adblock/core/net/adblock_resource_request_impl.cc:137] [eyeo] Downloading https://uazo.github.io/cromite/filters/easylist.txt\n[       OK ] ShieldsTransportTest.OversizedResponseDoesNotDeliverTemporaryFile (47 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.CurrentRenameFailureRetainsOldData": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 26,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.CurrentRenameFailureRetainsOldData\n[       OK ] ShieldsRecoveryTest.CurrentRenameFailureRetainsOldData (26 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsDefaultsTest.AdvancedPreferencePreservesGlobalOffAndIndependentSelections": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsDefaultsTest.AdvancedPreferencePreservesGlobalOffAndIndependentSelections\n[       OK ] ShieldsDefaultsTest.AdvancedPreferencePreservesGlobalOffAndIndependentSelections (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.BothTransportsFailOnceAndNextUpdateStartsAtPrimary": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.BothTransportsFailOnceAndNextUpdateStartsAtPrimary\n[       OK ] ShieldsFallbackTest.BothTransportsFailOnceAndNextUpdateStartsAtPrimary (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.ConversionFailureAndMalformedBuffersNeverActivatePrimary": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.ConversionFailureAndMalformedBuffersNeverActivatePrimary\n[       OK ] ShieldsFallbackTest.ConversionFailureAndMalformedBuffersNeverActivatePrimary (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.CancelFallbackSuppressesItsResponseAndReplacementIsIndependent": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.CancelFallbackSuppressesItsResponseAndReplacementIsIndependent\n[       OK ] ShieldsFallbackTest.CancelFallbackSuppressesItsResponseAndReplacementIsIndependent (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.RepeatedUpdatesKeepTwoGenerationsAndLatestVersion": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 192,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.RepeatedUpdatesKeepTwoGenerationsAndLatestVersion\n[       OK ] ShieldsRecoveryTest.RepeatedUpdatesKeepTwoGenerationsAndLatestVersion (192 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsLifecycleTest.OfflineBundleSurvivesTerminalFailureUntilExplicitOptOut": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 3,
+          "output_snippet": "[ RUN      ] ShieldsLifecycleTest.OfflineBundleSurvivesTerminalFailureUntilExplicitOptOut\n[INFO:components/adblock/core/subscription/preloaded_subscription_provider_impl.cc:88] [eyeo] Preloaded subscription now in use: https://uazo.github.io/cromite/filters/easylist.txt\n[INFO:components/adblock/core/subscription/preloaded_subscription_provider_impl.cc:91] [eyeo] Preloaded subscription no longer in use: https://uazo.github.io/cromite/filters/easylist.txt\n[       OK ] ShieldsLifecycleTest.OfflineBundleSurvivesTerminalFailureUntilExplicitOptOut (3 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsApprovedContentTest.RealConversionRejectsErrorDocumentsEmptyAndUnsupportedData": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 9,
+          "output_snippet": "[ RUN      ] ShieldsApprovedContentTest.RealConversionRejectsErrorDocumentsEmptyAndUnsupportedData\n[INFO:components/adblock/core/converter/serializer/flatbuffer_serializer.cc:205] [eyeo] Snippet filters not allowed\n[       OK ] ShieldsApprovedContentTest.RealConversionRejectsErrorDocumentsEmptyAndUnsupportedData (9 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.WrongIdentityAndSchemaRecordsFallBack": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 31,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.WrongIdentityAndSchemaRecordsFallBack\n[       OK ] ShieldsRecoveryTest.WrongIdentityAndSchemaRecordsFallBack (31 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.MissingStorageDirectoryFailsWithoutInventingSuccess": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.MissingStorageDirectoryFailsWithoutInventingSuccess\n[       OK ] ShieldsRecoveryTest.MissingStorageDirectoryFailsWithoutInventingSuccess (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.DiscardCurrentRestoresPreviousButUnsubscribeRemovesBoth": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 43,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.DiscardCurrentRestoresPreviousButUnsubscribeRemovesBoth\n[       OK ] ShieldsRecoveryTest.DiscardCurrentRestoresPreviousButUnsubscribeRemovesBoth (43 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsTransportTest.DeadlineTerminatesOnceWithoutInnerRetries": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 1,
+          "output_snippet": "[ RUN      ] ShieldsTransportTest.DeadlineTerminatesOnceWithoutInnerRetries\n[INFO:components/adblock/core/net/adblock_resource_request_impl.cc:137] [eyeo] Downloading https://uazo.github.io/cromite/filters/easylist.txt\n[       OK ] ShieldsTransportTest.DeadlineTerminatesOnceWithoutInnerRetries (1 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.CancellationBeforeAndDuringCommitPreservesCurrent": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 26,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.CancellationBeforeAndDuringCommitPreservesCurrent\n[       OK ] ShieldsRecoveryTest.CancellationBeforeAndDuringCommitPreservesCurrent (26 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsRecoveryTest.InvalidCandidatesCannotReplaceValidData": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 12,
+          "output_snippet": "[ RUN      ] ShieldsRecoveryTest.InvalidCandidatesCannotReplaceValidData\n[       OK ] ShieldsRecoveryTest.InvalidCandidatesCannotReplaceValidData (12 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsTransportTest.HttpRedirectIsRejectedBeforeFollow": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2,
+          "output_snippet": "[ RUN      ] ShieldsTransportTest.HttpRedirectIsRejectedBeforeFollow\n[INFO:components/adblock/core/net/adblock_resource_request_impl.cc:137] [eyeo] Downloading https://uazo.github.io/cromite/filters/easylist.txt\n[       OK ] ShieldsTransportTest.HttpRedirectIsRejectedBeforeFollow (2 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsConverterTest.InvalidArgumentsAreCountedWithoutPartialExecution": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsConverterTest.InvalidArgumentsAreCountedWithoutPartialExecution\n[INFO:components/adblock/core/converter/serializer/flatbuffer_serializer.cc:224] [eyeo] Prohibited snippet argument\n[       OK ] ShieldsConverterTest.InvalidArgumentsAreCountedWithoutPartialExecution (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ],
+      "ShieldsFallbackTest.SuccessfulFallbackRecordsSourceOnlyAfterStorageActivation": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 0,
+          "output_snippet": "[ RUN      ] ShieldsFallbackTest.SuccessfulFallbackRecordsSourceOnlyAfterStorageActivation\n[       OK ] ShieldsFallbackTest.SuccessfulFallbackRecordsSourceOnlyAfterStorageActivation (0 ms)\n",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {
+            "logcat": "file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_17T21_35_48/logcat/logcat_-18269678791551889_shard0_20261017T213550-UTC_emulator-5554"
+          }
+        }
+      ]
+    }
+  ],
+  "links": {}
+}

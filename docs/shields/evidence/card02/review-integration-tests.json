@@ -1,0 +1,22 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Added native integration tests for preloaded subscription bundles. Tests verify that preloaded bundles survive terminal download failures until explicit opt-out, that newer downloads only replace bundles after storage activation, and that existing installed data is not downgraded by failed updates. Uses synthetic version 203001010001 for precedence.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"No test case for concurrent storage completion and download callback execution.\"\n  ],\n  \"recommended_changes\": [\n    \"Ensure `RealBundleProvider` uses a mockable configuration source to avoid dependency on global `config::GetPreloadedSubscriptionConfiguration()` in unit tests.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Added native integration tests for preloaded subscription bundles. Tests verify that preloaded bundles survive terminal download failures until explicit opt-out, that newer downloads only replace bundles after storage activation, and that existing installed data is not downgraded by failed updates. Uses synthetic version 203001010001 for precedence.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [],
+    "security_issues": [],
+    "test_gaps": [
+      "No test case for concurrent storage completion and download callback execution."
+    ],
+    "recommended_changes": [
+      "Ensure `RealBundleProvider` uses a mockable configuration source to avoid dependency on global `config::GetPreloadedSubscriptionConfiguration()` in unit tests."
+    ]
+  },
+  "isError": false
+}

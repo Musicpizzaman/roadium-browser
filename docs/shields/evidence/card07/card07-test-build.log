@@ -1,0 +1,48 @@
+offline mode
+ninja: Entering directory `out/x64'
+
+
+disable fast local for non-interactive: fastlocal=1->0
+ use `--fast_local` to enable fast local with non-interactive mode
+schedule pending:1+ready:0 (node:136509 edge:2)
+build start: Ready 1 Pending 1
+rebuild manifest finished
+
+loading build.ninja... done 1.382127505s
+load siso config done 58.805621ms
+schedule pending:1+ready:0 (node:696829 edge:2)
+build start: Ready 1 Pending 1
+rebuild manifest finished
+schedule pending:1+ready:0 (node:696829 edge:8)
+build start: Ready 2788 Pending 25068
+[0/2070] 2.73s S ACTION //components/adblock/android:adblock_controller_java__header(//build/toolchain/android:android_clang_x64)
+[0/284] 2.74s S CXX obj/components/adblock/core/subscription/roadium_shields_unit_tests__library/shields_presets_unittest.o
+[0/52] 3.16s F ACTION //components/adblock/android:adblock_controller_java__header(//build/toolchain/android:android_clang_x64)
+[1/51] 3.17s S ACTION //components/adblock/android:roadium_shields_junit_tests__java_binary__header(//build/toolchain/android:android_clang_x64)
+[1/49] 3.17s S ACTION //components/adblock/android:adblock_controller_java__compile_java(//build/toolchain/android:android_clang_x64)
+[1/45] 3.95s F ACTION //components/adblock/android:roadium_shields_junit_tests__java_binary__header(//build/toolchain/android:android_clang_x64)
+[2/44] 3.95s S ACTION //components/adblock/android:roadium_shields_junit_tests__compile_java(//build/toolchain/android:android_clang_x64)
+[2/44] 4.23s F ACTION //components/adblock/android:adblock_controller_java__compile_java(//build/toolchain/android:android_clang_x64)
+[3/41] 4.23s S ACTION //components/adblock/android:adblock_controller_java__dex(//build/toolchain/android:android_clang_x64)
+[3/41] 4.44s F CXX obj/components/adblock/core/subscription/roadium_shields_unit_tests__library/shields_presets_unittest.o
+[4/41] 4.45s S SOLINK ./libroadium_shields_unit_tests__library.so
+[4/41] 5.31s F ACTION //components/adblock/android:roadium_shields_junit_tests__compile_java(//build/toolchain/android:android_clang_x64)
+[5/39] 5.31s S ACTION //components/adblock/android:roadium_shields_junit_tests(//build/toolchain/android:android_clang_x64)
+[5/39] 5.32s F ACTION //components/adblock/android:adblock_controller_java__dex(//build/toolchain/android:android_clang_x64)
+[6/35] 5.40s F ACTION //components/adblock/android:roadium_shields_junit_tests(//build/toolchain/android:android_clang_x64)
+[7/33] 9.98s F SOLINK ./libroadium_shields_unit_tests__library.so
+[8/15] 9.98s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__create(//build/toolchain/android:android_clang_x64)
+[8/15] 10.66s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests__apk__create(//build/toolchain/android:android_clang_x64)
+[9/10] 10.66s S ACTION //components/adblock/core/subscription:roadium_shields_unit_tests(//build/toolchain/android:android_clang_x64)
+[9/10] 10.69s F ACTION //components/adblock/core/subscription:roadium_shields_unit_tests(//build/toolchain/android:android_clang_x64)
+build finished
+
+	
+noexec:0 local:10 remote:0 cache:0 skip:27846
+  cache-write:0(err:0) fallback:0 retry:0
+fs: ops: 2819(err:4) / r:1830(err:0) 102.32MiB / w:1(err:0) 180.37KiB
+
+
+shutdown cloud logging/monitoring done 9.2µs
+
+11.10s Build Succeeded: 10 steps - 0.90/s

@@ -1,0 +1,9 @@
+{
+  "installed_version_retained": "203001010005",
+  "cached_signatures_byte_identical": true,
+  "configuration_unchanged": true,
+  "one_error_per_logical_list_update": true,
+  "success_counters_and_installation_time_unchanged": true,
+  "active_source_retained": "previous canonical primary",
+  "failed_attempt_and_working_data_survive_restart": true
+}

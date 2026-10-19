@@ -1,0 +1,6 @@
+{
+  "status": "passed",
+  "disabled_current_host_without_persisting": true,
+  "unrelated_tab_stays_protected": true,
+  "parent_exception_scope_and_restore": true
+}

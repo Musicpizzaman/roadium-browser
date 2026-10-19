@@ -1,0 +1,1031 @@
+diff --git a/chrome/browser/adblock/android/adblock_strings.grd b/chrome/browser/adblock/android/adblock_strings.grd
+index 0750d26..f54597f 100644
+--- a/chrome/browser/adblock/android/adblock_strings.grd
++++ b/chrome/browser/adblock/android/adblock_strings.grd
+@@ -195,13 +195,10 @@
+         Check for updates now
+       </message>
+       <message name="IDS_ADBLOCK_SETTINGS_PRIVILEGED_FILTERS_ENABLED" desc="">
+-        Enable anti-circumvention and snippets
++        Advanced filtering
+       </message>
+       <message name="IDS_ADBLOCK_SETTINGS_PRIVILEGED_FILTERS_ENABLED_SUMMARY" desc="">
+-        Snippets are pieces of JavaScript code, injected by the Adblock Plus, that execute within the context of a website and combat advanced ads that circumvent ordinary blocking.
+-The functionality is ONLY allowed for the list
+-https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+-which is activated by this setting.
++        Allow supported scriptlets and advanced styles from trusted filter lists to block ads that evade ordinary filters. Enabled by default; you can turn it off independently. Your selected lists and ordinary ad blocking remain unchanged. Custom lists and manual rules cannot run privileged scriptlets.
+       </message>
+       <message name="IDS_ADBLOCK_SETTINGS_OPEN_REPO_URL_TEXT" desc="">
+         Open ABP anti-circumvention filter list repo
+diff --git a/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockSettingsFragment.java b/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockSettingsFragment.java
+index 7cc11b9..870a671 100644
+--- a/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockSettingsFragment.java
++++ b/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockSettingsFragment.java
+@@ -152,7 +152,8 @@ public class AdblockSettingsFragment
+     private void applyAdblockEnabled(boolean enabledValue) {
+         mStartUpdate.setEnabled(enabledValue);
+         mAutoInstalledEnabled.setEnabled(enabledValue);
+-        mPrivilegedFilters.setEnabled(enabledValue);
++        // Users can configure this policy while global blocking is paused.
++        mPrivilegedFilters.setEnabled(true);
+         mAllowedDomains.setEnabled(enabledValue);
+         mMoreOptions.setEnabled(enabledValue);
+         mMoreOptions.setVisible(areMoreOptionsEnabled());
+diff --git a/components/adblock/android/adblock_controller_jni.cc b/components/adblock/android/adblock_controller_jni.cc
+index d0c6ec0..28575fc 100644
+--- a/components/adblock/android/adblock_controller_jni.cc
++++ b/components/adblock/android/adblock_controller_jni.cc
+@@ -267,11 +267,18 @@ JNI_AdblockController_GetDiagnosticSnapshot(JNIEnv* env,
+     item.Set("version", subscription->GetCurrentVersion().substr(0, 64));
+     item.Set("stored_version", metadata->GetVersion(url).substr(0, 64));
+     item.Set("state", adblock::Subscription::SubscriptionInstallationStateToString(state));
+-    item.Set("active", configuration->IsEnabled() &&
+-        (state == adblock::Subscription::InstallationState::Installed ||
+-         state == adblock::Subscription::InstallationState::AutoInstalled ||
+-         state == adblock::Subscription::InstallationState::Preloaded));
++    const bool has_active_data =
++        state == adblock::Subscription::InstallationState::Installed ||
++        state == adblock::Subscription::InstallationState::AutoInstalled ||
++        state == adblock::Subscription::InstallationState::Preloaded;
++    item.Set("active", configuration->IsEnabled() && has_active_data);
+     item.Set("privileged_allowed", metadata->AllowPrivilegedFilters(url));
++    item.Set(
++        "privileged_ready",
++        metadata->AllowPrivilegedFilters(url) && configuration->IsEnabled() &&
++            has_active_data &&
++            (state == adblock::Subscription::InstallationState::Preloaded ||
++             d.active_privileged.value_or(false)));
+     item.Set(
+         "active_source",
+         state == adblock::Subscription::InstallationState::Preloaded
+diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java b/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
+index b081536..8a4b3f1 100644
+--- a/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
++++ b/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
+@@ -61,11 +61,17 @@ public final class ShieldsDiagnostics {
+                 + "\nEasyList: " + operational(find(easylist))
+                 + "\nAnti-circumvention: " + operational(find(anticv))
+                 + ". Privileged scriptlets: "
+-                + (find(anticv) != null && find(anticv).optBoolean("privileged_allowed")
+-                        ? "eligible for supported rules" : "not eligible")
++                + privilegedReadiness(find(anticv))
+                 + "\nTap for local update errors and conversion counts.";
+     }
+ 
++    private String privilegedReadiness(JSONObject sub) {
++        if (sub == null || !mData.optBoolean("blocking_enabled")
++                || !mData.optBoolean("advanced_enabled") || !sub.optBoolean("privileged_allowed")) return "not eligible";
++        return sub.optBoolean("active") && sub.optBoolean("privileged_ready", false)
++                ? "eligible for supported rules" : "awaiting trusted filter refresh";
++    }
++
+     private JSONObject find(String url) {
+         JSONArray subscriptions = mData.optJSONArray("subscriptions");
+         if (subscriptions == null) return null;
+diff --git a/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java b/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java
+index 70fce10..a6923d9 100644
+--- a/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java
++++ b/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java
+@@ -106,6 +106,37 @@ public class ShieldsDiagnosticsTest {
+         assertTrue(overview.contains("Privileged scriptlets: not eligible"));
+     }
+ 
++    @Test public void advancedReadinessRequiresCurrentActivePermittedData() throws Exception {
++        JSONObject data = snapshot().put("advanced_enabled", true);
++        JSONObject sub = new JSONObject().put("url", "https://example.com/anticv.txt")
++                .put("active", true).put("privileged_allowed", true);
++        data.getJSONArray("subscriptions").put(sub);
++        assertTrue(new ShieldsDiagnostics(data.toString()).getOverview()
++                .contains("awaiting trusted filter refresh"));
++        sub.put("privileged_ready", true);
++        assertTrue(new ShieldsDiagnostics(data.toString()).getOverview()
++                .contains("eligible for supported rules"));
++        sub.put("privileged_ready", false);
++        assertTrue(new ShieldsDiagnostics(data.toString()).getOverview()
++                .contains("awaiting trusted filter refresh"));
++        sub.put("privileged_ready", true).put("active", false);
++        assertTrue(new ShieldsDiagnostics(data.toString()).getOverview()
++                .contains("awaiting trusted filter refresh"));
++    }
++
++    @Test public void advancedReadinessCannotOverrideGlobalOrAdvancedOptOut() throws Exception {
++        JSONObject data = snapshot().put("advanced_enabled", true);
++        data.getJSONArray("subscriptions").put(new JSONObject()
++                .put("url", "https://example.com/anticv.txt").put("active", true)
++                .put("privileged_allowed", true).put("privileged_ready", true));
++        data.put("blocking_enabled", false);
++        assertTrue(new ShieldsDiagnostics(data.toString()).getOverview()
++                .contains("Privileged scriptlets: not eligible"));
++        data.put("blocking_enabled", true).put("advanced_enabled", false);
++        assertTrue(new ShieldsDiagnostics(data.toString()).getOverview()
++                .contains("Privileged scriptlets: not eligible"));
++    }
++
+     @Test public void removedListKeepsCapturedManualCancellationResult() throws Exception {
+         JSONObject data = snapshot().put("update", new JSONObject().put("batch_id", 2)
+                 .put("checked", 1).put("cancelled", 1)
+diff --git a/components/adblock/content/browser/factories/subscription_service_factory.cc b/components/adblock/content/browser/factories/subscription_service_factory.cc
+index 2d8b721..1eb457d 100644
+--- a/components/adblock/content/browser/factories/subscription_service_factory.cc
++++ b/components/adblock/content/browser/factories/subscription_service_factory.cc
+@@ -437,7 +437,7 @@ scoped_refptr<InstalledSubscription>
+ SubscriptionServiceFactory::ConvertCustomFilters(
+     const std::vector<std::string>& filters) const {
+   auto raw_data =
+-      flatbuffer_converter_->Convert(filters, CustomFiltersUrl(), true);
++      flatbuffer_converter_->Convert(filters, CustomFiltersUrl(), false);
+   return base::MakeRefCounted<InstalledSubscriptionImpl>(
+       std::move(raw_data), Subscription::InstallationState::Installed,
+       base::Time());
+diff --git a/components/adblock/core/common/adblock_prefs.cc b/components/adblock/core/common/adblock_prefs.cc
+index 7a77170..4a39fc3 100644
+--- a/components/adblock/core/common/adblock_prefs.cc
++++ b/components/adblock/core/common/adblock_prefs.cc
+@@ -82,7 +82,7 @@ const char kAutoInstalledSubscriptionsNextUpdateTime[] =
+ // Dict containing stats about acceptable ads page views
+ 
+ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
+-  registry->RegisterBooleanPref(kAllowPrivilegedFilters, false);
++  registry->RegisterBooleanPref(kAllowPrivilegedFilters, true);
+   registry->RegisterBooleanPref(kEnableAdblockLegacy, true);
+   registry->RegisterBooleanPref(kEnableAcceptableAdsLegacy, false);
+   registry->RegisterBooleanPref(kAdblockMoreOptionsEnabled, true);
+diff --git a/components/adblock/core/configuration/filtering_configuration.h b/components/adblock/core/configuration/filtering_configuration.h
+index d909619..ec60076 100644
+--- a/components/adblock/core/configuration/filtering_configuration.h
++++ b/components/adblock/core/configuration/filtering_configuration.h
+@@ -47,6 +47,7 @@ class FilteringConfiguration {
+   class Observer : public base::CheckedObserver {
+    public:
+     virtual void OnEnabledStateChanged(FilteringConfiguration* config) {}
++    virtual void OnPrivilegedFiltersChanged(FilteringConfiguration* config) {}
+     virtual void OnFilterListsChanged(FilteringConfiguration* config) {}
+     virtual void OnAllowedDomainsChanged(FilteringConfiguration* config) {}
+     virtual void OnCustomFiltersChanged(FilteringConfiguration* config) {}
+diff --git a/components/adblock/core/configuration/persistent_filtering_configuration.cc b/components/adblock/core/configuration/persistent_filtering_configuration.cc
+index 2287094..3973496 100644
+--- a/components/adblock/core/configuration/persistent_filtering_configuration.cc
++++ b/components/adblock/core/configuration/persistent_filtering_configuration.cc
+@@ -21,14 +21,13 @@
+ #include <string>
+ #include <string_view>
+ 
++#include "base/functional/bind.h"
++#include "base/logging.h"
+ #include "base/no_destructor.h"
+ #include "base/strings/string_util.h"
+ #include "components/adblock/core/common/adblock_prefs.h"
+ #include "components/prefs/pref_service.h"
+ #include "components/prefs/scoped_user_pref_update.h"
+-#include "components/adblock/core/common/adblock_prefs.h"
+-
+-#include "base/logging.h"
+ 
+ namespace adblock {
+ namespace {
+@@ -123,10 +122,22 @@ PersistentFilteringConfiguration::PersistentFilteringConfiguration(
+       dictionary_(ReadFromPrefs(pref_service_, name_)) {
+   SetDefaultValuesIfNeeded(dictionary_);
+   PersistToPrefs();
++  privileged_pref_registrar_.Init(pref_service_);
++  privileged_pref_registrar_.Add(
++      common::prefs::kAllowPrivilegedFilters,
++      base::BindRepeating(
++          &PersistentFilteringConfiguration::NotifyPrivilegedFiltersChanged,
++          base::Unretained(this)));
+ }
+ 
+ PersistentFilteringConfiguration::~PersistentFilteringConfiguration() = default;
+ 
++void PersistentFilteringConfiguration::NotifyPrivilegedFiltersChanged() {
++  for (auto& observer : observers_) {
++    observer.OnPrivilegedFiltersChanged(this);
++  }
++}
++
+ void PersistentFilteringConfiguration::AddObserver(Observer* observer) {
+   observers_.AddObserver(observer);
+ }
+diff --git a/components/adblock/core/configuration/persistent_filtering_configuration.h b/components/adblock/core/configuration/persistent_filtering_configuration.h
+index 7be6d02..de0b68e 100644
+--- a/components/adblock/core/configuration/persistent_filtering_configuration.h
++++ b/components/adblock/core/configuration/persistent_filtering_configuration.h
+@@ -23,6 +23,7 @@
+ #include "base/observer_list.h"
+ #include "base/values.h"
+ #include "components/adblock/core/configuration/filtering_configuration.h"
++#include "components/prefs/pref_change_registrar.h"
+ #include "components/prefs/pref_service.h"
+ 
+ namespace adblock {
+@@ -75,6 +76,7 @@ class PersistentFilteringConfiguration final : public FilteringConfiguration {
+  private:
+   void PersistToPrefs();
+   void NotifyEnabledStateChanged();
++  void NotifyPrivilegedFiltersChanged();
+   void NotifyFilterListsChanged();
+   void NotifyAllowedDomainsChanged();
+   void NotifyCustomFiltersChanged();
+@@ -83,6 +85,7 @@ class PersistentFilteringConfiguration final : public FilteringConfiguration {
+   std::string name_;
+   base::ObserverList<Observer> observers_;
+   base::DictValue dictionary_;
++  PrefChangeRegistrar privileged_pref_registrar_;
+ };
+ 
+ }  // namespace adblock
+diff --git a/components/adblock/core/resources/BUILD.gn b/components/adblock/core/resources/BUILD.gn
+index 9e4c26e..f1d783a 100644
+--- a/components/adblock/core/resources/BUILD.gn
++++ b/components/adblock/core/resources/BUILD.gn
+@@ -97,6 +97,7 @@ make_preloaded_subscription("make_exceptionrules") {
+ }
+ 
+ make_preloaded_subscription("make_anticv") {
++  allow_privileged = true
+   input =
+       "//components/adblock/core/resources/roadium/abp-filters-anti-cv.txt.gz"
+   url = "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt"
+diff --git a/components/adblock/core/subscription/BUILD.gn b/components/adblock/core/subscription/BUILD.gn
+index 725c147..fda0f33 100644
+--- a/components/adblock/core/subscription/BUILD.gn
++++ b/components/adblock/core/subscription/BUILD.gn
+@@ -31,6 +31,7 @@ source_set("subscription") {
+     "preloaded_subscription_provider.h",
+     "preloaded_subscription_provider_impl.cc",
+     "preloaded_subscription_provider_impl.h",
++    "privileged_filter_policy.h",
+     "recommended_subscription_installer.h",
+     "recommended_subscription_installer_impl.cc",
+     "recommended_subscription_installer_impl.h",
+@@ -192,6 +193,7 @@ import("//testing/test.gni")
+ test("roadium_shields_unit_tests") {
+   sources = [
+     "../../test/shields_bundles_unittest.cc",
++    "../../test/shields_defaults_unittest.cc",
+     "../../test/shields_diagnostics_unittest.cc",
+   ]
+   deps = [
+diff --git a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
+index 7da7ba8..5032db2 100644
+--- a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
++++ b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
+@@ -22,6 +22,7 @@
+ #include "base/strings/string_util.h"
+ #include "base/trace_event/common/trace_event_common.h"
+ #include "base/trace_event/trace_event.h"
++#include "components/adblock/core/common/adblock_constants.h"
+ #include "components/adblock/core/subscription/subscription_collection_impl.h"
+ 
+ // TODO(mpawlowski): Remove in DPD-1154. This class should not need to know
+@@ -81,10 +82,13 @@ FilteringConfigurationMaintainerImpl::FilteringConfigurationMaintainerImpl(
+       subscription_updated_callback_(std::move(subscription_updated_callback)) {
+   DCHECK(configuration_->IsEnabled())
+       << "Disabled configurations should not be maintained";
++  privileged_policy_ = base::MakeRefCounted<PrivilegedFilterPolicy>(
++      configuration_->IsPrivilegedFiltersEnabled());
+   configuration_->AddObserver(this);
+ }
+ 
+ FilteringConfigurationMaintainerImpl::~FilteringConfigurationMaintainerImpl() {
++  privileged_policy_->SetEnabled(false);
+   FinishAllManual(ManualOutcome::Cancelled);
+   for (const auto& pending : ongoing_installations_) {
+     auto diagnostic = persistent_metadata_->GetDiagnostics(pending->GetSourceUrl());
+@@ -108,7 +112,7 @@ FilteringConfigurationMaintainerImpl::GetSubscriptionCollection() const {
+   VLOG(2) << "[eyeo] FilteringConfiguration " << configuration_->GetName()
+           << " produces " << state.size() << " subscriptions for Snapshot";
+   return std::make_unique<SubscriptionCollectionImpl>(
+-      state, configuration_->GetName());
++      state, configuration_->GetName(), privileged_policy_);
+ }
+ 
+ std::vector<scoped_refptr<Subscription>>
+@@ -136,6 +140,35 @@ void FilteringConfigurationMaintainerImpl::RemoveAutoInstalledSubscriptions() {
+   recommended_installer_->RemoveAutoInstalledSubscriptions();
+ }
+ 
++void FilteringConfigurationMaintainerImpl::OnPrivilegedFiltersChanged(
++    FilteringConfiguration* changed_configuration) {
++  DCHECK_EQ(changed_configuration, configuration_);
++  privileged_policy_->SetEnabled(configuration_->IsPrivilegedFiltersEnabled());
++  if (!IsInitialized()) {
++    return;
++  }
++  for (const auto& url : configuration_->GetFilterLists()) {
++    if (url == CustomFiltersUrl() || !config::AllowPrivilegedFilters(url)) {
++      continue;
++    }
++    if (std::ranges::find(ongoing_installations_, url,
++                          &Subscription::GetSourceUrl) !=
++        ongoing_installations_.end()) {
++      policy_refresh_pending_.insert(url);
++    } else {
++      DownloadAndInstallSubscription(url);
++    }
++  }
++}
++
++void FilteringConfigurationMaintainerImpl::RefreshAfterPolicyChange(
++    const GURL& url) {
++  if (policy_refresh_pending_.erase(url) &&
++      configuration_->IsFilterListPresent(url)) {
++    DownloadAndInstallSubscription(url);
++  }
++}
++
+ void FilteringConfigurationMaintainerImpl::OnFilterListsChanged(
+     FilteringConfiguration* config) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+@@ -378,9 +411,14 @@ void FilteringConfigurationMaintainerImpl::RunUpdateCheck() {
+     // Update subscriptions that are expired and aren't already in the process
+     // of installing an update.
+     const auto& url = subscription->GetSourceUrl();
+-    if (persistent_metadata_->IsExpired(url) &&
++    const bool needs_privileged_refresh =
++        configuration_->IsPrivilegedFiltersEnabled() &&
++        url != CustomFiltersUrl() && config::AllowPrivilegedFilters(url) &&
++        !persistent_metadata_->GetDiagnostics(url).active_privileged.value_or(
++            false);
++    if ((persistent_metadata_->IsExpired(url) || needs_privileged_refresh) &&
+         std::ranges::find(ongoing_installations_, url,
+-                           &Subscription::GetSourceUrl) ==
++                          &Subscription::GetSourceUrl) ==
+             ongoing_installations_.end()) {
+       VLOG(1) << "[eyeo] Updating expired subscription " << url;
+       DownloadAndInstallSubscription(url);
+@@ -448,6 +486,7 @@ void FilteringConfigurationMaintainerImpl::OnSubscriptionDataAvailable(
+     ongoing_installations_.erase(ongoing_installation);
+     FinishManual(ongoing_installation->GetSourceUrl(), ManualOutcome::Failed);
+     UpdatePreloadedSubscriptionProvider();
++    RefreshAfterPolicyChange(ongoing_installation->GetSourceUrl());
+     return;
+   }
+ 
+@@ -482,6 +521,7 @@ void FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage(
+     persistent_metadata_->SetDiagnostics(ongoing_installation->GetSourceUrl(), diagnostic);
+     FinishManual(ongoing_installation->GetSourceUrl(), ManualOutcome::Failed);
+     UpdatePreloadedSubscriptionProvider();
++    RefreshAfterPolicyChange(ongoing_installation->GetSourceUrl());
+     return;
+   }
+   // Remove any subscription that already exists with the same URL
+@@ -507,8 +547,10 @@ void FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage(
+   diagnostic.last_success = base::Time::Now();
+   diagnostic.last_success_source = diagnostic.source;
+   diagnostic.active_rules = diagnostic.rules;
++  diagnostic.active_privileged = diagnostic.parsed_privileged;
+   persistent_metadata_->SetDiagnostics(identity, diagnostic);
+   FinishManual(identity, ManualOutcome::Updated);
++  RefreshAfterPolicyChange(identity);
+   // Notify "observer"
+   subscription_updated_callback_.Run(subscription->GetSourceUrl());
+ }
+@@ -525,6 +567,7 @@ void FilteringConfigurationMaintainerImpl::OnHeadRequestDone(
+ 
+ void FilteringConfigurationMaintainerImpl::UninstallSubscription(
+     const GURL& subscription_url) {
++  policy_refresh_pending_.erase(subscription_url);
+   LOG(INFO) << "[eyeo] Removing subscription " << subscription_url;
+   if (!UninstallSubscriptionInternal(subscription_url)) {
+     LOG(INFO) << "[eyeo] Nothing to remove, subscription not installed "
+diff --git a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h
+index 6705d1f..594ada1 100644
+--- a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h
++++ b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h
+@@ -22,16 +22,17 @@
+ #include "base/functional/callback_forward.h"
+ #include "base/memory/raw_ptr.h"
+ #include "base/memory/weak_ptr.h"
++#include "base/timer/timer.h"
+ #include "components/adblock/core/common/task_scheduler.h"
+ #include "components/adblock/core/configuration/filtering_configuration.h"
+ #include "components/adblock/core/subscription/conversion_executors.h"
+ #include "components/adblock/core/subscription/filtering_configuration_maintainer.h"
+ #include "components/adblock/core/subscription/preloaded_subscription_provider.h"
++#include "components/adblock/core/subscription/privileged_filter_policy.h"
+ #include "components/adblock/core/subscription/recommended_subscription_installer.h"
+ #include "components/adblock/core/subscription/subscription_downloader.h"
+ #include "components/adblock/core/subscription/subscription_persistent_metadata.h"
+ #include "components/adblock/core/subscription/subscription_persistent_storage.h"
+-#include "base/timer/timer.h"
+ 
+ namespace adblock {
+ 
+@@ -68,12 +69,16 @@ class FilteringConfigurationMaintainerImpl
+ 
+   // FilteringConfiguration::Observer:
+   void OnFilterListsChanged(FilteringConfiguration* config) final;
++  void OnPrivilegedFiltersChanged(FilteringConfiguration* config) final;
+   void OnAllowedDomainsChanged(FilteringConfiguration* config) final;
+   void OnCustomFiltersChanged(FilteringConfiguration* config) final;
+ 
+   void InitializeStorage();
+ 
+  private:
++  void RefreshAfterPolicyChange(const GURL& url);
++  std::set<GURL> policy_refresh_pending_;
++  scoped_refptr<PrivilegedFilterPolicy> privileged_policy_;
+   enum class ManualOutcome { Updated, Failed, Cancelled, TimedOut };
+   void FinishManual(const GURL& url, ManualOutcome outcome);
+   void FinishAllManual(ManualOutcome outcome);
+diff --git a/components/adblock/core/subscription/privileged_filter_policy.h b/components/adblock/core/subscription/privileged_filter_policy.h
+new file mode 100644
+index 0000000..d05aa1e
+--- /dev/null
++++ b/components/adblock/core/subscription/privileged_filter_policy.h
+@@ -0,0 +1,28 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++#ifndef COMPONENTS_ADBLOCK_CORE_SUBSCRIPTION_PRIVILEGED_FILTER_POLICY_H_
++#define COMPONENTS_ADBLOCK_CORE_SUBSCRIPTION_PRIVILEGED_FILTER_POLICY_H_
++
++#include <atomic>
++
++#include "base/memory/ref_counted.h"
++
++namespace adblock {
++
++// Snapshots can outlive their maintainer and run on other sequences. A live
++// gate prevents cached privileged data from outliving a user's opt-out.
++class PrivilegedFilterPolicy
++    : public base::RefCountedThreadSafe<PrivilegedFilterPolicy> {
++ public:
++  explicit PrivilegedFilterPolicy(bool enabled);
++  bool IsEnabled() const { return enabled_.load(); }
++  void SetEnabled(bool enabled) { enabled_.store(enabled); }
++
++ private:
++  friend class base::RefCountedThreadSafe<PrivilegedFilterPolicy>;
++  ~PrivilegedFilterPolicy();
++  std::atomic_bool enabled_;
++};
++
++}  // namespace adblock
++#endif
+diff --git a/components/adblock/core/subscription/subscription_collection_impl.cc b/components/adblock/core/subscription/subscription_collection_impl.cc
+index 500b380..edf043b 100644
+--- a/components/adblock/core/subscription/subscription_collection_impl.cc
++++ b/components/adblock/core/subscription/subscription_collection_impl.cc
+@@ -21,7 +21,15 @@
+ #include <numeric>
+ #include <string>
+ 
++#include "components/adblock/core/common/adblock_constants.h"
++#include "components/adblock/core/subscription/subscription_config.h"
++
+ namespace adblock {
++
++PrivilegedFilterPolicy::PrivilegedFilterPolicy(bool enabled)
++    : enabled_(enabled) {}
++PrivilegedFilterPolicy::~PrivilegedFilterPolicy() = default;
++
+ namespace {
+ 
+ std::string DocumentDomain(const GURL& request_url,
+@@ -133,10 +141,21 @@ bool HasSpecialFilter(
+ 
+ SubscriptionCollectionImpl::SubscriptionCollectionImpl(
+     std::vector<scoped_refptr<InstalledSubscription>> current_state,
+-    const std::string& configuration_name)
+-    : subscriptions_(std::move(current_state)),
++    const std::string& configuration_name,
++    scoped_refptr<PrivilegedFilterPolicy> privileged_policy)
++    : privileged_policy_(std::move(privileged_policy)),
++      subscriptions_(std::move(current_state)),
+       configuration_name_(configuration_name) {}
+ 
++bool SubscriptionCollectionImpl::CanUsePrivilegedFilters(
++    const InstalledSubscription& subscription) const {
++  if (!privileged_policy_ || !privileged_policy_->IsEnabled()) {
++    return false;
++  }
++  const auto url = subscription.GetSourceUrl();
++  return url != CustomFiltersUrl() && config::AllowPrivilegedFilters(url);
++}
++
+ SubscriptionCollectionImpl::~SubscriptionCollectionImpl() = default;
+ SubscriptionCollectionImpl::SubscriptionCollectionImpl(
+     const SubscriptionCollectionImpl&) = default;
+@@ -253,6 +272,9 @@ SubscriptionCollectionImpl::GetElementHideEmulationData(
+     std::move(selectors.remove_selectors.begin(),
+               selectors.remove_selectors.end(),
+               std::back_inserter(combined_selectors.remove_selectors));
++    if (!CanUsePrivilegedFilters(*subscription)) {
++      selectors.selectors_to_inline_css.clear();
++    }
+     std::move(selectors.selectors_to_inline_css.begin(),
+               selectors.selectors_to_inline_css.end(),
+               std::back_inserter(combined_selectors.selectors_to_inline_css));
+@@ -267,6 +289,9 @@ base::ListValue SubscriptionCollectionImpl::GenerateSnippets(
+   auto document_domain = DocumentDomain(frame_url, frame_hierarchy);
+ 
+   for (const auto& subscription : subscriptions_) {
++    if (!CanUsePrivilegedFilters(*subscription)) {
++      continue;
++    }
+     auto matched = subscription->MatchSnippets(document_domain);
+     for (const auto& snippet : matched) {
+       base::ListValue call;
+diff --git a/components/adblock/core/subscription/subscription_collection_impl.h b/components/adblock/core/subscription/subscription_collection_impl.h
+index a56ee76..c06c6c9 100644
+--- a/components/adblock/core/subscription/subscription_collection_impl.h
++++ b/components/adblock/core/subscription/subscription_collection_impl.h
+@@ -23,6 +23,7 @@
+ 
+ #include "base/containers/span.h"
+ #include "base/memory/scoped_refptr.h"
++#include "components/adblock/core/subscription/privileged_filter_policy.h"
+ #include "components/adblock/core/subscription/subscription_collection.h"
+ 
+ namespace adblock {
+@@ -31,7 +32,8 @@ class SubscriptionCollectionImpl final : public SubscriptionCollection {
+  public:
+   explicit SubscriptionCollectionImpl(
+       std::vector<scoped_refptr<InstalledSubscription>> current_state,
+-      const std::string& configuration_name);
++      const std::string& configuration_name,
++      scoped_refptr<PrivilegedFilterPolicy> privileged_policy = nullptr);
+   ~SubscriptionCollectionImpl() final;
+   SubscriptionCollectionImpl(const SubscriptionCollectionImpl&);
+   SubscriptionCollectionImpl(SubscriptionCollectionImpl&&);
+@@ -89,6 +91,8 @@ class SubscriptionCollectionImpl final : public SubscriptionCollection {
+       FilterCategory category) const final;
+ 
+  private:
++  bool CanUsePrivilegedFilters(const InstalledSubscription& subscription) const;
++  scoped_refptr<PrivilegedFilterPolicy> privileged_policy_;
+   std::vector<scoped_refptr<InstalledSubscription>> subscriptions_;
+   std::string configuration_name_;
+ };
+diff --git a/components/adblock/core/subscription/subscription_downloader_impl.cc b/components/adblock/core/subscription/subscription_downloader_impl.cc
+index 9b3d2b7..54615b2 100644
+--- a/components/adblock/core/subscription/subscription_downloader_impl.cc
++++ b/components/adblock/core/subscription/subscription_downloader_impl.cc
+@@ -106,6 +106,7 @@ void SubscriptionDownloaderImpl::StartDownload(
+   diagnostic.downloaded = false;
+   diagnostic.parsed = false;
+   diagnostic.rules.reset();
++  diagnostic.parsed_privileged.reset();
+   persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+   if (!IsUrlAllowed(subscription_url)) {
+     LOG(WARNING) << "[eyeo] Download from URL not allowed, will not download "
+@@ -223,9 +224,10 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
+     persistent_metadata_->IncrementDownloadErrorCount(subscription_url);
+     LOG(WARNING) << "[eyeo] Failed to retrieve content for "
+                   << subscription_url << ", will abort";
+-    std::move(std::get<DownloadCompletedCallback>(download_it->second))
+-        .Run(nullptr);
++    auto callback =
++        std::move(std::get<DownloadCompletedCallback>(download_it->second));
+     ongoing_downloads_.erase(download_it);
++    std::move(callback).Run(nullptr);
+     return;
+   }
+ 
+@@ -247,12 +249,15 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
+   conversion_executor_->ConvertFilterListFile(
+       subscription_url, downloaded_file, allow_privileged_filter,
+       base::BindOnce(&SubscriptionDownloaderImpl::OnConversionFinished,
+-                     weak_ptr_factory_.GetWeakPtr(), subscription_url, std::get<base::UnguessableToken>(download_it->second)));
++                     weak_ptr_factory_.GetWeakPtr(), subscription_url,
++                     std::get<base::UnguessableToken>(download_it->second),
++                     allow_privileged_filter));
+ }
+ 
+ void SubscriptionDownloaderImpl::OnConversionFinished(
+     const GURL& subscription_url,
+     base::UnguessableToken token,
++    bool converted_privileged,
+     ConversionResult converter_result) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   TRACE_EVENT_NESTABLE_ASYNC_END0(
+@@ -265,21 +270,30 @@ void SubscriptionDownloaderImpl::OnConversionFinished(
+     return;
+   }
+ 
++  if (converted_privileged !=
++      persistent_metadata_->AllowPrivilegedFilters(subscription_url)) {
++    AbortWithWarning(
++        download_it,
++        "Advanced filtering policy changed; converted data discarded");
++    return;
++  }
++
+   if (absl::holds_alternative<std::unique_ptr<FlatbufferData>>(
+           converter_result)) {
+     auto& data = absl::get<std::unique_ptr<FlatbufferData>>(converter_result);
+     auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
+     diagnostic.parsed = data != nullptr;
++    diagnostic.parsed_privileged = converted_privileged;
+     diagnostic.stage = data ? DiagnosticStage::Parsed : DiagnosticStage::Failed;
+     diagnostic.rules = data ? data->GetRuleStatistics() : std::nullopt;
+     if (!data) diagnostic.error = "Converter returned no filter data";
+     persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+     LOG(WARNING) << "[eyeo] Finished converting " << subscription_url
+             << " successfully";
+-    std::move(std::get<DownloadCompletedCallback>(download_it->second))
+-        .Run(std::move(
+-            absl::get<std::unique_ptr<FlatbufferData>>(converter_result)));
++    auto callback =
++        std::move(std::get<DownloadCompletedCallback>(download_it->second));
+     ongoing_downloads_.erase(download_it);
++    std::move(callback).Run(std::move(data));
+   } else if (absl::holds_alternative<GURL>(converter_result)) {
+     const GURL& redirect_url = absl::get<GURL>(converter_result);
+     if (!IsUrlAllowed(redirect_url)) {
+@@ -324,9 +338,10 @@ void SubscriptionDownloaderImpl::AbortWithWarning(
+   persistent_metadata_->SetDiagnostics(ongoing_download_it->first, diagnostic);
+   LOG(WARNING) << "[eyeo] " << warning << " Aborting download of "
+                 << ongoing_download_it->first;
+-  std::move(std::get<DownloadCompletedCallback>(ongoing_download_it->second))
+-      .Run(nullptr);
++  auto callback = std::move(
++      std::get<DownloadCompletedCallback>(ongoing_download_it->second));
+   ongoing_downloads_.erase(ongoing_download_it);
++  std::move(callback).Run(nullptr);
+ }
+ 
+ }  // namespace adblock
+diff --git a/components/adblock/core/subscription/subscription_downloader_impl.h b/components/adblock/core/subscription/subscription_downloader_impl.h
+index 8ee4104..48c09a4 100644
+--- a/components/adblock/core/subscription/subscription_downloader_impl.h
++++ b/components/adblock/core/subscription/subscription_downloader_impl.h
+@@ -81,6 +81,7 @@ class SubscriptionDownloaderImpl final : public SubscriptionDownloader {
+                                scoped_refptr<net::HttpResponseHeaders> headers);
+   void OnConversionFinished(const GURL& subscription_url,
+                             base::UnguessableToken token,
++                            bool converted_privileged,
+                             ConversionResult converter_result);
+   void OnAttemptDiagnostic(const GURL& identity, const GURL& source,
+                            int net_error, int http_status, bool retrying);
+diff --git a/components/adblock/core/subscription/subscription_persistent_metadata.h b/components/adblock/core/subscription/subscription_persistent_metadata.h
+index 12e2a8a..e5d9349 100644
+--- a/components/adblock/core/subscription/subscription_persistent_metadata.h
++++ b/components/adblock/core/subscription/subscription_persistent_metadata.h
+@@ -42,6 +42,8 @@ struct SubscriptionDiagnostics {
+   std::string last_success_source;
+   std::optional<RuleStatistics> rules;
+   std::optional<RuleStatistics> active_rules;
++  std::optional<bool> parsed_privileged;
++  std::optional<bool> active_privileged;
+ };
+ 
+ // Persistently stores metadata about Subscriptions.
+diff --git a/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc b/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
+index b217740..6ae697b 100644
+--- a/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
++++ b/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
+@@ -234,6 +234,12 @@ void SubscriptionPersistentMetadataImpl::UpdatePrefs() {
+       details.Set("stage", static_cast<int>(diagnostic.stage));
+       details.Set("downloaded", diagnostic.downloaded);
+       details.Set("parsed", diagnostic.parsed);
++      if (diagnostic.parsed_privileged) {
++        details.Set("parsed_privileged", *diagnostic.parsed_privileged);
++      }
++      if (diagnostic.active_privileged) {
++        details.Set("active_privileged", *diagnostic.active_privileged);
++      }
+       details.Set("error", diagnostic.error);
+       details.Set("source", diagnostic.source);
+       details.Set("last_success", TimeToValue(diagnostic.last_success));
+@@ -284,6 +290,8 @@ void SubscriptionPersistentMetadataImpl::LoadFromPrefs() {
+         diagnostic.stage = static_cast<DiagnosticStage>(stage);
+       diagnostic.downloaded = details->FindBool("downloaded").value_or(false);
+       diagnostic.parsed = details->FindBool("parsed").value_or(false);
++      diagnostic.parsed_privileged = details->FindBool("parsed_privileged");
++      diagnostic.active_privileged = details->FindBool("active_privileged");
+       if (const auto* error = details->FindString("error")) diagnostic.error = error->substr(0, 160);
+       if (const auto* source = details->FindString("source")) diagnostic.source = source->substr(0, 2048);
+       if (const auto* source = details->FindString("last_success_source")) diagnostic.last_success_source = source->substr(0, 2048);
+diff --git a/components/adblock/core/subscription/subscription_service_impl.cc b/components/adblock/core/subscription/subscription_service_impl.cc
+index 4d0d1c6..037b0f9 100644
+--- a/components/adblock/core/subscription/subscription_service_impl.cc
++++ b/components/adblock/core/subscription/subscription_service_impl.cc
+@@ -233,16 +233,6 @@ bool SubscriptionServiceImpl::IsPrivilegedFiltersEnabled() {
+ void SubscriptionServiceImpl::SetPrivilegedFiltersEnabled(bool enabled) {
+   auto* adblock_filtering_configuration = GetAdblockFilteringConfiguration();
+   adblock_filtering_configuration->SetPrivilegedFiltersEnabled(enabled);
+-  auto known_subscriptions = adblock::config::GetKnownSubscriptions();
+-  for (const auto& cur : known_subscriptions) {
+-    if (config::AllowPrivilegedFilters(cur.url)) {
+-      if (enabled)
+-        adblock_filtering_configuration->AddFilterList(cur.url);
+-      else
+-        adblock_filtering_configuration->RemoveFilterList(cur.url);
+-    }
+-  }
+-  StartUpdate();
+ }
+ 
+ std::vector<scoped_refptr<Subscription>>
+diff --git a/components/adblock/test/shields_defaults_unittest.cc b/components/adblock/test/shields_defaults_unittest.cc
+new file mode 100644
+index 0000000..79203e9
+--- /dev/null
++++ b/components/adblock/test/shields_defaults_unittest.cc
+@@ -0,0 +1,128 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++#include <vector>
++
++#include "base/test/task_environment.h"
++#include "components/adblock/core/common/adblock_constants.h"
++#include "components/adblock/core/common/adblock_prefs.h"
++#include "components/adblock/core/configuration/persistent_filtering_configuration.h"
++#include "components/adblock/core/converter/flatbuffer_converter.h"
++#include "components/adblock/core/subscription/installed_subscription_impl.h"
++#include "components/adblock/core/subscription/subscription_collection_impl.h"
++#include "components/prefs/testing_pref_service.h"
++#include "testing/gtest/include/gtest/gtest.h"
++
++namespace adblock {
++namespace {
++
++scoped_refptr<InstalledSubscription> PrivilegedData(const GURL& url) {
++  auto data = base::MakeRefCounted<FlatbufferConverter>()->Convert(
++      std::vector<std::string>{
++          "||ads.example^",
++          "example.com#$#override-property-read adValue undefined",
++          "example.com##.roadiumProbe {color: #000;}"},
++      url, true);
++  return base::MakeRefCounted<InstalledSubscriptionImpl>(
++      std::move(data), Subscription::InstallationState::Installed,
++      base::Time::Now());
++}
++
++TEST(ShieldsDefaultsTest,
++     InheritedDefaultChangesWithoutOverwritingExplicitChoices) {
++  base::test::TaskEnvironment tasks;
++  TestingPrefServiceSimple prefs;
++  common::prefs::RegisterProfilePrefs(prefs.registry());
++  const auto* key = common::prefs::kAllowPrivilegedFilters;
++  EXPECT_TRUE(prefs.GetBoolean(key));
++  EXPECT_TRUE(prefs.FindPreference(key)->IsDefaultValue());
++  prefs.SetDefaultPrefValue(key, base::Value(false));
++  EXPECT_FALSE(prefs.GetBoolean(key));
++  EXPECT_EQ(nullptr, prefs.GetUserPrefValue(key));
++  prefs.SetDefaultPrefValue(key, base::Value(true));
++  EXPECT_TRUE(prefs.GetBoolean(key));
++  prefs.SetBoolean(key, false);
++  prefs.SetDefaultPrefValue(key, base::Value(true));
++  EXPECT_FALSE(prefs.GetBoolean(key));
++  EXPECT_FALSE(prefs.FindPreference(key)->IsDefaultValue());
++  prefs.SetBoolean(key, true);
++  prefs.SetDefaultPrefValue(key, base::Value(true));
++  EXPECT_TRUE(prefs.GetBoolean(key));
++}
++
++TEST(ShieldsDefaultsTest,
++     AdvancedPreferencePreservesGlobalOffAndIndependentSelections) {
++  base::test::TaskEnvironment tasks;
++  TestingPrefServiceSimple prefs;
++  common::prefs::RegisterProfilePrefs(prefs.registry());
++  PersistentFilteringConfiguration configuration(&prefs, "adblock");
++  configuration.SetEnabled(false);
++  configuration.AddFilterList(GURL("https://custom.invalid/list.txt"));
++  configuration.AddCustomFilter("||custom-ads.invalid^");
++  configuration.AddAllowedDomain("allowed.invalid");
++  const auto selected = configuration.GetFilterLists();
++  configuration.SetPrivilegedFiltersEnabled(false);
++  configuration.SetPrivilegedFiltersEnabled(true);
++  EXPECT_FALSE(configuration.IsEnabled());
++  EXPECT_EQ(selected, configuration.GetFilterLists());
++  EXPECT_EQ(std::vector<std::string>{"||custom-ads.invalid^"},
++            configuration.GetCustomFilters());
++  EXPECT_EQ(std::vector<std::string>{"allowed.invalid"},
++            configuration.GetAllowedDomains());
++}
++
++TEST(ShieldsDefaultsTest,
++     ExistingSnapshotsHonorLiveOptOutAndKeepBasicBlocking) {
++  base::test::TaskEnvironment tasks;
++  const GURL trusted(
++      "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt");
++  auto policy = base::MakeRefCounted<PrivilegedFilterPolicy>(true);
++  SubscriptionCollectionImpl old_snapshot({PrivilegedData(trusted)}, "adblock",
++                                          policy);
++  const GURL page("https://example.com/");
++  const auto snippets = old_snapshot.GenerateSnippets(page, {});
++  ASSERT_EQ(1u, snippets.size());
++  const auto& call = snippets.front().GetList();
++  ASSERT_EQ(3u, call.size());
++  EXPECT_EQ("override-property-read", call[0].GetString());
++  EXPECT_EQ("adValue", call[1].GetString());
++  EXPECT_EQ("undefined", call[2].GetString());
++  ASSERT_FALSE(old_snapshot.GetElementHideEmulationData(page)
++                   .selectors_to_inline_css.empty());
++  policy->SetEnabled(false);
++  EXPECT_TRUE(old_snapshot.GenerateSnippets(page, {}).empty());
++  EXPECT_TRUE(old_snapshot.GetElementHideEmulationData(page)
++                  .selectors_to_inline_css.empty());
++  EXPECT_TRUE(old_snapshot
++                  .FindBySubresourceFilter(GURL("https://ads.example/ad.js"),
++                                           {page}, ContentType::Script,
++                                           SiteKey(), FilterCategory::Blocking)
++                  .has_value());
++  policy->SetEnabled(true);
++  EXPECT_FALSE(old_snapshot.GenerateSnippets(page, {}).empty());
++}
++
++TEST(ShieldsDefaultsTest, UnknownRawAliasAndManualBuffersNeverGainPrivilege) {
++  base::test::TaskEnvironment tasks;
++  const GURL page("https://example.com/");
++  auto policy = base::MakeRefCounted<PrivilegedFilterPolicy>(true);
++  for (const auto& url : {GURL("https://custom.invalid/list.txt"),
++                          GURL("https://raw.githubusercontent.com/uazo/cromite/"
++                               "pages/filters/abp-filters-anti-cv.txt"),
++                          CustomFiltersUrl()}) {
++    SubscriptionCollectionImpl snapshot({PrivilegedData(url)}, "adblock",
++                                        policy);
++    EXPECT_TRUE(snapshot.GenerateSnippets(page, {}).empty()) << url;
++    EXPECT_TRUE(snapshot.GetElementHideEmulationData(page)
++                    .selectors_to_inline_css.empty())
++        << url;
++    EXPECT_TRUE(snapshot
++                    .FindBySubresourceFilter(GURL("https://ads.example/ad.js"),
++                                             {page}, ContentType::Script,
++                                             SiteKey(),
++                                             FilterCategory::Blocking)
++                    .has_value());
++  }
++}
++
++}  // namespace
++}  // namespace adblock
+diff --git a/components/adblock/test/shields_diagnostics_unittest.cc b/components/adblock/test/shields_diagnostics_unittest.cc
+index ce96d37..ee61174 100644
+--- a/components/adblock/test/shields_diagnostics_unittest.cc
++++ b/components/adblock/test/shields_diagnostics_unittest.cc
+@@ -328,6 +328,7 @@ TEST_F(ShieldsLifecycleTest, RoutineUpdatesRunWithoutRecommendedInstaller) {
+ }
+ 
+ TEST_F(ShieldsLifecycleTest, MetadataSurvivesReloadAndMarksInterruptedAttempts) {
++  prefs.SetBoolean(common::prefs::kAllowPrivilegedFilters, false);
+   SubscriptionDiagnostics d;
+   d.stage = DiagnosticStage::Parsed;
+   d.downloaded = true;
+@@ -483,6 +484,117 @@ TEST_F(ShieldsLifecycleTest, StaleConversionCannotCompleteReplacementDownload) {
+   EXPECT_TRUE(metadata->GetDiagnostics(TestUrl()).last_success.is_null());
+ }
+ 
++TEST_F(ShieldsLifecycleTest,
++       ChangedPolicyDiscardsConversionAndAllowsReentrantRefresh) {
++  Resource* request = nullptr;
++  SubscriptionDownloaderImpl downloader(
++      base::BindLambdaForTesting(
++          [&request]() -> std::unique_ptr<AdblockResourceRequest> {
++            auto resource = std::make_unique<Resource>();
++            request = resource.get();
++            return resource;
++          }),
++      &conversion, metadata.get());
++  int completions = 0;
++  downloader.StartDownload(
++      TrustedUrl(), AdblockResourceRequest::RetryPolicy::DoNotRetry,
++      base::BindLambdaForTesting([&](std::unique_ptr<FlatbufferData> data) {
++        EXPECT_FALSE(data);
++        ++completions;
++        downloader.StartDownload(
++            TrustedUrl(), AdblockResourceRequest::RetryPolicy::DoNotRetry,
++            base::BindLambdaForTesting(
++                [&](std::unique_ptr<FlatbufferData> refreshed) {
++                  EXPECT_TRUE(refreshed);
++                  ++completions;
++                }));
++      }));
++  request->Deliver();
++  prefs.SetBoolean(common::prefs::kAllowPrivilegedFilters, false);
++  std::move(conversion.callbacks[0]).Run(Data(TrustedUrl()));
++  EXPECT_EQ(1, completions);
++  EXPECT_EQ(DiagnosticStage::Downloading,
++            metadata->GetDiagnostics(TrustedUrl()).stage);
++  request->Deliver();
++  ASSERT_EQ(2u, conversion.callbacks.size());
++  std::move(conversion.callbacks[1]).Run(Data(TrustedUrl()));
++  EXPECT_EQ(2, completions);
++  EXPECT_EQ(std::optional<bool>(false),
++            metadata->GetDiagnostics(TrustedUrl()).parsed_privileged);
++}
++
++TEST_F(ShieldsLifecycleTest,
++       PolicyChangeDuringStorageQueuesOneRefreshWithoutRemovingSelection) {
++  Prepare();
++  configuration->AddFilterList(TrustedUrl());
++  downloads->Complete(TrustedUrl(), true);
++  configuration->SetPrivilegedFiltersEnabled(false);
++  storage->Complete(true);
++  EXPECT_TRUE(configuration->IsFilterListPresent(TrustedUrl()));
++  EXPECT_TRUE(downloads->callbacks.contains(TrustedUrl()));
++}
++
++TEST_F(ShieldsLifecycleTest,
++       UnknownPrivilegeCacheRefreshesOnceThroughExistingScheduler) {
++  configuration->RemoveFilterList(TestUrl());
++  configuration->AddFilterList(TrustedUrl());
++  initial_data = Installed(TrustedUrl());
++  metadata->SetExpirationInterval(TrustedUrl(), base::Days(2));
++  Prepare(true);
++  EXPECT_EQ(0, downloads->requests);
++  auto previous = maintainer->GetCurrentSubscriptions()[0];
++  scheduler->task.Run();
++  EXPECT_EQ(1, downloads->requests);
++  EXPECT_EQ(previous, maintainer->GetCurrentSubscriptions()[0]);
++  scheduler->task.Run();
++  EXPECT_EQ(1, downloads->requests);
++  auto diagnostic = metadata->GetDiagnostics(TrustedUrl());
++  diagnostic.parsed_privileged = true;
++  metadata->SetDiagnostics(TrustedUrl(), diagnostic);
++  downloads->Complete(TrustedUrl(), true);
++  storage->Complete(true);
++  scheduler->task.Run();
++  EXPECT_EQ(1, downloads->requests);
++  EXPECT_EQ(std::optional<bool>(true),
++            metadata->GetDiagnostics(TrustedUrl()).active_privileged);
++}
++
++TEST_F(ShieldsLifecycleTest,
++       PreferenceOptOutAndDestructionReachExistingSnapshot) {
++  configuration->RemoveFilterList(TestUrl());
++  configuration->AddFilterList(TrustedUrl());
++  auto data = base::MakeRefCounted<FlatbufferConverter>()->Convert(
++      std::vector<std::string>{
++          "example.com#$#override-property-read adValue undefined"},
++      TrustedUrl(), true);
++  initial_data = base::MakeRefCounted<InstalledSubscriptionImpl>(
++      std::move(data), Subscription::InstallationState::Installed,
++      base::Time::Now());
++  Prepare(true);
++  auto snapshot = maintainer->GetSubscriptionCollection();
++  const GURL page("https://example.com/");
++  ASSERT_FALSE(snapshot->GenerateSnippets(page, {}).empty());
++  configuration->SetPrivilegedFiltersEnabled(false);
++  EXPECT_TRUE(snapshot->GenerateSnippets(page, {}).empty());
++  configuration->SetPrivilegedFiltersEnabled(true);
++  EXPECT_FALSE(snapshot->GenerateSnippets(page, {}).empty());
++  maintainer.reset();
++  EXPECT_TRUE(snapshot->GenerateSnippets(page, {}).empty());
++}
++
++TEST_F(ShieldsLifecycleTest, ConversionPolicyHistorySurvivesReload) {
++  auto diagnostic = metadata->GetDiagnostics(TrustedUrl());
++  diagnostic.stage = DiagnosticStage::Activated;
++  diagnostic.parsed_privileged = false;
++  diagnostic.active_privileged = true;
++  metadata->SetDiagnostics(TrustedUrl(), diagnostic);
++  SubscriptionPersistentMetadataImpl reloaded(&prefs);
++  EXPECT_EQ(std::optional<bool>(false),
++            reloaded.GetDiagnostics(TrustedUrl()).parsed_privileged);
++  EXPECT_EQ(std::optional<bool>(true),
++            reloaded.GetDiagnostics(TrustedUrl()).active_privileged);
++}
++
+ class BatchMaintainer : public FilteringConfigurationMaintainer {
+  public:
+   int checks = 0;
+@@ -495,6 +607,44 @@ class BatchMaintainer : public FilteringConfigurationMaintainer {
+   void RemoveAutoInstalledSubscriptions() override {}
+ };
+ 
++TEST(ShieldsServiceTest,
++     AdvancedSwitchPreservesGlobalOffAndIndependentListOptOut) {
++  base::test::TaskEnvironment tasks;
++  TestingPrefServiceSimple prefs;
++  common::prefs::RegisterProfilePrefs(prefs.registry());
++  int created = 0;
++  SubscriptionServiceImpl service(
++      &prefs,
++      base::BindLambdaForTesting(
++          [&](FilteringConfiguration*,
++              SubscriptionServiceImpl::SubscriptionUpdatedCallback)
++              -> std::unique_ptr<FilteringConfigurationMaintainer> {
++            ++created;
++            return std::make_unique<BatchMaintainer>();
++          }),
++      base::BindRepeating([](FilteringConfiguration*) {}));
++  auto owned =
++      std::make_unique<PersistentFilteringConfiguration>(&prefs, "adblock");
++  auto* configuration = owned.get();
++  configuration->SetEnabled(false);
++  configuration->AddFilterList(TestUrl());
++  configuration->AddCustomFilter("||manual.invalid^");
++  configuration->AddAllowedDomain("allowed.invalid");
++  const auto selected = configuration->GetFilterLists();
++  service.InstallFilteringConfiguration(std::move(owned));
++  service.SetPrivilegedFiltersEnabled(false);
++  service.SetPrivilegedFiltersEnabled(true);
++  EXPECT_FALSE(configuration->IsEnabled());
++  EXPECT_EQ(0, created);
++  EXPECT_TRUE(service.GetCurrentSnapshot().empty());
++  EXPECT_EQ(selected, configuration->GetFilterLists());
++  EXPECT_FALSE(configuration->IsFilterListPresent(TrustedUrl()));
++  EXPECT_EQ(std::vector<std::string>{"||manual.invalid^"},
++            configuration->GetCustomFilters());
++  EXPECT_EQ(std::vector<std::string>{"allowed.invalid"},
++            configuration->GetAllowedDomains());
++}
++
+ TEST(ShieldsServiceTest, BatchAggregatesOutcomesAndRepeatedTapsJoin) {
+   base::test::TaskEnvironment tasks;
+   TestingPrefServiceSimple prefs;

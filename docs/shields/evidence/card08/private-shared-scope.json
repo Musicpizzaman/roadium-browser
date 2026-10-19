@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "original_profile_backend_routing_confirmed": true,
+  "regular_tab_session_exception_also_applies_in_private_tab": true,
+  "private_tab_has_no_mutating_Shields_panel": true,
+  "regular_restore_removes_session_exception": true,
+  "scope": "Original profile, including private tabs; other open documents must reload to apply policy changes"
+}

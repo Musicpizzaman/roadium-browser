@@ -1,0 +1,11 @@
+{
+  "user10_settings_and_signatures_preserved": true,
+  "user11_settings_and_signatures_preserved": true,
+  "user11_advanced_explicit_false_preserved": true,
+  "user11_manual_rules": [
+    "||shields-test-ads.invalid^"
+  ],
+  "user11_site_exceptions": [
+    "shields-fixture.invalid"
+  ]
+}

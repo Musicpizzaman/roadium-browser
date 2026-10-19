@@ -1,0 +1,5 @@
+{
+  "fixture": "http://127.0.0.1:8765/shields.html",
+  "result": "Fetch completed (opaque response; downloaded code was not executed).",
+  "advertisingResourceFailures": []
+}

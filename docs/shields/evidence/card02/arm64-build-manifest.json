@@ -1,0 +1,128 @@
+{
+  "project": "Roadium Browser",
+  "architecture": "arm64",
+  "package": "io.github.musicpizzaman.roadium",
+  "version": "153.0.8010.37",
+  "version_code": 801003712,
+  "roadium_version_code_offset": 10,
+  "baseline_source_tree": "56400c5406d8f83533c151e122b19f3f745c0892",
+  "cromite_commit": "11507ac1061b5ea227806f5e84db5a57df6ccf6a",
+  "source_patch_sha256": "a62d66be6d65a766d0adabc6c18b440d245f429a5b679aedd5f747e0aacedaa8",
+  "source_patches": [
+    {
+      "path": "build/roadium/patches/0001-roadium-aaos-foundation.patch",
+      "sha256": "3f0fedee04363332ccfe8fb2bbd2ba1f4ed8127e187f04c5bd2104a33debd0df"
+    },
+    {
+      "path": "build/roadium/patches/0002-roadium-shields-diagnostics.patch",
+      "sha256": "9a4a39651200f465f52ffa1e3d0ccade4a035a07fc0a97cd0f0b5745535eff58"
+    },
+    {
+      "path": "build/roadium/patches/0003-roadium-bundled-filters.patch",
+      "sha256": "eb4f85d293ea50d4e69cb25f633f86d1539a8caae71752d44ebbdc3662513df4"
+    }
+  ],
+  "source_overlay_tree": "69ac49b1e34f3a63c9a965d65ecfd15140dea799",
+  "compiler_exit": 0,
+  "build_attempt": "run.qzJuJmKs",
+  "started_utc": "2026-10-14T10:07:39Z",
+  "native_toolchain_min_sdk": 29,
+  "target_sdk": 36,
+  "required_automotive": true,
+  "picture_in_picture": false,
+  "signing": "APK verified with diagnostic development certificate; AAB status recorded per artifact",
+  "bundle_modules": {
+    "base": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "on_demand": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "stack_unwinder": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "xr": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "chrome": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    }
+  },
+  "bundletool_validation": "passed",
+  "bundletool_exit": 0,
+  "packaged_abi": "arm64-v8a",
+  "artifacts": [
+    {
+      "file": "ChromePublic.apk",
+      "bundled_filters": {
+        "revision": "338336d9e640489c648d47d606cb0030064c4e0f",
+        "resources": {
+          "IDR_ADBLOCK_FLATBUFFER_EASYLIST": [
+            "assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FLATBUFFER_ANTICV": [
+            "assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_BUNDLED_MANIFEST": [
+            "assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FILTER_NOTICES": [
+            "assets/resources.pak+40064988+"
+          ]
+        },
+        "manifest_sha256": "99f52fd34f652709badf367eb5033e081e3645a4ea49551099d4097a9c2e47a3",
+        "notices_sha256": "b74bcf5e169f438b8e61ef6a81e281ebcac1e68784d0d8c0f3b86c31d90fd4d4"
+      },
+      "native_abis": [
+        "arm64-v8a"
+      ],
+      "native_library_count": 7,
+      "apk_signature_verification": "passed",
+      "apk_signature_v2": true,
+      "certificate_sha256": "32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0",
+      "min_sdk": 31,
+      "target_sdk": 36,
+      "bytes": 325413297,
+      "sha256": "917c5f7ff094734013b201b922e4e61ba299564dd7bb5bde5da3d8af33f5e22e",
+      "zip_crc": "passed"
+    },
+    {
+      "file": "ChromePublic.aab",
+      "bundled_filters": {
+        "revision": "338336d9e640489c648d47d606cb0030064c4e0f",
+        "resources": {
+          "IDR_ADBLOCK_FLATBUFFER_EASYLIST": [
+            "base/assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FLATBUFFER_ANTICV": [
+            "base/assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_BUNDLED_MANIFEST": [
+            "base/assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FILTER_NOTICES": [
+            "base/assets/resources.pak+40064988+"
+          ]
+        },
+        "manifest_sha256": "99f52fd34f652709badf367eb5033e081e3645a4ea49551099d4097a9c2e47a3",
+        "notices_sha256": "b74bcf5e169f438b8e61ef6a81e281ebcac1e68784d0d8c0f3b86c31d90fd4d4"
+      },
+      "native_abis": [
+        "arm64-v8a"
+      ],
+      "native_library_count": 7,
+      "jar_signing_entries": [],
+      "jar_signature_status": "unsigned",
+      "bytes": 142501176,
+      "sha256": "14fe1d74466cefe65dbea0cc49c39a238e6f27ff17b9ef62c2e4c2574fae404d",
+      "zip_crc": "passed"
+    }
+  ],
+  "emulator_runtime_verification": "pending",
+  "physical_car_verification": "pending"
+}

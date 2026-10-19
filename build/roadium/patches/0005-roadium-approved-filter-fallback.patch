@@ -1,0 +1,2003 @@
+diff --git a/components/adblock/android/adblock_controller_jni.cc b/components/adblock/android/adblock_controller_jni.cc
+index 28575fc..5ea5d29 100644
+--- a/components/adblock/android/adblock_controller_jni.cc
++++ b/components/adblock/android/adblock_controller_jni.cc
+@@ -235,6 +235,9 @@ JNI_AdblockController_GetDiagnosticSnapshot(JNIEnv* env,
+     outcome.Set("configuration", entry.configuration);
+     outcome.Set("outcome", entry.outcome);
+     outcome.Set("error", entry.error);
++    outcome.Set("primary_failure", entry.primary_failure);
++    outcome.Set("fallback_attempted", entry.fallback_attempted);
++    outcome.Set("fallback_outcome", entry.fallback_outcome);
+     outcomes.Append(std::move(outcome));
+   }
+   update.Set("entries", std::move(outcomes));
+@@ -293,6 +296,9 @@ JNI_AdblockController_GetDiagnosticSnapshot(JNIEnv* env,
+     item.Set("parsed", d.parsed);
+     item.Set("error", d.error);
+     item.Set("source", d.source.empty() ? "not recorded" : d.source);
++    item.Set("primary_failure", d.primary_failure);
++    item.Set("fallback_attempted", d.fallback_attempted);
++    item.Set("fallback_outcome", d.fallback_outcome);
+     item.Set("last_success", time(d.last_success));
+     item.Set("last_success_source", d.last_success_source.empty() ? "not recorded" : d.last_success_source);
+     if (d.rules) item.Set("rules", counts(*d.rules));
+diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java b/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
+index 8a4b3f1..81ceb27 100644
+--- a/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
++++ b/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
+@@ -115,6 +115,10 @@ public final class ShieldsDiagnostics {
+                 + "\nActive data source: " + sub.optString("active_source", sub.optString("last_success_source", "not recorded"))
+                 + "\nSuccessful requests: " + sub.optLong("successful_requests") + " (includes HEAD)"
+                 + "\nRecorded consecutive download failures: " + sub.optLong("consecutive_failures");
++        String primaryFailure = sub.optString("primary_failure");
++        if (!primaryFailure.isEmpty()) text += "\nPrimary failure: " + primaryFailure;
++        text += "\nFallback: " + (sub.optBoolean("fallback_attempted")
++                ? sub.optString("fallback_outcome", "attempted") : "not attempted");
+         String error = sub.optString("error");
+         text += "\nLatest error: " + (error.isEmpty() ? "none recorded" : error);
+         JSONObject rules = sub.optJSONObject("rules");
+@@ -144,6 +148,10 @@ public final class ShieldsDiagnostics {
+                 report.append("\n").append(entry.optString("url")).append(": ").append(label);
+                 String error = entry.optString("error");
+                 if (!error.isEmpty()) report.append(" — ").append(error);
++                String primaryFailure = entry.optString("primary_failure");
++                if (!primaryFailure.isEmpty()) report.append("\nPrimary failure: ").append(primaryFailure);
++                if (entry.optBoolean("fallback_attempted"))
++                    report.append("\nFallback: ").append(entry.optString("fallback_outcome", "attempted"));
+             }
+         }
+         JSONArray subscriptions = mData.optJSONArray("subscriptions");
+diff --git a/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java b/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java
+index a6923d9..a3d97ba 100644
+--- a/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java
++++ b/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java
+@@ -159,6 +159,31 @@ public class ShieldsDiagnosticsTest {
+         assertFalse(text.contains("total"));
+     }
+ 
++    @Test public void fallbackFailureAndActiveSourceAreIndependent() throws Exception {
++        JSONObject data = snapshot();
++        data.getJSONArray("subscriptions").put(new JSONObject()
++                .put("url", "https://example.com/easylist.txt")
++                .put("source", "https://example.com/fallback.txt")
++                .put("active_source", "previous working source")
++                .put("primary_failure", "HTTP 503")
++                .put("fallback_attempted", true).put("fallback_outcome", "failed"));
++        String text = new ShieldsDiagnostics(data.toString()).getFullReport();
++        assertTrue(text.contains("Primary failure: HTTP 503"));
++        assertTrue(text.contains("Fallback: failed"));
++        assertTrue(text.contains("Active data source: previous working source"));
++    }
++
++    @Test public void removedListRetainsCapturedFallbackDetails() throws Exception {
++        JSONObject data = snapshot().put("update", new JSONObject().put("batch_id", 4)
++                .put("entries", new JSONArray().put(new JSONObject()
++                        .put("url", "https://example.com/removed.txt").put("outcome", 2)
++                        .put("primary_failure", "Network failure")
++                        .put("fallback_attempted", true).put("fallback_outcome", "cancelled"))));
++        String text = new ShieldsDiagnostics(data.toString()).getFullReport();
++        assertTrue(text.contains("Primary failure: Network failure"));
++        assertTrue(text.contains("Fallback: cancelled"));
++    }
++
+     @Test public void conversionReasonsAreVisibleWithoutRuleContents() throws Exception {
+         JSONObject data = snapshot();
+         data.getJSONArray("subscriptions").put(new JSONObject()
+diff --git a/components/adblock/content/browser/factories/subscription_service_factory.cc b/components/adblock/content/browser/factories/subscription_service_factory.cc
+index 1eb457d..63ed762 100644
+--- a/components/adblock/content/browser/factories/subscription_service_factory.cc
++++ b/components/adblock/content/browser/factories/subscription_service_factory.cc
+@@ -105,9 +105,16 @@ ConversionResult ConvertFilterFile(
+   } else if (!converter) {
+     result = ConversionError("Converter is not initialized");
+   } else {
+-    result =
+-        converter->Convert(input_stream, subscription_url,
+-          allow_privileged_filter && config::AllowPrivilegedFilters(subscription_url));
++    result = config::GetApprovedFallbackTransport(subscription_url).is_valid()
++                 ? converter->ConvertForApprovedTransport(
++                       input_stream, subscription_url,
++                       allow_privileged_filter &&
++                           config::AllowPrivilegedFilters(subscription_url),
++                       config::IsApprovedHeaderlessDomainList(subscription_url))
++                 : converter->Convert(
++                       input_stream, subscription_url,
++                       allow_privileged_filter &&
++                           config::AllowPrivilegedFilters(subscription_url));
+   }
+   base::DeleteFile(path);
+   return result;
+diff --git a/components/adblock/core/common/adblock_constants.h b/components/adblock/core/common/adblock_constants.h
+index ad9d4bd..a0d51bf 100644
+--- a/components/adblock/core/common/adblock_constants.h
++++ b/components/adblock/core/common/adblock_constants.h
+@@ -18,6 +18,7 @@
+ #ifndef COMPONENTS_ADBLOCK_CORE_COMMON_ADBLOCK_CONSTANTS_H_
+ #define COMPONENTS_ADBLOCK_CORE_COMMON_ADBLOCK_CONSTANTS_H_
+ 
++#include <cstdint>
+ #include <string_view>
+ 
+ #include "base/auto_reset.h"
+@@ -25,6 +26,9 @@
+ 
+ namespace adblock {
+ 
++inline constexpr int64_t kMaximumApprovedFilterBytes = 32 * 1024 * 1024;
++inline constexpr int kApprovedFilterAttemptTimeoutSeconds = 60;
++
+ namespace flat {
+ enum AbpResource : int8_t;
+ }
+diff --git a/components/adblock/core/converter/BUILD.gn b/components/adblock/core/converter/BUILD.gn
+index 55aa949..60f4f1a 100644
+--- a/components/adblock/core/converter/BUILD.gn
++++ b/components/adblock/core/converter/BUILD.gn
+@@ -21,6 +21,7 @@ source_set("converter") {
+   ]
+ 
+   deps = [
++    "//components/adblock/core:schema",
+     "//components/adblock/core/converter/parser",
+     "//components/adblock/core/converter/serializer",
+   ]
+diff --git a/components/adblock/core/converter/flatbuffer_converter.cc b/components/adblock/core/converter/flatbuffer_converter.cc
+index e11d21e..892195e 100644
+--- a/components/adblock/core/converter/flatbuffer_converter.cc
++++ b/components/adblock/core/converter/flatbuffer_converter.cc
+@@ -17,19 +17,23 @@
+ 
+ #include "components/adblock/core/converter/flatbuffer_converter.h"
+ 
++#include <algorithm>
+ #include <fstream>
+ #include <iostream>
+ #include <string_view>
++#include <variant>
+ 
+ #include "base/logging.h"
+ #include "base/strings/string_split.h"
+ #include "base/strings/string_util.h"
++#include "components/adblock/core/common/adblock_constants.h"
+ #include "components/adblock/core/converter/parser/content_filter.h"
+ #include "components/adblock/core/converter/parser/filter_classifier.h"
+ #include "components/adblock/core/converter/parser/metadata.h"
+ #include "components/adblock/core/converter/parser/snippet_filter.h"
+ #include "components/adblock/core/converter/parser/url_filter.h"
+ #include "components/adblock/core/converter/serializer/flatbuffer_serializer.h"
++#include "components/adblock/core/schema/filter_list_schema_generated.h"
+ 
+ namespace adblock {
+ 
+@@ -57,6 +61,84 @@ constexpr size_t kMaxSeparatorLength = 3u;
+ FlatbufferConverter::FlatbufferConverter() = default;
+ FlatbufferConverter::~FlatbufferConverter() = default;
+ 
++ConversionResult FlatbufferConverter::ConvertForApprovedTransport(
++    std::istream& input,
++    GURL identity,
++    bool allow_privileged,
++    bool headerless_domain_list) {
++  input.seekg(0, std::ios::end);
++  const std::streamoff size = input.tellg();
++  if (size <= 0 || size > kMaximumApprovedFilterBytes) {
++    return ConversionError(
++        "Empty, unreadable or oversized approved filter list");
++  }
++  input.seekg(0, std::ios::beg);
++  std::string header;
++  std::getline(input, header);
++  if (base::StartsWith(header, "\xEF\xBB\xBF")) {
++    header.erase(0, 3);
++  }
++  base::TrimWhitespaceASCII(header, base::TRIM_ALL, &header);
++  constexpr std::string_view prefix = "[Adblock Plus ";
++  if (headerless_domain_list && base::StartsWith(header, "! Title:")) {
++    std::string first_rule;
++    while (std::getline(input, first_rule)) {
++      base::TrimWhitespaceASCII(first_rule, base::TRIM_ALL, &first_rule);
++      if (!first_rule.empty() && !base::StartsWith(first_rule, "!")) {
++        break;
++      }
++    }
++    if (!base::StartsWith(first_rule, "||") &&
++        !base::StartsWith(first_rule, "@@||")) {
++      return ConversionError(
++          "Approved headerless domain list has no initial domain rule");
++    }
++  } else {
++    if (!base::StartsWith(header, prefix) || !base::EndsWith(header, "]")) {
++      return ConversionError(
++          "Approved filter transport returned invalid plaintext header");
++    }
++    const auto version = std::string_view(header).substr(
++        prefix.size(), header.size() - prefix.size() - 1);
++    if (version.empty() || version.front() < '0' || version.front() > '9' ||
++        !std::ranges::all_of(version, [](char c) {
++          return (c >= '0' && c <= '9') || c == '.';
++        })) {
++      return ConversionError("Unsupported approved filter format");
++    }
++  }
++  input.clear();
++  input.seekg(0, std::ios::beg);
++  auto result = Convert(input, identity, allow_privileged);
++  if (absl::holds_alternative<GURL>(result)) {
++    return ConversionError(
++        "Filter-declared redirects are not allowed for approved transports");
++  }
++  if (auto* data = std::get_if<std::unique_ptr<FlatbufferData>>(&result)) {
++    if (!*data || !(*data)->data()) {
++      return ConversionError("Converter returned no data");
++    }
++    flatbuffers::Verifier verifier((*data)->data(), (*data)->size());
++    if (!flat::VerifySubscriptionBuffer(verifier)) {
++      return ConversionError("Invalid converted FlatBuffers data");
++    }
++    const auto* metadata = flat::GetSubscription((*data)->data())->metadata();
++    if (!metadata || !metadata->url() ||
++        GURL(metadata->url()->str()) != identity ||
++        !metadata->flatbuffers_schema_version() ||
++        metadata->flatbuffers_schema_version()->str() !=
++            CurrentSchemaVersion()) {
++      return ConversionError("Converted filter identity or schema mismatch");
++    }
++    const auto rules = (*data)->GetRuleStatistics();
++    if (!rules || rules->accepted <= 0) {
++      return ConversionError(
++          "Approved list contains no supported filter rules");
++    }
++  }
++  return result;
++}
++
+ ConversionResult FlatbufferConverter::Convert(std::istream& filter_stream,
+                                               GURL subscription_url,
+                                               bool allow_privileged) {
+diff --git a/components/adblock/core/converter/flatbuffer_converter.h b/components/adblock/core/converter/flatbuffer_converter.h
+index a01088e..c830c70 100644
+--- a/components/adblock/core/converter/flatbuffer_converter.h
++++ b/components/adblock/core/converter/flatbuffer_converter.h
+@@ -41,6 +41,13 @@ class FlatbufferConverter
+  public:
+   FlatbufferConverter();
+ 
++  // Whole, seekable plaintext input from an exact approved transport.
++  ConversionResult ConvertForApprovedTransport(
++      std::istream& filter_stream,
++      GURL subscription_url,
++      bool allow_privileged,
++      bool headerless_domain_list = false);
++
+   ConversionResult Convert(std::istream& filter_stream,
+                            GURL subscription_url,
+                            bool allow_privileged);
+diff --git a/components/adblock/core/net/adblock_resource_request.h b/components/adblock/core/net/adblock_resource_request.h
+index 50c99d8..389e24f 100644
+--- a/components/adblock/core/net/adblock_resource_request.h
++++ b/components/adblock/core/net/adblock_resource_request.h
+@@ -44,6 +44,10 @@ class AdblockResourceRequest {
+       scoped_refptr<net::HttpResponseHeaders> headers)>;
+   enum class Method { GET, HEAD };
+ 
++  // Exact approved subscription transports: bounded and never redirected.
++  void SetStrictTransportPolicy() { strict_transport_ = true; }
++  bool UsesStrictTransportPolicy() const { return strict_transport_; }
++
+   using AttemptDiagnosticCallback = base::RepeatingCallback<void(
+       const GURL&, int net_error, int http_status, bool retrying)>;
+   void SetAttemptDiagnosticCallback(AttemptDiagnosticCallback callback) {
+@@ -56,6 +60,7 @@ class AdblockResourceRequest {
+   }
+ 
+  private:
++  bool strict_transport_ = false;
+   AttemptDiagnosticCallback attempt_diagnostic_callback_;
+ 
+  public:
+diff --git a/components/adblock/core/net/adblock_resource_request_impl.cc b/components/adblock/core/net/adblock_resource_request_impl.cc
+index 6482b96..1c75816 100644
+--- a/components/adblock/core/net/adblock_resource_request_impl.cc
++++ b/components/adblock/core/net/adblock_resource_request_impl.cc
+@@ -17,12 +17,17 @@
+ 
+ #include "components/adblock/core/net/adblock_resource_request_impl.h"
+ 
++#include <limits>
++
+ #include "base/strings/escape.h"
+ #include "base/strings/strcat.h"
+ #include "base/task/thread_pool.h"
+ #include "base/trace_event/trace_event.h"
++#include "components/adblock/core/common/adblock_constants.h"
+ #include "components/adblock/core/common/app_info.h"
+ #include "net/base/load_flags.h"
++#include "net/base/net_errors.h"
++#include "net/base/network_change_notifier.h"
+ #include "net/http/http_request_headers.h"
+ #include "services/network/public/cpp/resource_request.h"
+ #include "services/network/public/mojom/url_response_head.mojom.h"
+@@ -80,6 +85,17 @@ void AdblockResourceRequestImpl::Start(GURL url,
+   method_ = method;
+   retry_policy_ = retry_policy;
+   response_callback_ = std::move(response_callback);
++  if (UsesStrictTransportPolicy()) {
++    retry_policy_ = RetryPolicy::DoNotRetry;
++    strict_deadline_.Start(
++        FROM_HERE, base::Seconds(kApprovedFilterAttemptTimeoutSeconds),
++        base::BindOnce(&AdblockResourceRequestImpl::FailStrictTransport,
++                       weak_factory_.GetWeakPtr(), net::ERR_TIMED_OUT));
++    if (net::NetworkChangeNotifier::IsOffline()) {
++      FailStrictTransport(net::ERR_INTERNET_DISCONNECTED);
++      return;
++    }
++  }
+   StartWhenRequestsAllowed();
+ }
+ 
+@@ -89,6 +105,10 @@ void AdblockResourceRequestImpl::Redirect(
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   DCHECK(IsStarted()) << "Redirect() called before Start()";
+   DCHECK(url_ != redirect_url) << "Invalid redirect. Same URL";
++  if (UsesStrictTransportPolicy()) {
++    FailStrictTransport(net::ERR_UNSAFE_REDIRECT);
++    return;
++  }
+   VLOG(1) << "[eyeo] Will redirect " << url_ << " to " << redirect_url;
+   ++number_of_redirects_;
+   url_ = BuildUrlWithParams(redirect_url, extra_query_params);
+@@ -119,16 +139,30 @@ void AdblockResourceRequestImpl::StartInternal() {
+   request->url = url_;
+   request->method = MethodToString();
+   request->load_flags = net::LOAD_BYPASS_CACHE | net::LOAD_DISABLE_CACHE;
++  if (UsesStrictTransportPolicy()) {
++    request->redirect_mode = network::mojom::RedirectMode::kError;
++    request->credentials_mode = network::mojom::CredentialsMode::kOmit;
++  }
+   loader_ =
+       network::SimpleURLLoader::Create(std::move(request), kTrafficAnnotation);
+ 
++  if (UsesStrictTransportPolicy()) {
++    loader_->SetTimeoutDuration(
++        base::Seconds(kApprovedFilterAttemptTimeoutSeconds));
++    loader_->SetOnRedirectCallback(
++        base::BindRepeating(&AdblockResourceRequestImpl::OnStrictRedirect,
++                            weak_factory_.GetWeakPtr()));
++  }
++
+   if (method_ == Method::GET) {
+     loader_->DownloadToTempFile(
+         url_loader_factory_.get(),
+         base::BindOnce(&AdblockResourceRequestImpl::OnDownloadFinished,
+                        // Unretained is safe because destruction of |this| will
+                        // remove |loader_| and will abort the callback.
+-                       base::Unretained(this)));
++                       base::Unretained(this)),
++        UsesStrictTransportPolicy() ? kMaximumApprovedFilterBytes
++                                    : std::numeric_limits<int64_t>::max());
+   } else {
+     loader_->DownloadHeadersOnly(
+         url_loader_factory_.get(),
+@@ -155,8 +189,30 @@ void AdblockResourceRequestImpl::Retry() {
+                      base::Unretained(this)));
+ }
+ 
++void AdblockResourceRequestImpl::OnStrictRedirect(
++    const GURL&,
++    const net::RedirectInfo&,
++    const network::mojom::URLResponseHead&,
++    std::vector<std::string>*) {
++  // Deleting SimpleURLLoader in its redirect callback prevents the next fetch.
++  FailStrictTransport(net::ERR_UNSAFE_REDIRECT);
++}
++
++void AdblockResourceRequestImpl::FailStrictTransport(int net_error) {
++  strict_deadline_.Stop();
++  retry_timer_->Stop();
++  weak_factory_.InvalidateWeakPtrs();
++  loader_.reset();
++  const auto callback = response_callback_;
++  const auto source = url_;
++  NotifyAttemptDiagnostic(source, net_error, 0, false);
++  callback.Run(source, base::FilePath(), nullptr);
++  // Completion may destroy this request.
++}
++
+ void AdblockResourceRequestImpl::OnDownloadFinished(
+     base::FilePath downloaded_file) {
++  strict_deadline_.Stop();
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   TRACE_EVENT_NESTABLE_ASYNC_END0("eyeo", "Downloading resource", this);
+ 
+@@ -177,6 +233,7 @@ void AdblockResourceRequestImpl::OnDownloadFinished(
+ 
+ void AdblockResourceRequestImpl::OnHeadersReceived(
+     scoped_refptr<net::HttpResponseHeaders> headers) {
++  strict_deadline_.Stop();
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   TRACE_EVENT_NESTABLE_ASYNC_END0("eyeo", "Downloading resource", this);
+ 
+diff --git a/components/adblock/core/net/adblock_resource_request_impl.h b/components/adblock/core/net/adblock_resource_request_impl.h
+index b0634c7..58febd0 100644
+--- a/components/adblock/core/net/adblock_resource_request_impl.h
++++ b/components/adblock/core/net/adblock_resource_request_impl.h
+@@ -54,6 +54,11 @@ class AdblockResourceRequestImpl final : public AdblockResourceRequest {
+   bool IsStarted() const;
+   void StartWhenRequestsAllowed();
+   void StartInternal();
++  void FailStrictTransport(int net_error);
++  void OnStrictRedirect(const GURL&,
++                        const net::RedirectInfo&,
++                        const network::mojom::URLResponseHead&,
++                        std::vector<std::string>*);
+   void Retry();
+   void OnDownloadFinished(base::FilePath downloaded_file);
+   void OnHeadersReceived(scoped_refptr<net::HttpResponseHeaders> headers);
+@@ -69,6 +74,7 @@ class AdblockResourceRequestImpl final : public AdblockResourceRequest {
+   ResponseCallback response_callback_;
+   std::unique_ptr<network::SimpleURLLoader> loader_;
+   std::unique_ptr<base::OneShotTimer> retry_timer_;
++  base::OneShotTimer strict_deadline_;
+   size_t number_of_redirects_;
+   base::WeakPtrFactory<AdblockResourceRequestImpl> weak_factory_{this};
+ };
+diff --git a/components/adblock/core/subscription/BUILD.gn b/components/adblock/core/subscription/BUILD.gn
+index fda0f33..9438201 100644
+--- a/components/adblock/core/subscription/BUILD.gn
++++ b/components/adblock/core/subscription/BUILD.gn
+@@ -190,19 +190,47 @@ source_set("perf_tests") {
+ 
+ # Roadium Card 01 deterministic diagnostics and lifecycle regressions.
+ import("//testing/test.gni")
++
++# Only the pinned helpers needed by the focused transport tests. The broad
++# upstream test_support includes unrelated incompatible Cromite SSL mocks.
++source_set("roadium_transport_test_support") {
++  testonly = true
++  sources = [
++    "//net/base/mock_network_change_notifier.cc",
++    "//net/base/mock_network_change_notifier.h",
++    "//services/network/test/test_url_loader_factory.cc",
++    "//services/network/test/test_url_loader_factory.h",
++    "//services/network/test/test_utils.cc",
++    "//services/network/test/test_utils.h",
++  ]
++  deps = [
++    "//base",
++    "//base/test:test_support",
++    "//mojo/public/cpp/bindings",
++    "//net",
++    "//services/network/public/cpp",
++    "//services/network/public/mojom",
++    "//testing/gtest",
++  ]
++}
++
+ test("roadium_shields_unit_tests") {
+   sources = [
+     "../../test/shields_bundles_unittest.cc",
+     "../../test/shields_defaults_unittest.cc",
+     "../../test/shields_diagnostics_unittest.cc",
++    "../../test/shields_transport_unittest.cc",
+   ]
+   deps = [
++    ":roadium_transport_test_support",
+     "//base/test:run_all_unittests",
+     "//base/test:test_support",
+     "//components/adblock/core/configuration",
+     "//components/adblock/core/converter",
++    "//components/adblock/core/net",
+     "//components/adblock/core/subscription",
+     "//components/prefs:test_support",
++    "//mojo/core/embedder",
+     "//testing/gtest",
+   ]
+ }
+diff --git a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
+index 5032db2..36b5d58 100644
+--- a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
++++ b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
+@@ -94,6 +94,9 @@ FilteringConfigurationMaintainerImpl::~FilteringConfigurationMaintainerImpl() {
+     auto diagnostic = persistent_metadata_->GetDiagnostics(pending->GetSourceUrl());
+     diagnostic.stage = DiagnosticStage::Cancelled;
+     diagnostic.error = "Configuration stopped before activation";
++    if (diagnostic.fallback_attempted) {
++      diagnostic.fallback_outcome = "cancelled";
++    }
+     persistent_metadata_->SetDiagnostics(pending->GetSourceUrl(), diagnostic);
+   }
+   configuration_->RemoveObserver(this);
+@@ -368,10 +371,16 @@ void FilteringConfigurationMaintainerImpl::FinishManual(
+   entry.configuration = configuration_->GetName();
+   entry.outcome = static_cast<int>(outcome);
+   const auto diagnostic = persistent_metadata_->GetDiagnostics(url);
++  entry.primary_failure = diagnostic.primary_failure;
++  entry.fallback_attempted = diagnostic.fallback_attempted;
++  entry.fallback_outcome = diagnostic.fallback_outcome;
+   if (outcome == ManualOutcome::Failed)
+     entry.error = diagnostic.error.empty() ? "No valid update data received" : diagnostic.error;
+   if (outcome == ManualOutcome::Cancelled)
+     entry.error = "Subscription or configuration stopped before activation";
++  if (outcome == ManualOutcome::Cancelled && entry.fallback_attempted) {
++    entry.fallback_outcome = "cancelled";
++  }
+   if (outcome == ManualOutcome::TimedOut)
+     entry.error = "Check timed out after 45 seconds; the subscription update may continue";
+   manual_result_.entries.push_back(std::move(entry));
+@@ -518,6 +527,9 @@ void FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage(
+     auto diagnostic = persistent_metadata_->GetDiagnostics(ongoing_installation->GetSourceUrl());
+     diagnostic.stage = DiagnosticStage::Failed;
+     diagnostic.error = "Storage or validation failed; previous filtering data retained";
++    if (diagnostic.fallback_attempted) {
++      diagnostic.fallback_outcome = "storage failed";
++    }
+     persistent_metadata_->SetDiagnostics(ongoing_installation->GetSourceUrl(), diagnostic);
+     FinishManual(ongoing_installation->GetSourceUrl(), ManualOutcome::Failed);
+     UpdatePreloadedSubscriptionProvider();
+@@ -548,6 +560,9 @@ void FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage(
+   diagnostic.last_success_source = diagnostic.source;
+   diagnostic.active_rules = diagnostic.rules;
+   diagnostic.active_privileged = diagnostic.parsed_privileged;
++  if (diagnostic.fallback_attempted) {
++    diagnostic.fallback_outcome = "activated";
++  }
+   persistent_metadata_->SetDiagnostics(identity, diagnostic);
+   FinishManual(identity, ManualOutcome::Updated);
+   RefreshAfterPolicyChange(identity);
+@@ -604,6 +619,9 @@ bool FilteringConfigurationMaintainerImpl::UninstallSubscriptionInternal(
+     auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
+     diagnostic.stage = DiagnosticStage::Cancelled;
+     diagnostic.error = "Subscription removed before activation";
++    if (diagnostic.fallback_attempted) {
++      diagnostic.fallback_outcome = "cancelled";
++    }
+     persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+     FinishManual(subscription_url, ManualOutcome::Cancelled);
+     DVLOG(1) << "[eyeo] Canceling installation of subscription "
+diff --git a/components/adblock/core/subscription/subscription_config.cc b/components/adblock/core/subscription/subscription_config.cc
+index 72dbaf5..782be4b 100644
+--- a/components/adblock/core/subscription/subscription_config.cc
++++ b/components/adblock/core/subscription/subscription_config.cc
+@@ -348,6 +348,118 @@ const std::vector<KnownSubscriptionInfo>& config::GetKnownSubscriptions() {
+   return *recommendations;
+ }
+ 
++GURL config::GetApprovedFallbackTransport(const GURL& identity) {
++  // Deliberately enumerate complete identities, including exact filenames.
++  static const base::NoDestructor<std::map<GURL, GURL>> approved(std::map<GURL,
++                                                                          GURL>{
++      {GURL("https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "abp-filters-anti-cv.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/abpindo.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "abpindo.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/abpvn.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "abpvn.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/badblock_lite.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "badblock_lite.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/"
++            "badmojr-1Hosts-master-Lite-adblock.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "badmojr-1Hosts-master-Lite-adblock.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/bulgarian_list.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "bulgarian_list.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/"
++            "dandelion_sprouts_nordic_filters.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "dandelion_sprouts_nordic_filters.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/easylist.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "easylist.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/easylistchina.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "easylistchina.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/easylistczechslovak.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "easylistczechslovak.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/easylistdutch.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "easylistdutch.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/easylistgermany.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "easylistgermany.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/easylistitaly.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "easylistitaly.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/easylistlithuania.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "easylistlithuania.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/easylistpolish.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "easylistpolish.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/easylistportuguese.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "easylistportuguese.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/easylistspanish.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "easylistspanish.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/fanboy-notifications.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "fanboy-notifications.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/fanboy-social.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "fanboy-social.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/global-filters.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "global-filters.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/hufilter.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "hufilter.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/indianlist.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "indianlist.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/israellist.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "israellist.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/japanese-filters.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "japanese-filters.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/koreanlist.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "koreanlist.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/latvianlist.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "latvianlist.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/liste_ar.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "liste_ar.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/liste_fr.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "liste_fr.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/rolist.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "rolist.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/ruadlist.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "ruadlist.txt")},
++      {GURL("https://uazo.github.io/cromite/filters/turkish-filters.txt"),
++       GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++            "turkish-filters.txt")},
++  });
++  auto found = approved->find(identity);
++  return found == approved->end() ? GURL() : found->second;
++}
++
++bool config::IsApprovedHeaderlessDomainList(const GURL& identity) {
++  return identity ==
++             GURL("https://uazo.github.io/cromite/filters/badblock_lite.txt") ||
++         identity == GURL(
++                         "https://uazo.github.io/cromite/filters/"
++                         "badmojr-1Hosts-master-Lite-adblock.txt");
++}
++
+ bool config::AllowPrivilegedFilters(const GURL& url) {
+ #if !defined(NDEBUG)
+   // Enable priviliged filters from locally hosted filter lists in debug builds.
+diff --git a/components/adblock/core/subscription/subscription_config.h b/components/adblock/core/subscription/subscription_config.h
+index 0043f48..120d49a 100644
+--- a/components/adblock/core/subscription/subscription_config.h
++++ b/components/adblock/core/subscription/subscription_config.h
+@@ -111,6 +111,10 @@ const std::vector<KnownSubscriptionInfo>& GetKnownSubscriptions();
+ // privileged filters.
+ bool AllowPrivilegedFilters(const GURL& url);
+ 
++// Exact same-list transport; invalid URL means no approved fallback.
++GURL GetApprovedFallbackTransport(const GURL& identity);
++bool IsApprovedHeaderlessDomainList(const GURL& identity);
++
+ // Returns the configuration of available preloaded subscriptions. Used by
+ // PreloadedSubscriptionProvider.
+ const std::vector<PreloadedSubscriptionInfo>&
+diff --git a/components/adblock/core/subscription/subscription_downloader_impl.cc b/components/adblock/core/subscription/subscription_downloader_impl.cc
+index 54615b2..ec4b14a 100644
+--- a/components/adblock/core/subscription/subscription_downloader_impl.cc
++++ b/components/adblock/core/subscription/subscription_downloader_impl.cc
+@@ -16,24 +16,29 @@
+  */
+ 
+ #include "components/adblock/core/subscription/subscription_downloader_impl.h"
+-#include "net/base/net_errors.h"
+ 
+ #include <algorithm>
+ #include <fstream>
+ #include <functional>
++#include <variant>
+ #include <vector>
+ 
+ #include "base/files/file_path.h"
++#include "base/files/file_util.h"
+ #include "base/functional/bind.h"
+ #include "base/functional/callback.h"
+ #include "base/strings/escape.h"
+ #include "base/strings/safe_sprintf.h"
+ #include "base/strings/strcat.h"
+ #include "base/strings/string_number_conversions.h"
++#include "base/task/thread_pool.h"
+ #include "base/time/time.h"
+ #include "base/trace_event/trace_event.h"
++#include "components/adblock/core/common/adblock_constants.h"
+ #include "components/adblock/core/common/flatbuffer_data.h"
++#include "components/adblock/core/schema/filter_list_schema_generated.h"
+ #include "components/adblock/core/subscription/subscription_config.h"
++#include "net/base/net_errors.h"
+ #include "net/base/url_util.h"
+ #include "net/http/http_response_headers.h"
+ 
+@@ -84,65 +89,146 @@ std::string ConvertBaseTimeToABPFilterVersionFormat(const base::Time& date) {
+ 
+ }  // namespace
+ 
+-SubscriptionDownloaderImpl::SubscriptionDownloaderImpl(
+-    SubscriptionRequestMaker request_maker,
+-    ConversionExecutors* conversion_executor,
+-    SubscriptionPersistentMetadata* persistent_metadata)
+-    : request_maker_(std::move(request_maker)),
+-      conversion_executor_(conversion_executor),
+-      persistent_metadata_(persistent_metadata) {}
++namespace {
++void DiscardDownloadedFile(base::FilePath file) {
++  // Real loader-owned temporary paths are absolute. Relative test stand-ins
++  // must not cause deletion of an unrelated file in the process directory.
++  if (!file.IsAbsolute()) {
++    return;
++  }
++  base::ThreadPool::PostTask(
++      FROM_HERE, {base::MayBlock()},
++      base::BindOnce([](base::FilePath path) { base::DeleteFile(path); },
++                     std::move(file)));
++}
++}  // namespace
+ 
++SubscriptionDownloaderImpl::OngoingDownload::OngoingDownload(
++    DownloadCompletedCallback finished,
++    GURL fallback_url,
++    AdblockResourceRequest::RetryPolicy retry_policy)
++    : callback(std::move(finished)),
++      fallback(std::move(fallback_url)),
++      policy(retry_policy) {}
++SubscriptionDownloaderImpl::OngoingDownload::~OngoingDownload() = default;
++SubscriptionDownloaderImpl::OngoingDownload::OngoingDownload(
++    OngoingDownload&&) = default;
++SubscriptionDownloaderImpl::OngoingDownload&
++SubscriptionDownloaderImpl::OngoingDownload::operator=(OngoingDownload&&) =
++    default;
++
++SubscriptionDownloaderImpl::SubscriptionDownloaderImpl(
++    SubscriptionRequestMaker maker,
++    ConversionExecutors* converter,
++    SubscriptionPersistentMetadata* metadata)
++    : request_maker_(std::move(maker)),
++      conversion_executor_(converter),
++      persistent_metadata_(metadata) {}
+ SubscriptionDownloaderImpl::~SubscriptionDownloaderImpl() = default;
+ 
+ void SubscriptionDownloaderImpl::StartDownload(
+-    const GURL& subscription_url,
+-    AdblockResourceRequest::RetryPolicy retry_policy,
+-    DownloadCompletedCallback on_finished) {
++    const GURL& identity,
++    AdblockResourceRequest::RetryPolicy policy,
++    DownloadCompletedCallback callback) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+-  auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
++  auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
+   diagnostic.stage = DiagnosticStage::Downloading;
++  diagnostic.source = identity.spec();
+   diagnostic.error.clear();
+-  diagnostic.source = subscription_url.spec();
+   diagnostic.downloaded = false;
+   diagnostic.parsed = false;
+   diagnostic.rules.reset();
+   diagnostic.parsed_privileged.reset();
+-  persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+-  if (!IsUrlAllowed(subscription_url)) {
+-    LOG(WARNING) << "[eyeo] Download from URL not allowed, will not download "
+-                 << subscription_url;
++  diagnostic.primary_failure.clear();
++  diagnostic.fallback_attempted = false;
++  diagnostic.fallback_outcome.clear();
++  persistent_metadata_->SetDiagnostics(identity, diagnostic);
++  if (!IsUrlAllowed(identity)) {
+     diagnostic.stage = DiagnosticStage::Failed;
+     diagnostic.error = "Subscription URL scheme not allowed";
+-    persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+-    std::move(on_finished).Run(nullptr);
++    persistent_metadata_->SetDiagnostics(identity, diagnostic);
++    std::move(callback).Run(nullptr);
++    return;
++  }
++  ongoing_downloads_.insert_or_assign(
++      identity,
++      OngoingDownload(std::move(callback),
++                      config::GetApprovedFallbackTransport(identity), policy));
++  StartTransport(identity);
++}
++
++void SubscriptionDownloaderImpl::StartTransport(const GURL& identity) {
++  auto found = ongoing_downloads_.find(identity);
++  if (found == ongoing_downloads_.end()) {
++    return;
++  }
++  auto& state = found->second;
++  state.token = base::UnguessableToken::Create();
++  state.request = request_maker_.Run();
++  if (!state.request) {
++    AbortWithWarning(found, "No subscription request available");
+     return;
+   }
++  const auto token = state.token;
++  const bool approved = state.fallback.is_valid();
++  const GURL transport = state.fallback_used ? state.fallback : identity;
++  if (approved) {
++    state.request->SetStrictTransportPolicy();
++  }
++  state.request->SetAttemptDiagnosticCallback(
++      base::BindRepeating(&SubscriptionDownloaderImpl::OnAttemptDiagnostic,
++                          weak_ptr_factory_.GetWeakPtr(), identity, token));
++  state.request->Start(
++      transport, AdblockResourceRequest::Method::GET,
++      base::BindRepeating(&SubscriptionDownloaderImpl::OnDownloadFinished,
++                          weak_ptr_factory_.GetWeakPtr(), identity, token),
++      approved ? AdblockResourceRequest::RetryPolicy::DoNotRetry : state.policy,
++      state.fallback_used ? ""
++                          : BuildSubscriptionQueryParams(
++                                identity, persistent_metadata_, false));
++  // A synchronous terminal response can erase this request and start another.
++}
+ 
+-  ongoing_downloads_[subscription_url] =
+-      OngoingDownload{request_maker_.Run(), std::move(on_finished), base::UnguessableToken::Create()};
+-  std::get<ResourceRequestPtr>(ongoing_downloads_[subscription_url])->SetAttemptDiagnosticCallback(
+-      base::BindRepeating(&SubscriptionDownloaderImpl::OnAttemptDiagnostic, weak_ptr_factory_.GetWeakPtr(), subscription_url));
+-  std::get<ResourceRequestPtr>(ongoing_downloads_[subscription_url])
+-      ->Start(
+-          subscription_url, AdblockResourceRequest::Method::GET,
+-          base::BindRepeating(&SubscriptionDownloaderImpl::OnDownloadFinished,
+-                              weak_ptr_factory_.GetWeakPtr()),
+-          retry_policy,
+-          BuildSubscriptionQueryParams(subscription_url, persistent_metadata_,
+-                                       false));
++bool SubscriptionDownloaderImpl::TryFallback(const GURL& identity,
++                                             const std::string& failure) {
++  auto found = ongoing_downloads_.find(identity);
++  if (found == ongoing_downloads_.end() || !found->second.fallback.is_valid() ||
++      found->second.fallback_used) {
++    return false;
++  }
++  found->second.fallback_used = true;
++  auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
++  diagnostic.primary_failure = failure;
++  diagnostic.fallback_attempted = true;
++  diagnostic.fallback_outcome = "in progress";
++  diagnostic.source = found->second.fallback.spec();
++  diagnostic.error.clear();
++  diagnostic.downloaded = false;
++  diagnostic.parsed = false;
++  diagnostic.rules.reset();
++  diagnostic.parsed_privileged.reset();
++  diagnostic.stage = DiagnosticStage::Downloading;
++  persistent_metadata_->SetDiagnostics(identity, diagnostic);
++  StartTransport(identity);
++  return true;
+ }
+ 
+-void SubscriptionDownloaderImpl::CancelDownload(const GURL& subscription_url) {
+-  LOG(WARNING) << "[eyeo] Download cancelled: "
+-                << subscription_url;
++void SubscriptionDownloaderImpl::CancelDownload(const GURL& identity) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+-  if (ongoing_downloads_.contains(subscription_url)) {
+-    auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
+-    diagnostic.stage = DiagnosticStage::Cancelled;
+-    diagnostic.error = "Download cancelled";
+-    persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
++  if (!ongoing_downloads_.contains(identity)) {
++    return;
++  }
++  auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
++  diagnostic.stage = DiagnosticStage::Cancelled;
++  diagnostic.error = "Download cancelled";
++  if (diagnostic.fallback_attempted) {
++    diagnostic.fallback_outcome = "cancelled";
+   }
+-  ongoing_downloads_.erase(subscription_url);
++  persistent_metadata_->SetDiagnostics(identity, diagnostic);
++  ongoing_downloads_.erase(identity);
++  // Cancellation remains owned by the maintainer/manual batch. Destroying the
++  // request suppresses its download callback; later conversion tokens are
++  // stale.
+ }
+ 
+ void SubscriptionDownloaderImpl::DoHeadRequest(
+@@ -197,7 +283,16 @@ void SubscriptionDownloaderImpl::OnHeadersOnlyDownloaded(
+ }
+ 
+ void SubscriptionDownloaderImpl::OnAttemptDiagnostic(
+-    const GURL& identity, const GURL& source, int net_error, int http_status, bool retrying) {
++    GURL identity,
++    base::UnguessableToken token,
++    const GURL& source,
++    int net_error,
++    int http_status,
++    bool retrying) {
++  auto found = ongoing_downloads_.find(identity);
++  if (found == ongoing_downloads_.end() || found->second.token != token) {
++    return;
++  }
+   auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
+   diagnostic.source = source.spec();
+   if (http_status >= 400) diagnostic.error = "HTTP " + std::to_string(http_status);
+@@ -208,139 +303,167 @@ void SubscriptionDownloaderImpl::OnAttemptDiagnostic(
+ }
+ 
+ void SubscriptionDownloaderImpl::OnDownloadFinished(
+-    const GURL& subscription_url,
+-    base::FilePath downloaded_file,
++    GURL identity,
++    base::UnguessableToken token,
++    const GURL&,
++    base::FilePath file,
+     scoped_refptr<net::HttpResponseHeaders> headers) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+-
+-  auto download_it = ongoing_downloads_.find(subscription_url);
+-  DCHECK(download_it != ongoing_downloads_.end());
+-
+-  if (downloaded_file.empty()) {
+-    auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
+-    diagnostic.stage = DiagnosticStage::Failed;
+-    if (diagnostic.error.empty()) diagnostic.error = headers ? "HTTP " + std::to_string(headers->response_code()) : "Network failure";
+-    persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+-    persistent_metadata_->IncrementDownloadErrorCount(subscription_url);
+-    LOG(WARNING) << "[eyeo] Failed to retrieve content for "
+-                  << subscription_url << ", will abort";
+-    auto callback =
+-        std::move(std::get<DownloadCompletedCallback>(download_it->second));
+-    ongoing_downloads_.erase(download_it);
+-    std::move(callback).Run(nullptr);
++  auto found = ongoing_downloads_.find(identity);
++  if (found == ongoing_downloads_.end() || found->second.token != token) {
++    DiscardDownloadedFile(std::move(file));
+     return;
+   }
+-
+-  VLOG(1) << "[eyeo] Finished downloading " << subscription_url
+-          << ", starting conversion";
+-
+-  TRACE_EVENT_NESTABLE_ASYNC_BEGIN1(
+-      "eyeo", "Converting subscription",
+-      TRACE_ID_LOCAL(GenerateTraceId(subscription_url)), "url",
+-      subscription_url.spec());
+-
+-  auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
++  const bool approved = found->second.fallback.is_valid();
++  if (file.empty() ||
++      (approved && (!headers || headers->response_code() != 200))) {
++    DiscardDownloadedFile(std::move(file));
++    const auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
++    AbortWithWarning(found,
++                     !diagnostic.error.empty() ? diagnostic.error
++                     : headers && headers->response_code() != 200
++                         ? "HTTP " + std::to_string(headers->response_code())
++                         : "No downloaded filter data");
++    return;
++  }
++  std::string mime;
++  if (approved && headers->GetMimeType(&mime) && mime == "text/html") {
++    DiscardDownloadedFile(std::move(file));
++    AbortWithWarning(found, "Approved filter transport returned HTML");
++    return;
++  }
++  auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
+   diagnostic.downloaded = true;
++  diagnostic.parsed = false;
+   diagnostic.error.clear();
+   diagnostic.stage = DiagnosticStage::Downloaded;
+-  persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+-  bool allow_privileged_filter =
+-    persistent_metadata_->AllowPrivilegedFilters(subscription_url);
++  persistent_metadata_->SetDiagnostics(identity, diagnostic);
++  const bool privilege = persistent_metadata_->AllowPrivilegedFilters(identity);
++  TRACE_EVENT_NESTABLE_ASYNC_BEGIN1("eyeo", "Converting subscription",
++                                    TRACE_ID_LOCAL(GenerateTraceId(identity)),
++                                    "url", identity.spec());
+   conversion_executor_->ConvertFilterListFile(
+-      subscription_url, downloaded_file, allow_privileged_filter,
++      identity, file, privilege,
+       base::BindOnce(&SubscriptionDownloaderImpl::OnConversionFinished,
+-                     weak_ptr_factory_.GetWeakPtr(), subscription_url,
+-                     std::get<base::UnguessableToken>(download_it->second),
+-                     allow_privileged_filter));
++                     weak_ptr_factory_.GetWeakPtr(), identity, token,
++                     privilege));
++  // Conversion owns removal of its input file on every result path.
+ }
+ 
+ void SubscriptionDownloaderImpl::OnConversionFinished(
+-    const GURL& subscription_url,
++    GURL identity,
+     base::UnguessableToken token,
+     bool converted_privileged,
+-    ConversionResult converter_result) {
++    ConversionResult result) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+-  TRACE_EVENT_NESTABLE_ASYNC_END0(
+-      "eyeo", "Converting subscription",
+-      TRACE_ID_LOCAL(GenerateTraceId(subscription_url)));
+-  const auto download_it = ongoing_downloads_.find(subscription_url);
+-  if (download_it == ongoing_downloads_.end() || std::get<base::UnguessableToken>(download_it->second) != token) {
+-    LOG(WARNING) << "[eyeo] Conversion result discarded, subscription download "
+-               "was cancelled.";
++  TRACE_EVENT_NESTABLE_ASYNC_END0("eyeo", "Converting subscription",
++                                  TRACE_ID_LOCAL(GenerateTraceId(identity)));
++  auto found = ongoing_downloads_.find(identity);
++  if (found == ongoing_downloads_.end() || found->second.token != token) {
+     return;
+   }
+-
+   if (converted_privileged !=
+-      persistent_metadata_->AllowPrivilegedFilters(subscription_url)) {
++      persistent_metadata_->AllowPrivilegedFilters(identity)) {
+     AbortWithWarning(
+-        download_it,
+-        "Advanced filtering policy changed; converted data discarded");
++        found, "Advanced filtering policy changed; converted data discarded",
++        false);
+     return;
+   }
+-
+-  if (absl::holds_alternative<std::unique_ptr<FlatbufferData>>(
+-          converter_result)) {
+-    auto& data = absl::get<std::unique_ptr<FlatbufferData>>(converter_result);
+-    auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
+-    diagnostic.parsed = data != nullptr;
+-    diagnostic.parsed_privileged = converted_privileged;
+-    diagnostic.stage = data ? DiagnosticStage::Parsed : DiagnosticStage::Failed;
+-    diagnostic.rules = data ? data->GetRuleStatistics() : std::nullopt;
+-    if (!data) diagnostic.error = "Converter returned no filter data";
+-    persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+-    LOG(WARNING) << "[eyeo] Finished converting " << subscription_url
+-            << " successfully";
+-    auto callback =
+-        std::move(std::get<DownloadCompletedCallback>(download_it->second));
+-    ongoing_downloads_.erase(download_it);
+-    std::move(callback).Run(std::move(data));
+-  } else if (absl::holds_alternative<GURL>(converter_result)) {
+-    const GURL& redirect_url = absl::get<GURL>(converter_result);
+-    if (!IsUrlAllowed(redirect_url)) {
+-      AbortWithWarning(download_it, "Redirect URL not allowed.");
++  if (auto* data = std::get_if<std::unique_ptr<FlatbufferData>>(&result)) {
++    if (!*data || !(*data)->data()) {
++      AbortWithWarning(found, "Converter returned no filter data");
++      return;
++    }
++    flatbuffers::Verifier verifier((*data)->data(), (*data)->size());
++    if (!flat::VerifySubscriptionBuffer(verifier)) {
++      AbortWithWarning(found, "Converted filter data failed validation");
++      return;
++    }
++    const auto* metadata = flat::GetSubscription((*data)->data())->metadata();
++    if (!metadata || !metadata->url() ||
++        GURL(metadata->url()->str()) != identity ||
++        !metadata->flatbuffers_schema_version() ||
++        metadata->flatbuffers_schema_version()->str() !=
++            CurrentSchemaVersion()) {
++      AbortWithWarning(found,
++                       "Converted subscription identity or schema mismatch");
+       return;
+     }
+-    if (redirect_url == subscription_url) {
+-      AbortWithWarning(download_it,
+-                       "Redirect to the same URL is not permitted.");
++    const auto rules = (*data)->GetRuleStatistics();
++    if (found->second.fallback.is_valid() && (!rules || rules->accepted <= 0)) {
++      AbortWithWarning(found,
++                       "Approved list contains no supported filter rules");
+       return;
+     }
+-    if (std::get<ResourceRequestPtr>(download_it->second)
+-            ->GetNumberOfRedirects() >= kMaxNumberOfRedirects) {
+-      AbortWithWarning(download_it, "Maximum number of redirects exceeded.");
+-    } else {
+-      auto ongoing_download = ongoing_downloads_.extract(download_it);
+-      ongoing_download.key() = redirect_url;
+-      auto redirected_download_it =
+-          ongoing_downloads_.insert(std::move(ongoing_download)).position;
+-      std::get<ResourceRequestPtr>(redirected_download_it->second)
+-          ->Redirect(redirect_url,
+-                     BuildSubscriptionQueryParams(redirect_url,
+-                                                  persistent_metadata_, false));
++    auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
++    diagnostic.parsed = true;
++    diagnostic.parsed_privileged = converted_privileged;
++    diagnostic.rules = rules;
++    diagnostic.error.clear();
++    diagnostic.stage = DiagnosticStage::Parsed;
++    if (found->second.fallback_used) {
++      diagnostic.fallback_outcome = "parsed; awaiting storage";
+     }
+-  } else {
+-    persistent_metadata_->IncrementDownloadErrorCount(subscription_url);
+-    AbortWithWarning(download_it,
+-                     *absl::get<ConversionError>(converter_result));
++    persistent_metadata_->SetDiagnostics(identity, diagnostic);
++    auto callback = std::move(found->second.callback);
++    ongoing_downloads_.erase(found);
++    std::move(callback).Run(std::move(*data));
+     return;
+   }
++  if (auto* redirect = std::get_if<GURL>(&result)) {
++    if (found->second.fallback.is_valid()) {
++      AbortWithWarning(
++          found, "Filter-declared redirect rejected for approved subscription");
++      return;
++    }
++    if (!IsUrlAllowed(*redirect) || *redirect == identity ||
++        ongoing_downloads_.contains(*redirect) ||
++        ++found->second.redirects > kMaxNumberOfRedirects ||
++        (!config::AllowPrivilegedFilters(identity) &&
++         config::AllowPrivilegedFilters(*redirect))) {
++      AbortWithWarning(found,
++                       "Subscription redirect is unsafe, repeated or changes "
++                       "privilege identity");
++      return;
++    }
++    // Keep legacy nonprivileged custom redirects without granting them a new
++    // approved fallback. A fresh generation rejects the old transport callback.
++    auto node = ongoing_downloads_.extract(found);
++    const GURL target = *redirect;
++    node.key() = target;
++    ongoing_downloads_.insert(std::move(node));
++    StartTransport(target);
++    return;
++  }
++  AbortWithWarning(found, *absl::get<ConversionError>(result));
+ }
+ 
+ void SubscriptionDownloaderImpl::AbortWithWarning(
+-    const OngoingDownloadsIt ongoing_download_it,
+-    const std::string& warning) {
+-  if (ongoing_download_it == ongoing_downloads_.end()) {
++    const OngoingDownloadsIt found,
++    const std::string& warning,
++    bool allow_fallback) {
++  if (found == ongoing_downloads_.end()) {
++    return;
++  }
++  const GURL identity = found->first;
++  if (allow_fallback && TryFallback(identity, warning)) {
+     return;
+   }
+-  auto diagnostic = persistent_metadata_->GetDiagnostics(ongoing_download_it->first);
++  auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
+   diagnostic.stage = DiagnosticStage::Failed;
+-  diagnostic.error = "Conversion/redirect: " + warning;
+-  persistent_metadata_->SetDiagnostics(ongoing_download_it->first, diagnostic);
+-  LOG(WARNING) << "[eyeo] " << warning << " Aborting download of "
+-                << ongoing_download_it->first;
+-  auto callback = std::move(
+-      std::get<DownloadCompletedCallback>(ongoing_download_it->second));
+-  ongoing_downloads_.erase(ongoing_download_it);
++  diagnostic.error = warning;
++  if (diagnostic.fallback_attempted) {
++    diagnostic.fallback_outcome = "failed";
++  }
++  persistent_metadata_->SetDiagnostics(identity, diagnostic);
++  // Count one logical failed update, not one failure per transport. A
++  // preference change invalidates a conversion without becoming a network
++  // failure count.
++  if (allow_fallback) {
++    persistent_metadata_->IncrementDownloadErrorCount(identity);
++  }
++  auto callback = std::move(found->second.callback);
++  ongoing_downloads_.erase(found);
+   std::move(callback).Run(nullptr);
+ }
+ 
+diff --git a/components/adblock/core/subscription/subscription_downloader_impl.h b/components/adblock/core/subscription/subscription_downloader_impl.h
+index 48c09a4..5af9e5e 100644
+--- a/components/adblock/core/subscription/subscription_downloader_impl.h
++++ b/components/adblock/core/subscription/subscription_downloader_impl.h
+@@ -61,8 +61,21 @@ class SubscriptionDownloaderImpl final : public SubscriptionDownloader {
+  private:
+   using ResourceRequestPtr = std::unique_ptr<AdblockResourceRequest>;
+   // Represents subscription downloads in progress.
+-  using OngoingDownload =
+-      std::tuple<ResourceRequestPtr, DownloadCompletedCallback, base::UnguessableToken>;
++  struct OngoingDownload {
++    OngoingDownload(DownloadCompletedCallback callback,
++                    GURL fallback,
++                    AdblockResourceRequest::RetryPolicy policy);
++    ~OngoingDownload();
++    OngoingDownload(OngoingDownload&&);
++    OngoingDownload& operator=(OngoingDownload&&);
++    ResourceRequestPtr request;
++    DownloadCompletedCallback callback;
++    base::UnguessableToken token;
++    GURL fallback;
++    bool fallback_used = false;
++    int redirects = 0;
++    AdblockResourceRequest::RetryPolicy policy;
++  };
+   using OngoingDownloads = std::map<GURL, OngoingDownload>;
+   using OngoingDownloadsIt = OngoingDownloads::iterator;
+   // There's never more than one concurrent HEAD request - for the
+@@ -73,20 +86,29 @@ class SubscriptionDownloaderImpl final : public SubscriptionDownloader {
+ 
+   bool IsUrlAllowed(const GURL& subscription_url) const;
+   bool IsConnectionAllowed() const;
+-  void OnDownloadFinished(const GURL& subscription_url,
++  void StartTransport(const GURL& identity);
++  bool TryFallback(const GURL& identity, const std::string& failure);
++  void OnDownloadFinished(GURL identity,
++                          base::UnguessableToken token,
++                          const GURL& transport,
+                           base::FilePath downloaded_file,
+                           scoped_refptr<net::HttpResponseHeaders> headers);
+   void OnHeadersOnlyDownloaded(const GURL& subscription_url,
+                                base::FilePath downloaded_file,
+                                scoped_refptr<net::HttpResponseHeaders> headers);
+-  void OnConversionFinished(const GURL& subscription_url,
++  void OnConversionFinished(GURL subscription_url,
+                             base::UnguessableToken token,
+                             bool converted_privileged,
+                             ConversionResult converter_result);
+-  void OnAttemptDiagnostic(const GURL& identity, const GURL& source,
+-                           int net_error, int http_status, bool retrying);
++  void OnAttemptDiagnostic(GURL identity,
++                           base::UnguessableToken token,
++                           const GURL& source,
++                           int net_error,
++                           int http_status,
++                           bool retrying);
+   void AbortWithWarning(const OngoingDownloadsIt ongoing_download_it,
+-                        const std::string& warning);
++                        const std::string& warning,
++                        bool allow_fallback = true);
+ 
+   SEQUENCE_CHECKER(sequence_checker_);
+   SubscriptionRequestMaker request_maker_;
+diff --git a/components/adblock/core/subscription/subscription_persistent_metadata.h b/components/adblock/core/subscription/subscription_persistent_metadata.h
+index e5d9349..23fe33d 100644
+--- a/components/adblock/core/subscription/subscription_persistent_metadata.h
++++ b/components/adblock/core/subscription/subscription_persistent_metadata.h
+@@ -38,6 +38,9 @@ struct SubscriptionDiagnostics {
+   bool parsed = false;
+   std::string error;
+   std::string source;
++  std::string primary_failure;
++  bool fallback_attempted = false;
++  std::string fallback_outcome;
+   base::Time last_success;
+   std::string last_success_source;
+   std::optional<RuleStatistics> rules;
+diff --git a/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc b/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
+index 6ae697b..6b69716 100644
+--- a/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
++++ b/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
+@@ -206,6 +206,10 @@ void SubscriptionPersistentMetadataImpl::SetDiagnostics(
+   if (data.source.rfind("data:", 0) == 0) data.source = "Inline subscription (contents omitted)";
+   if (data.last_success_source.rfind("data:", 0) == 0) data.last_success_source = "Inline subscription (contents omitted)";
+   data.error.resize(std::min(data.error.size(), size_t{160}));
++  data.primary_failure.resize(
++      std::min(data.primary_failure.size(), size_t{160}));
++  data.fallback_outcome.resize(
++      std::min(data.fallback_outcome.size(), size_t{32}));
+   data.source.resize(std::min(data.source.size(), size_t{2048}));
+   data.last_success_source.resize(std::min(data.last_success_source.size(), size_t{2048}));
+   metadata_map_[url].diagnostics = std::move(data);
+@@ -242,6 +246,9 @@ void SubscriptionPersistentMetadataImpl::UpdatePrefs() {
+       }
+       details.Set("error", diagnostic.error);
+       details.Set("source", diagnostic.source);
++      details.Set("primary_failure", diagnostic.primary_failure);
++      details.Set("fallback_attempted", diagnostic.fallback_attempted);
++      details.Set("fallback_outcome", diagnostic.fallback_outcome);
+       details.Set("last_success", TimeToValue(diagnostic.last_success));
+       details.Set("last_success_source", diagnostic.last_success_source);
+       if (diagnostic.rules) details.Set("rules", StatisticsToDict(*diagnostic.rules));
+@@ -292,6 +299,14 @@ void SubscriptionPersistentMetadataImpl::LoadFromPrefs() {
+       diagnostic.parsed = details->FindBool("parsed").value_or(false);
+       diagnostic.parsed_privileged = details->FindBool("parsed_privileged");
+       diagnostic.active_privileged = details->FindBool("active_privileged");
++      if (const auto* error = details->FindString("primary_failure")) {
++        diagnostic.primary_failure = error->substr(0, 160);
++      }
++      diagnostic.fallback_attempted =
++          details->FindBool("fallback_attempted").value_or(false);
++      if (const auto* outcome = details->FindString("fallback_outcome")) {
++        diagnostic.fallback_outcome = outcome->substr(0, 32);
++      }
+       if (const auto* error = details->FindString("error")) diagnostic.error = error->substr(0, 160);
+       if (const auto* source = details->FindString("source")) diagnostic.source = source->substr(0, 2048);
+       if (const auto* source = details->FindString("last_success_source")) diagnostic.last_success_source = source->substr(0, 2048);
+@@ -302,6 +317,9 @@ void SubscriptionPersistentMetadataImpl::LoadFromPrefs() {
+           diagnostic.stage == DiagnosticStage::Parsed || diagnostic.stage == DiagnosticStage::Retrying) {
+         diagnostic.stage = DiagnosticStage::Interrupted;
+         diagnostic.error = "Previous attempt interrupted before activation";
++        if (diagnostic.fallback_attempted) {
++          diagnostic.fallback_outcome = "interrupted";
++        }
+       }
+     }
+     metadata_map_.emplace(dict_item.first, std::move(subscription));
+diff --git a/components/adblock/core/subscription/subscription_update_result.h b/components/adblock/core/subscription/subscription_update_result.h
+index c4501a9..b3dc0e3 100644
+--- a/components/adblock/core/subscription/subscription_update_result.h
++++ b/components/adblock/core/subscription/subscription_update_result.h
+@@ -13,6 +13,9 @@ struct UpdateCheckEntry {
+   // 0 activated, 1 failed, 2 cancelled, 3 timed out; -1 unknown.
+   int outcome = -1;
+   std::string error;
++  std::string primary_failure;
++  bool fallback_attempted = false;
++  std::string fallback_outcome;
+ };
+ struct UpdateCheckResult {
+   int batch_id = 0;
+diff --git a/components/adblock/test/shields_diagnostics_unittest.cc b/components/adblock/test/shields_diagnostics_unittest.cc
+index ee61174..4062be6 100644
+--- a/components/adblock/test/shields_diagnostics_unittest.cc
++++ b/components/adblock/test/shields_diagnostics_unittest.cc
+@@ -6,11 +6,14 @@
+ #include <utility>
+ #include <vector>
+ 
++#include "base/files/file_util.h"
++#include "base/files/scoped_temp_dir.h"
+ #include "base/functional/bind.h"
+ #include "base/json/json_writer.h"
+ #include "base/no_destructor.h"
+ #include "base/test/bind.h"
+ #include "base/test/task_environment.h"
++#include "components/adblock/core/common/adblock_constants.h"
+ #include "components/adblock/core/common/adblock_prefs.h"
+ #include "components/adblock/core/common/task_scheduler.h"
+ #include "components/adblock/core/configuration/persistent_filtering_configuration.h"
+@@ -25,10 +28,15 @@
+ #include "components/prefs/testing_pref_service.h"
+ #include "net/base/net_errors.h"
+ #include "net/http/http_response_headers.h"
++#include "net/http/http_util.h"
+ #include "testing/gtest/include/gtest/gtest.h"
+ 
+ namespace adblock {
+ namespace {
++scoped_refptr<net::HttpResponseHeaders> Headers(std::string_view block) {
++  return base::MakeRefCounted<net::HttpResponseHeaders>(
++      net::HttpUtil::AssembleRawHeaders(block));
++}
+ const GURL& TestUrl() { static const base::NoDestructor<GURL> url("https://uazo.github.io/cromite/filters/easylist.txt"); return *url; }
+ const GURL& TrustedUrl() { static const base::NoDestructor<GURL> url("https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt"); return *url; }
+ 
+@@ -98,13 +106,20 @@ class Scheduler : public TaskScheduler {
+ class DeferredConversion : public ConversionExecutors {
+  public:
+   mutable std::vector<base::OnceCallback<void(ConversionResult)>> callbacks;
++  mutable std::vector<GURL> identities;
++  mutable std::vector<bool> privileges;
+   scoped_refptr<InstalledSubscription> ConvertCustomFilters(const std::vector<std::string>& filters) const override {
+     auto data = base::MakeRefCounted<FlatbufferConverter>()->Convert(filters, GURL("adblock:custom"), false);
+     return base::MakeRefCounted<InstalledSubscriptionImpl>(std::move(data),
+         Subscription::InstallationState::Installed, base::Time::Now());
+   }
+-  void ConvertFilterListFile(const GURL&, const base::FilePath&, bool,
++  void ConvertFilterListFile(
++      const GURL& identity,
++      const base::FilePath&,
++      bool privilege,
+       base::OnceCallback<void(ConversionResult)> callback) const override {
++    identities.push_back(identity);
++    privileges.push_back(privilege);
+     callbacks.push_back(std::move(callback));
+   }
+ };
+@@ -423,7 +438,13 @@ class Resource : public AdblockResourceRequest {
+  public:
+   GURL url;
+   ResponseCallback response;
+-  void Start(GURL u, Method, ResponseCallback cb, RetryPolicy, const std::string) override {
++  RetryPolicy policy;
++  void Start(GURL u,
++             Method,
++             ResponseCallback cb,
++             RetryPolicy retry_policy,
++             const std::string) override {
++    policy = retry_policy;
+     url = u;
+     response = std::move(cb);
+   }
+@@ -432,11 +453,12 @@ class Resource : public AdblockResourceRequest {
+   void FailHttp() {
+     auto cb = response;
+     NotifyAttemptDiagnostic(url, net::ERR_HTTP_RESPONSE_CODE_FAILURE, 404, false);
+-    cb.Run(url, {}, base::MakeRefCounted<net::HttpResponseHeaders>("HTTP/1.1 404 Not Found\r\n\r\n"));
++    cb.Run(url, {}, Headers("HTTP/1.1 404 Not Found\r\n\r\n"));
+   }
+   void Deliver() {
+     auto cb = response;
+-    cb.Run(url, base::FilePath(FILE_PATH_LITERAL("fixture.txt")), nullptr);
++    cb.Run(url, base::FilePath(FILE_PATH_LITERAL("fixture.txt")),
++           Headers("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n"));
+   }
+ };
+ 
+@@ -451,10 +473,17 @@ TEST_F(ShieldsLifecycleTest, HttpFailureHasReasonAndDoesNotClaimParsedOrActive)
+   downloader.StartDownload(TestUrl(), AdblockResourceRequest::RetryPolicy::DoNotRetry,
+       base::BindLambdaForTesting([&failures](std::unique_ptr<FlatbufferData> data) { EXPECT_FALSE(data); ++failures; }));
+   request->FailHttp();
++  EXPECT_EQ(0, failures);
++  EXPECT_EQ(config::GetApprovedFallbackTransport(TestUrl()), request->url);
++  request->FailHttp();
+   EXPECT_EQ(1, failures);
+   const auto d = metadata->GetDiagnostics(TestUrl());
+   EXPECT_EQ(DiagnosticStage::Failed, d.stage);
+   EXPECT_EQ("HTTP 404", d.error);
++  EXPECT_EQ("HTTP 404", d.primary_failure);
++  EXPECT_TRUE(d.fallback_attempted);
++  EXPECT_EQ("failed", d.fallback_outcome);
++  EXPECT_EQ(1, metadata->GetDownloadErrorCount(TestUrl()));
+   EXPECT_FALSE(d.downloaded);
+   EXPECT_FALSE(d.parsed);
+   EXPECT_TRUE(d.last_success.is_null());
+@@ -595,6 +624,366 @@ TEST_F(ShieldsLifecycleTest, ConversionPolicyHistorySurvivesReload) {
+             reloaded.GetDiagnostics(TrustedUrl()).active_privileged);
+ }
+ 
++class ShieldsFallbackTest : public ShieldsLifecycleTest {
++ public:
++  Resource* request = nullptr;
++  int transports = 0;
++  int finished = 0;
++  std::unique_ptr<FlatbufferData> received;
++  std::unique_ptr<SubscriptionDownloaderImpl> downloader;
++
++  void SetUp() override {
++    ShieldsLifecycleTest::SetUp();
++    downloader = std::make_unique<SubscriptionDownloaderImpl>(
++        base::BindLambdaForTesting(
++            [this]() -> std::unique_ptr<AdblockResourceRequest> {
++              auto resource = std::make_unique<Resource>();
++              request = resource.get();
++              ++transports;
++              return resource;
++            }),
++        &conversion, metadata.get());
++  }
++  void Start(const GURL& url = TestUrl()) {
++    downloader->StartDownload(
++        url, AdblockResourceRequest::RetryPolicy::RetryUntilSucceeded,
++        base::BindLambdaForTesting(
++            [this](std::unique_ptr<FlatbufferData> data) {
++              received = std::move(data);
++              ++finished;
++            }));
++  }
++  void Convert(size_t index, const GURL& identity = TestUrl()) {
++    ASSERT_LT(index, conversion.callbacks.size());
++    std::move(conversion.callbacks[index]).Run(Data(identity));
++  }
++};
++
++TEST_F(ShieldsFallbackTest, PrimarySuccessDoesNotRequestFallback) {
++  Start();
++  EXPECT_TRUE(request->UsesStrictTransportPolicy());
++  EXPECT_EQ(AdblockResourceRequest::RetryPolicy::DoNotRetry, request->policy);
++  request->Deliver();
++  Convert(0);
++  EXPECT_EQ(1, transports);
++  EXPECT_EQ(1, finished);
++  ASSERT_TRUE(received);
++  EXPECT_FALSE(metadata->GetDiagnostics(TestUrl()).fallback_attempted);
++  EXPECT_EQ(TestUrl(), conversion.identities[0]);
++}
++
++TEST_F(ShieldsFallbackTest, HttpFailureUsesOneFallbackWithCanonicalIdentity) {
++  Start(TrustedUrl());
++  request->FailHttp();
++  EXPECT_EQ(0, finished);
++  EXPECT_EQ(2, transports);
++  EXPECT_EQ(config::GetApprovedFallbackTransport(TrustedUrl()), request->url);
++  EXPECT_TRUE(request->UsesStrictTransportPolicy());
++  EXPECT_EQ(AdblockResourceRequest::RetryPolicy::DoNotRetry, request->policy);
++  request->Deliver();
++  EXPECT_EQ(TrustedUrl(), conversion.identities[0]);
++  EXPECT_TRUE(conversion.privileges[0]);
++  Convert(0, TrustedUrl());
++  EXPECT_EQ(1, finished);
++  ASSERT_TRUE(received);
++  const auto d = metadata->GetDiagnostics(TrustedUrl());
++  EXPECT_EQ("HTTP 404", d.primary_failure);
++  EXPECT_EQ("parsed; awaiting storage", d.fallback_outcome);
++  EXPECT_EQ(config::GetApprovedFallbackTransport(TrustedUrl()).spec(),
++            d.source);
++  EXPECT_TRUE(d.last_success.is_null());
++  EXPECT_EQ(0, metadata->GetDownloadErrorCount(TrustedUrl()));
++}
++
++TEST_F(ShieldsFallbackTest,
++       BothTransportsFailOnceAndNextUpdateStartsAtPrimary) {
++  Start();
++  request->FailHttp();
++  request->FailHttp();
++  EXPECT_EQ(2, transports);
++  EXPECT_EQ(1, finished);
++  EXPECT_FALSE(received);
++  EXPECT_EQ(1, metadata->GetDownloadErrorCount(TestUrl()));
++  tasks.FastForwardBy(base::Hours(24));
++  EXPECT_EQ(2, transports);
++  Start();
++  EXPECT_EQ(TestUrl(), request->url);
++  EXPECT_FALSE(metadata->GetDiagnostics(TestUrl()).fallback_attempted);
++  EXPECT_TRUE(metadata->GetDiagnostics(TestUrl()).primary_failure.empty());
++}
++
++TEST_F(ShieldsFallbackTest,
++       StalePrimaryCannotConvertAndItsTemporaryFileIsRemoved) {
++  Start();
++  auto stale = request->response;
++  request->FailHttp();
++  base::ScopedTempDir temporary;
++  ASSERT_TRUE(temporary.CreateUniqueTempDir());
++  const auto file = temporary.GetPath().AppendASCII("owned-stale.txt");
++  ASSERT_TRUE(base::WriteFile(file, "owned fixture"));
++  stale.Run(TestUrl(), file, Headers("HTTP/1.1 200 OK\r\n\r\n"));
++  tasks.RunUntilIdle();
++  EXPECT_FALSE(base::PathExists(file));
++  EXPECT_TRUE(conversion.callbacks.empty());
++  EXPECT_EQ(0, finished);
++  request->Deliver();
++  Convert(0);
++  EXPECT_EQ(1, finished);
++}
++
++TEST_F(ShieldsFallbackTest,
++       CancelFallbackSuppressesItsResponseAndReplacementIsIndependent) {
++  Start();
++  request->FailHttp();
++  auto stale = request->response;
++  downloader->CancelDownload(TestUrl());
++  EXPECT_EQ("cancelled", metadata->GetDiagnostics(TestUrl()).fallback_outcome);
++  Start();
++  stale.Run(config::GetApprovedFallbackTransport(TestUrl()), {}, nullptr);
++  EXPECT_EQ(DiagnosticStage::Downloading,
++            metadata->GetDiagnostics(TestUrl()).stage);
++  EXPECT_EQ(3, transports);
++  EXPECT_EQ(0, finished);
++  request->Deliver();
++  Convert(0);
++  EXPECT_EQ(1, finished);
++}
++
++TEST_F(ShieldsFallbackTest,
++       ConversionFailureAndMalformedBuffersNeverActivatePrimary) {
++  Start();
++  request->Deliver();
++  std::move(conversion.callbacks[0])
++      .Run(ConversionError("Invalid downloaded content"));
++  EXPECT_EQ(2, transports);
++  EXPECT_EQ(0, finished);
++  request->Deliver();
++  std::move(conversion.callbacks[1])
++      .Run(std::make_unique<InMemoryFlatbufferData>("invalid FlatBuffers"));
++  EXPECT_EQ(1, finished);
++  EXPECT_FALSE(received);
++  EXPECT_EQ(1, metadata->GetDownloadErrorCount(TestUrl()));
++  EXPECT_EQ("Invalid downloaded content",
++            metadata->GetDiagnostics(TestUrl()).primary_failure);
++}
++
++TEST_F(ShieldsFallbackTest,
++       EmbeddedIdentityMismatchFallsBackWithoutChangingSelection) {
++  Start();
++  request->Deliver();
++  Convert(0, GURL("https://example.com/wrong-identity.txt"));
++  EXPECT_EQ(2, transports);
++  EXPECT_EQ(0, finished);
++  EXPECT_TRUE(configuration->IsFilterListPresent(TestUrl()));
++  request->Deliver();
++  Convert(1);
++  EXPECT_EQ(1, finished);
++  EXPECT_TRUE(received);
++}
++
++TEST_F(ShieldsFallbackTest, MetadataRedirectCannotChangeApprovedIdentity) {
++  Start();
++  request->Deliver();
++  std::move(conversion.callbacks[0])
++      .Run(GURL("https://example.com/other-list.txt"));
++  EXPECT_EQ(2, transports);
++  request->Deliver();
++  std::move(conversion.callbacks[1]).Run(TrustedUrl());
++  EXPECT_EQ(2, transports);
++  EXPECT_EQ(1, finished);
++  EXPECT_FALSE(received);
++  EXPECT_TRUE(metadata->GetDiagnostics(TrustedUrl()).source.empty());
++}
++
++TEST_F(ShieldsFallbackTest,
++       UnknownRedirectCannotGainTrustedIdentityOrFallback) {
++  const GURL unknown("https://example.com/custom.txt");
++  Start(unknown);
++  EXPECT_FALSE(request->UsesStrictTransportPolicy());
++  request->Deliver();
++  EXPECT_FALSE(conversion.privileges[0]);
++  std::move(conversion.callbacks[0]).Run(TrustedUrl());
++  EXPECT_EQ(1, transports);
++  EXPECT_EQ(1, finished);
++  EXPECT_FALSE(received);
++}
++
++TEST_F(ShieldsFallbackTest,
++       LiveOptOutDuringFallbackConversionCannotInstallPrivilegedData) {
++  Start(TrustedUrl());
++  request->FailHttp();
++  request->Deliver();
++  prefs.SetBoolean(common::prefs::kAllowPrivilegedFilters, false);
++  Convert(0, TrustedUrl());
++  EXPECT_EQ(2, transports);
++  EXPECT_EQ(1, finished);
++  EXPECT_FALSE(received);
++  EXPECT_EQ(0, metadata->GetDownloadErrorCount(TrustedUrl()));
++}
++
++TEST_F(ShieldsFallbackTest, HtmlSuccessResponseFallsBackBeforeConversion) {
++  Start();
++  auto callback = request->response;
++  callback.Run(TestUrl(), base::FilePath(FILE_PATH_LITERAL("fixture.html")),
++               Headers("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"));
++  EXPECT_EQ(2, transports);
++  EXPECT_TRUE(conversion.callbacks.empty());
++  request->Deliver();
++  Convert(0);
++  EXPECT_EQ(1, finished);
++}
++
++TEST_F(ShieldsFallbackTest,
++       BothSourceFailuresKeepInstalledDataAndManualCompletionOnce) {
++  auto disk = std::make_unique<DeferredStorage>();
++  disk->initial.push_back(Installed(TestUrl()));
++  const auto original = disk->initial[0];
++  maintainer = std::make_unique<FilteringConfigurationMaintainerImpl>(
++      configuration.get(), std::move(disk), std::move(downloader), nullptr,
++      std::make_unique<EmptyPreloaded>(), std::make_unique<Scheduler>(),
++      &conversion, metadata.get(), base::BindRepeating([](const GURL&) {}));
++  maintainer->InitializeStorage();
++  Check();
++  request->FailHttp();
++  EXPECT_EQ(0, completions);
++  EXPECT_EQ(original, maintainer->GetCurrentSubscriptions()[0]);
++  request->FailHttp();
++  EXPECT_EQ(1, completions);
++  EXPECT_EQ(1, result.failed);
++  ASSERT_EQ(1u, result.entries.size());
++  EXPECT_EQ("HTTP 404", result.entries[0].primary_failure);
++  EXPECT_EQ("failed", result.entries[0].fallback_outcome);
++  EXPECT_EQ(original, maintainer->GetCurrentSubscriptions()[0]);
++}
++
++TEST_F(ShieldsFallbackTest,
++       SuccessfulFallbackRecordsSourceOnlyAfterStorageActivation) {
++  auto disk = std::make_unique<DeferredStorage>();
++  storage = disk.get();
++  disk->initial.push_back(Installed(TestUrl()));
++  auto original = disk->initial[0];
++  maintainer = std::make_unique<FilteringConfigurationMaintainerImpl>(
++      configuration.get(), std::move(disk), std::move(downloader), nullptr,
++      std::make_unique<EmptyPreloaded>(), std::make_unique<Scheduler>(),
++      &conversion, metadata.get(), base::BindRepeating([](const GURL&) {}));
++  maintainer->InitializeStorage();
++  Check();
++  request->FailHttp();
++  request->Deliver();
++  Convert(0);
++  EXPECT_EQ(original, maintainer->GetCurrentSubscriptions()[0]);
++  EXPECT_TRUE(metadata->GetDiagnostics(TestUrl()).last_success.is_null());
++  EXPECT_EQ(0, completions);
++  storage->Complete(true);
++  EXPECT_EQ(1, completions);
++  EXPECT_EQ(1, result.updated);
++  EXPECT_EQ("activated", result.entries[0].fallback_outcome);
++  EXPECT_EQ(config::GetApprovedFallbackTransport(TestUrl()).spec(),
++            metadata->GetDiagnostics(TestUrl()).last_success_source);
++}
++
++TEST_F(ShieldsLifecycleTest,
++       FallbackDiagnosticsPersistWithBoundedTextAndInterruptedOutcome) {
++  SubscriptionDiagnostics d;
++  d.stage = DiagnosticStage::Downloaded;
++  d.primary_failure = std::string(500, 'p');
++  d.fallback_attempted = true;
++  d.fallback_outcome = "in progress";
++  metadata->SetDiagnostics(TestUrl(), d);
++  SubscriptionPersistentMetadataImpl reloaded(&prefs);
++  auto saved = reloaded.GetDiagnostics(TestUrl());
++  EXPECT_EQ(160u, saved.primary_failure.size());
++  EXPECT_TRUE(saved.fallback_attempted);
++  EXPECT_EQ("interrupted", saved.fallback_outcome);
++  EXPECT_EQ(DiagnosticStage::Interrupted, saved.stage);
++}
++
++TEST(ShieldsFallbackMappingTest, OnlyExactReviewedIdentitiesMap) {
++  EXPECT_EQ(GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++                 "easylist.txt"),
++            config::GetApprovedFallbackTransport(TestUrl()));
++  for (const char* url :
++       {"https://example.com/easylist.txt",
++        "http://uazo.github.io/cromite/filters/easylist.txt",
++        "https://user@uazo.github.io/cromite/filters/easylist.txt",
++        "https://uazo.github.io:444/cromite/filters/easylist.txt",
++        "https://uazo.github.io/cromite/filters/easylist.txt?other=1",
++        "https://uazo.github.io/cromite/filters/easylist.txt#other",
++        "https://uazo.github.io/cromite/filters/unknown.txt",
++        "https://uazo.github.io/cromite/filters/easyprivacy.txt",
++        "https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++        "abp-filters-anti-cv.txt",
++        "https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/"
++        "experimental-cromite-filters.txt"}) {
++    EXPECT_FALSE(config::GetApprovedFallbackTransport(GURL(url)).is_valid())
++        << url;
++  }
++}
++
++TEST(ShieldsFallbackMappingTest,
++     CompleteKnownInventoryRequiresReviewedMapping) {
++  int mapped = 0;
++  for (const auto& known : config::GetKnownSubscriptions()) {
++    const auto fallback = config::GetApprovedFallbackTransport(known.url);
++    if (known.url == CustomFiltersUrl() ||
++        known.url == TestPagesSubscriptionUrl() ||
++        known.url == AcceptableAdsUrl() ||
++        known.url ==
++            GURL("https://uazo.github.io/cromite/filters/easyprivacy.txt") ||
++        known.url ==
++            GURL("https://raw.githubusercontent.com/uazo/cromite/master/tools/"
++                 "filters/experimental-cromite-filters.txt")) {
++      EXPECT_FALSE(fallback.is_valid());
++      continue;
++    }
++    EXPECT_EQ(
++        GURL("https://raw.githubusercontent.com/uazo/cromite/pages/filters/" +
++             known.url.ExtractFileName()),
++        fallback)
++        << known.url;
++    ++mapped;
++  }
++  EXPECT_EQ(31, mapped);
++}
++
++TEST(ShieldsApprovedContentTest,
++     RealConversionRejectsErrorDocumentsEmptyAndUnsupportedData) {
++  auto converter = base::MakeRefCounted<FlatbufferConverter>();
++  for (const char* text :
++       {"", "<html>Gateway error</html>",
++        "[Adblock Plus nope]\n||ads.example^\n",
++        "[Adblock Plus 2.0]\n! Only comments\n",
++        "[Adblock Plus 2.0]\n! Redirect: "
++        "https://example.com/other.txt\n||ads.example^\n",
++        "[Adblock Plus 2.0]\nexample.com#$#simulate-mouse-event button\n"}) {
++    std::istringstream input(text);
++    EXPECT_TRUE(absl::holds_alternative<ConversionError>(
++        converter->ConvertForApprovedTransport(input, TestUrl(), false)))
++        << text;
++  }
++  std::istringstream good("[Adblock Plus 2.0]\n||ads.example^\n");
++  EXPECT_TRUE(absl::holds_alternative<std::unique_ptr<FlatbufferData>>(
++      converter->ConvertForApprovedTransport(good, TestUrl(), false)));
++  std::istringstream oversized(
++      std::string(kMaximumApprovedFilterBytes + 1, '!'));
++  EXPECT_TRUE(absl::holds_alternative<ConversionError>(
++      converter->ConvertForApprovedTransport(oversized, TestUrl(), false)));
++}
++
++TEST(ShieldsApprovedContentTest,
++     HeaderlessDomainFormatIsLimitedAndNeedsRealRules) {
++  auto converter = base::MakeRefCounted<FlatbufferConverter>();
++  const GURL url("https://uazo.github.io/cromite/filters/badblock_lite.txt");
++  EXPECT_TRUE(config::IsApprovedHeaderlessDomainList(url));
++  EXPECT_FALSE(config::IsApprovedHeaderlessDomainList(TestUrl()));
++  std::istringstream input("! Title: Domain list\n||ads.example^\n");
++  EXPECT_TRUE(absl::holds_alternative<std::unique_ptr<FlatbufferData>>(
++      converter->ConvertForApprovedTransport(input, url, false, true)));
++  std::istringstream invalid("! Title: Gateway error\n<html>error</html>\n");
++  EXPECT_TRUE(absl::holds_alternative<ConversionError>(
++      converter->ConvertForApprovedTransport(invalid, url, false, true)));
++}
++
+ class BatchMaintainer : public FilteringConfigurationMaintainer {
+  public:
+   int checks = 0;
+diff --git a/components/adblock/test/shields_transport_unittest.cc b/components/adblock/test/shields_transport_unittest.cc
+new file mode 100644
+index 0000000..a7f3e75
+--- /dev/null
++++ b/components/adblock/test/shields_transport_unittest.cc
+@@ -0,0 +1,183 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++#include "base/files/file_util.h"
++#include "base/test/bind.h"
++#include "base/test/task_environment.h"
++#include "components/adblock/core/common/adblock_constants.h"
++#include "components/adblock/core/net/adblock_resource_request_impl.h"
++#include "mojo/core/embedder/embedder.h"
++#include "net/base/mock_network_change_notifier.h"
++#include "net/base/net_errors.h"
++#include "net/http/http_response_headers.h"
++#include "net/http/http_util.h"
++#include "net/url_request/redirect_info.h"
++#include "services/network/public/cpp/url_loader_completion_status.h"
++#include "services/network/public/cpp/weak_wrapper_shared_url_loader_factory.h"
++#include "services/network/public/mojom/url_response_head.mojom.h"
++#include "services/network/test/test_url_loader_factory.h"
++#include "testing/gtest/include/gtest/gtest.h"
++
++namespace adblock {
++namespace {
++scoped_refptr<net::HttpResponseHeaders> Headers(std::string_view block) {
++  return base::MakeRefCounted<net::HttpResponseHeaders>(
++      net::HttpUtil::AssembleRawHeaders(block));
++}
++class ControlledThrottle : public AdblockRequestThrottle {
++ public:
++  bool allow = true;
++  base::OnceClosure pending;
++  void RunWhenRequestsAllowed(base::OnceClosure callback) override {
++    if (allow) {
++      std::move(callback).Run();
++    } else {
++      pending = std::move(callback);
++    }
++  }
++  void AllowRequestsAfter(base::TimeDelta) override {}
++};
++
++class ShieldsTransportTest : public testing::Test {
++ public:
++  static void SetUpTestSuite() { mojo::core::Init(); }
++  static void TearDownTestSuite() { mojo::core::ShutDown(); }
++  base::test::TaskEnvironment tasks{
++      base::test::TaskEnvironment::TimeSource::MOCK_TIME};
++  net::test::ScopedMockNetworkChangeNotifier notifier;
++  network::TestURLLoaderFactory factory{true};
++  scoped_refptr<network::SharedURLLoaderFactory> shared =
++      base::MakeRefCounted<network::WeakWrapperSharedURLLoaderFactory>(
++          &factory);
++  ControlledThrottle throttle;
++  const net::BackoffEntry::Policy backoff = {0,       5000, 2.0,  0,
++                                             3600000, -1,   false};
++  std::unique_ptr<AdblockResourceRequestImpl> request;
++  const GURL url{"https://uazo.github.io/cromite/filters/easylist.txt"};
++  int finished = 0;
++  int error = net::OK;
++  base::FilePath downloaded;
++
++  void SetUp() override {
++    notifier.mock_network_change_notifier()->SetConnectionType(
++        net::NetworkChangeNotifier::CONNECTION_WIFI);
++    request = std::make_unique<AdblockResourceRequestImpl>(&backoff, shared,
++                                                           &throttle);
++    request->SetStrictTransportPolicy();
++    request->SetAttemptDiagnosticCallback(base::BindLambdaForTesting(
++        [this](const GURL&, int code, int, bool retrying) {
++          error = code;
++          EXPECT_FALSE(retrying);
++        }));
++  }
++  void TearDown() override {
++    if (!downloaded.empty()) {
++      base::DeleteFile(downloaded);
++    }
++  }
++  void Start() {
++    request->Start(url, AdblockResourceRequest::Method::GET,
++                   base::BindLambdaForTesting(
++                       [this](const GURL& source, base::FilePath file,
++                              scoped_refptr<net::HttpResponseHeaders>) {
++                         EXPECT_EQ(url, source);
++                         downloaded = std::move(file);
++                         ++finished;
++                       }),
++                   AdblockResourceRequest::RetryPolicy::RetryUntilSucceeded);
++    tasks.RunUntilIdle();
++  }
++};
++
++TEST_F(ShieldsTransportTest, DeadlineTerminatesOnceWithoutInnerRetries) {
++  Start();
++  ASSERT_EQ(1, factory.NumPending());
++  tasks.FastForwardBy(base::Seconds(kApprovedFilterAttemptTimeoutSeconds));
++  EXPECT_EQ(1, finished);
++  EXPECT_EQ(net::ERR_TIMED_OUT, error);
++  EXPECT_TRUE(downloaded.empty());
++  tasks.FastForwardBy(base::Hours(24));
++  EXPECT_EQ(1, finished);
++}
++
++TEST_F(ShieldsTransportTest,
++       ThrottleQueueIsBoundedAndReleasedStaleClosureCannotStart) {
++  throttle.allow = false;
++  Start();
++  ASSERT_TRUE(throttle.pending);
++  EXPECT_EQ(0, factory.NumPending());
++  tasks.FastForwardBy(base::Seconds(kApprovedFilterAttemptTimeoutSeconds));
++  EXPECT_EQ(1, finished);
++  EXPECT_EQ(net::ERR_TIMED_OUT, error);
++  std::move(throttle.pending).Run();
++  tasks.RunUntilIdle();
++  EXPECT_EQ(0, factory.NumPending());
++  EXPECT_EQ(1, finished);
++}
++
++TEST_F(ShieldsTransportTest, OfflineFailsImmediatelyWithoutQueuedRetry) {
++  notifier.mock_network_change_notifier()->SetConnectionType(
++      net::NetworkChangeNotifier::CONNECTION_NONE);
++  Start();
++  EXPECT_EQ(1, finished);
++  EXPECT_EQ(net::ERR_INTERNET_DISCONNECTED, error);
++  EXPECT_EQ(0, factory.NumPending());
++  tasks.FastForwardBy(base::Hours(24));
++  EXPECT_EQ(1, finished);
++}
++
++TEST_F(ShieldsTransportTest, HttpRedirectIsRejectedBeforeFollow) {
++  Start();
++  ASSERT_EQ(1, factory.NumPending());
++  auto* pending = factory.GetPendingRequest(0);
++  EXPECT_EQ(network::mojom::CredentialsMode::kOmit,
++            pending->request.credentials_mode);
++  EXPECT_EQ(network::mojom::RedirectMode::kError,
++            pending->request.redirect_mode);
++  net::RedirectInfo redirect;
++  redirect.status_code = 302;
++  redirect.new_url = GURL("https://example.com/unapproved.txt");
++  redirect.new_method = "GET";
++  auto head = network::mojom::URLResponseHead::New();
++  head->headers = Headers("HTTP/1.1 302 Found\r\n\r\n");
++  pending->client->OnReceiveRedirect(redirect, std::move(head));
++  tasks.RunUntilIdle();
++  EXPECT_EQ(1, finished);
++  EXPECT_EQ(net::ERR_UNSAFE_REDIRECT, error);
++  EXPECT_TRUE(pending->test_url_loader->follow_redirect_params().empty());
++  tasks.FastForwardBy(base::Minutes(5));
++  EXPECT_EQ(1, finished);
++}
++
++TEST_F(ShieldsTransportTest, OversizedResponseDoesNotDeliverTemporaryFile) {
++  auto head = network::mojom::URLResponseHead::New();
++  head->headers = Headers("HTTP/1.1 200 OK\r\n\r\n");
++  factory.AddResponse(url, std::move(head),
++                      std::string(kMaximumApprovedFilterBytes + 1, 'a'),
++                      network::URLLoaderCompletionStatus(net::OK));
++  Start();
++  EXPECT_EQ(1, finished);
++  EXPECT_NE(net::OK, error);
++  EXPECT_TRUE(downloaded.empty());
++}
++
++TEST_F(ShieldsTransportTest, IncompleteResponseCannotReturnPartialData) {
++  auto head = network::mojom::URLResponseHead::New();
++  head->headers = Headers("HTTP/1.1 200 OK\r\nContent-Length: 2000\r\n\r\n");
++  factory.AddResponse(
++      url, std::move(head), "[Adblock Plus 2.0]\n||ads.example^\n",
++      network::URLLoaderCompletionStatus(net::ERR_CONTENT_LENGTH_MISMATCH));
++  Start();
++  EXPECT_EQ(1, finished);
++  EXPECT_EQ(net::ERR_CONTENT_LENGTH_MISMATCH, error);
++  EXPECT_TRUE(downloaded.empty());
++}
++
++TEST_F(ShieldsTransportTest,
++       DestructionCancelsDeadlineAndPendingNetworkResponse) {
++  Start();
++  request.reset();
++  tasks.FastForwardBy(base::Hours(24));
++  EXPECT_EQ(0, finished);
++}
++}  // namespace
++}  // namespace adblock

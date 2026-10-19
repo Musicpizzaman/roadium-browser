@@ -1,0 +1,37 @@
+{
+  "url": "https://preserved.card07.invalid/card07.html",
+  "ready": "complete",
+  "visibility": "visible",
+  "nodes": {
+    "#BottomSocialLinks": {
+      "display": "block",
+      "visibility": "visible",
+      "width": 1195.613037109375,
+      "height": 18.884801864624023
+    },
+    "#FCMpush-slidedown-container": {
+      "display": "block",
+      "visibility": "visible",
+      "width": 1195.613037109375,
+      "height": 18.884801864624023
+    },
+    ".card07-custom": {
+      "display": "block",
+      "visibility": "visible",
+      "width": 1195.613037109375,
+      "height": 18.884801864624023
+    },
+    ".card07-subscription": {
+      "display": "block",
+      "visibility": "visible",
+      "width": 1195.613037109375,
+      "height": 18.884801864624023
+    },
+    "#ordinary": {
+      "display": "block",
+      "visibility": "visible",
+      "width": 1195.613037109375,
+      "height": 18.884801864624023
+    }
+  }
+}

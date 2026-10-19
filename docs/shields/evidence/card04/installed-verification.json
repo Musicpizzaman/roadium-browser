@@ -1,0 +1,68 @@
+{
+  "installed_apk_sha256": "f416a8962b9ede8b1cd7c21a5042471792ac886616b4e57a23cb574be52766ad",
+  "method": "Protected root-only flags, task-specific certificate SPKI and exact host resolution; SELinux enforcing; stock verified release-code APK",
+  "profile_user": 13,
+  "isolated_browser_uid": 1310204,
+  "transport_requests": 24,
+  "transport_phases": [
+    {
+      "phase": "fallback-success",
+      "primary_requests": 2,
+      "fallback_requests": 2,
+      "primary_status": 503,
+      "passed": true
+    },
+    {
+      "phase": "fallback-advanced-enabled",
+      "primary_requests": 1,
+      "fallback_requests": 1,
+      "primary_status": 503,
+      "passed": true
+    },
+    {
+      "phase": "primary-success",
+      "primary_requests": 2,
+      "fallback_requests": 0,
+      "primary_status": 200,
+      "passed": true
+    },
+    {
+      "phase": "both-transports-fail",
+      "primary_requests": 2,
+      "fallback_requests": 2,
+      "primary_status": 503,
+      "passed": true
+    },
+    {
+      "phase": "redirect-rejected",
+      "primary_requests": 2,
+      "fallback_requests": 2,
+      "primary_status": 302,
+      "passed": true
+    },
+    {
+      "phase": "html-rejected",
+      "primary_requests": 2,
+      "fallback_requests": 2,
+      "primary_status": 200,
+      "passed": true
+    },
+    {
+      "phase": "metadata-redirect-rejected",
+      "primary_requests": 2,
+      "fallback_requests": 2,
+      "primary_status": 200,
+      "passed": true
+    }
+  ],
+  "unapproved_destination_requests": 0,
+  "credential_bearing_fixture_requests": 0,
+  "canonical_subscription_identity_retained": true,
+  "explicit_advanced_opt_out_preserved": true,
+  "ui_enable_safely_refreshed_only_trusted_anticv": true,
+  "observable_runtime_cases": 8,
+  "primary_success_skips_fallback": true,
+  "both_source_failure_retains_working_data_and_restart": true,
+  "http_and_metadata_redirects_rejected_before_target_fetch": true,
+  "http_200_html_rejected": true
+}

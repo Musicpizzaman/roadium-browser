@@ -1,0 +1,49 @@
+{
+  "format": 1,
+  "status": "blocked",
+  "authorization": "No release authorization, signing or upload is performed",
+  "scope": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "excluded_cards": [
+    10
+  ],
+  "binding": {
+    "source_patch_sha256": "341ddbe7d5d3885f8fc93c68d0e781a6a620200a33c1b7810d7b2db0ae1c6960",
+    "source_overlay_tree": "6aa2d7a3c56cc89cdc401ac116481b80ab01d93b",
+    "baseline_sha256": "bd1892b4befb10e97466a91b7abe1b8f7a2463606a6c090ffb673575d1be1c68",
+    "artifacts": {
+      "x64": {
+        "ChromePublic.apk": "ace4cca1b84d6ccac5d1d445da9714af8df9f4e76c62e815889a8ff7d8537400",
+        "ChromePublic.aab": "d93ee5d842892dee7f20d02ef6474e22e47945792951cc0f6e6bcd46ff292089"
+      },
+      "arm64": {
+        "ChromePublic.apk": "1a2aa736d2884218d4dee8a1a93605be1daa1c38f83273e89020502e2aa8e311",
+        "ChromePublic.aab": "3154e078ea0f3f5211f44206543841e4b779d1100bead963fd86fb722cf78c27"
+      }
+    }
+  },
+  "blockers": [
+    "x64: diagnostic APK certificate; production signing remains separate",
+    "x64: AAB upload signature not verified",
+    "arm64: diagnostic APK certificate; production signing remains separate",
+    "arm64: AAB upload signature not verified",
+    "manual acceptance must bind these exact source and package hashes",
+    "installed_fresh_upgrade_offline_recovery",
+    "site_controls_and_private_scope",
+    "parked_and_restricted_media",
+    "physical_android12_blazer_ev",
+    "extended_update_storage_soak",
+    "card06_live_playback_limits",
+    "production_signing_and_play_readiness",
+    "fork_ci_and_native_runner_provisioned"
+  ]
+}

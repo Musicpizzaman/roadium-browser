@@ -1,0 +1,72 @@
+{
+  "card": 7,
+  "date": "2026-10-18",
+  "status": "implemented and locally verified; release gates open",
+  "source_overlay_tree": "17fed1c823d47df5c3372fee66b44110c963acde",
+  "source_patch_sha256": "3003050b25932d470862bd2b4e083bc81c95cf9e8279ca672a3b5ff0df08727e",
+  "overlay": {
+    "path": "build/roadium/patches/0008-roadium-protection-presets.patch",
+    "sha256": "1802559fa9a5123f2568963d52909679f2fd4d08621981bd0861ab75b6ca8b53"
+  },
+  "first_seven_overlays_unchanged": true,
+  "tests": {
+    "native_executions": 228,
+    "java_executions": 40,
+    "media_executions": 26,
+    "focused_total": 294,
+    "overlay_loader": 16,
+    "packaged_filter_resources": 8,
+    "snapshot_integrity": 6,
+    "all_passed": true
+  },
+  "category_conversion": {
+    "accepted": 15240,
+    "rejected": 0,
+    "unsafe_or_prohibited": 0
+  },
+  "builds": {
+    "x64": "x64-build-manifest.json",
+    "arm64": "arm64-build-manifest.json"
+  },
+  "installed_runtime": {
+    "architecture": "x64",
+    "api": 33,
+    "avd": "RoadiumAAOS33",
+    "resolution": "1280x720",
+    "fresh_and_upgraded_disposable_profiles": true,
+    "all_nine_preset_transitions_and_repeated_application": "passed",
+    "custom_manual_exception_global_and_advanced_preservation": "passed",
+    "actual_https_fixture_filtering_and_failed_update_restart": "passed",
+    "fresh_custom_import_and_rule_through_UI": "passed",
+    "light_dark_and_labels": "passed"
+  },
+  "independent_local_reviews": [
+    "local-review-native.json",
+    "local-review-model.json",
+    "local-review-ui.json",
+    "local-review-ui-order.json",
+    "local-review-inventory.json"
+  ],
+  "cleanup": "cleanup.json",
+  "release_gates": [
+    "Physical Android 12 2024 Chevrolet Blazer EV touch/focus, layout and parked-only regression",
+    "Production signing and release integration",
+    "Extended storage/update soak",
+    "Live service acceptance from Card 06 remains open"
+  ],
+  "limitations": [
+    "Cookie-banner category unavailable: no supported dedicated subscription",
+    "Canonical EasyPrivacy endpoint returned 404 and is excluded",
+    "Controlled HTTPS fixtures use loopback DNS and own certificate pin, not live service evidence",
+    "Explicit legacy experimental subscription preserved but fixture failed activation; never selected by presets",
+    "ARM64 package verification does not establish physical device runtime",
+    "Build manifests runtime-pending fields describe build-time state; this later verification record supplies x64 runtime results"
+  ],
+  "final_record_checks": {
+    "focused_result_statuses": "all success",
+    "documentation_links": "passed",
+    "exported_package_hashes": "matched both manifests",
+    "native_test_include": "byte-exact regeneration passed",
+    "git_diff_check": "passed"
+  }
+}

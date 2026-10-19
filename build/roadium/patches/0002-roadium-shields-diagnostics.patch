@@ -1,0 +1,2282 @@
+diff --git a/chrome/browser/adblock/android/java/res/layout/adblock_filter_lists_list_item.xml b/chrome/browser/adblock/android/java/res/layout/adblock_filter_lists_list_item.xml
+index c72ac81..72d3cbe 100644
+--- a/chrome/browser/adblock/android/java/res/layout/adblock_filter_lists_list_item.xml
++++ b/chrome/browser/adblock/android/java/res/layout/adblock_filter_lists_list_item.xml
+@@ -20,7 +20,8 @@
+     android:gravity="center_vertical"
+     android:orientation="horizontal"
+     android:focusable="true"
+-    android:padding="6dp">
++    android:minHeight="48dp"
++    android:padding="12dp">
+ 
+     <CheckBox
+         android:id="@+id/checkbox"
+diff --git a/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockFilterListsAdapter.java b/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockFilterListsAdapter.java
+index 12f7341..a30fac2 100644
+--- a/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockFilterListsAdapter.java
++++ b/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockFilterListsAdapter.java
+@@ -18,6 +18,8 @@
+ package org.chromium.chrome.browser.adblock.settings;
+ 
+ import android.content.Context;
++import android.os.Handler;
++import android.os.Looper;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.View.OnClickListener;
+@@ -28,11 +30,23 @@ import android.widget.TextView;
+ 
+ import org.chromium.chrome.browser.adblock.R;
+ import org.chromium.components.adblock.AdblockController;
++import org.chromium.components.adblock.ShieldsDiagnostics;
+ 
+ import java.net.URL;
+ import java.util.List;
+ 
+ public class AdblockFilterListsAdapter extends BaseAdapter implements OnClickListener {
++    private final Handler mHandler = new Handler(Looper.getMainLooper());
++    private boolean mStarted;
++    private ShieldsDiagnostics mDiagnostics;
++    private final Runnable mRefresh = new Runnable() {
++        @Override public void run() {
++            if (!mStarted) return;
++            mDiagnostics = mController.getDiagnostics();
++            notifyDataSetChanged();
++            mHandler.postDelayed(this, 1000);
++        }
++    };
+     private final LayoutInflater mLayoutInflater;
+     private final AdblockController mController;
+ 
+@@ -40,10 +54,18 @@ public class AdblockFilterListsAdapter extends BaseAdapter implements OnClickLis
+         mLayoutInflater =
+                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+         this.mController = controller;
++        mDiagnostics = controller.getDiagnostics();
+     }
+ 
+     public void start() {
+-        notifyDataSetChanged();
++        mStarted = true;
++        mHandler.removeCallbacks(mRefresh);
++        mRefresh.run();
++    }
++
++    public void stop() {
++        mStarted = false;
++        mHandler.removeCallbacks(mRefresh);
+     }
+ 
+     // BaseAdapter:
+@@ -85,7 +107,7 @@ public class AdblockFilterListsAdapter extends BaseAdapter implements OnClickLis
+             if (subscription.url().equals(item.url())) {
+                 subscribed = true;
+                 autoinstalled = subscription.autoinstalled();
+-                status.setText(subscription.getDescription());
++                status.setText(mDiagnostics.describeSubscription(subscription.url()));
+                 break;
+             }
+         }
+@@ -113,6 +135,7 @@ public class AdblockFilterListsAdapter extends BaseAdapter implements OnClickLis
+             mController.installSubscription(url);
+         }
+ 
++        mDiagnostics = mController.getDiagnostics();
+         notifyDataSetChanged();
+     }
+ }
+diff --git a/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockFilterListsFragment.java b/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockFilterListsFragment.java
+index 83a7de9..f2494a3 100644
+--- a/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockFilterListsFragment.java
++++ b/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockFilterListsFragment.java
+@@ -56,6 +56,11 @@ public class AdblockFilterListsFragment extends ListFragment implements Settings
+         mFilterListsAdapter.start();
+     }
+ 
++    @Override public void onStop() {
++        mFilterListsAdapter.stop();
++        super.onStop();
++    }
++
+     @Override
+     public @AnimationType int getAnimationType() {
+         return AnimationType.PROPERTY;
+diff --git a/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockSettingsFragment.java b/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockSettingsFragment.java
+index 0dd8e5a..7cc11b9 100644
+--- a/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockSettingsFragment.java
++++ b/chrome/browser/adblock/android/java/src/org/chromium/chrome/browser/adblock/settings/AdblockSettingsFragment.java
+@@ -13,7 +13,9 @@
+ package org.chromium.chrome.browser.adblock.settings;
+ 
+ import android.os.Bundle;
+-import android.widget.Toast;
++import android.os.Handler;
++import android.os.Looper;
++import android.app.AlertDialog;
+ 
+ import androidx.preference.Preference;
+ import androidx.preference.PreferenceFragmentCompat;
+@@ -29,12 +31,37 @@ import org.chromium.chrome.browser.profiles.Profile;
+ import org.chromium.chrome.browser.profiles.ProfileManager;
+ import org.chromium.chrome.browser.settings.ChromeBaseSettingsFragment;
+ import org.chromium.components.adblock.AdblockController;
++import org.chromium.components.adblock.ShieldsDiagnostics;
+ import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
+ import org.chromium.components.browser_ui.settings.SettingsFragment;
+ import org.chromium.components.user_prefs.UserPrefs;
+ 
+ public class AdblockSettingsFragment
+         extends ChromeBaseSettingsFragment implements Preference.OnPreferenceChangeListener {
++    private Preference mDiagnostics;
++    private AlertDialog mDiagnosticDialog;
++    private String mLastReport = "";
++    private final Handler mDiagnosticHandler = new Handler(Looper.getMainLooper());
++    private boolean mDiagnosticsResumed;
++    private final Runnable mRefreshDiagnostics = new Runnable() {
++        @Override public void run() {
++            if (!mDiagnosticsResumed) return;
++            refreshDiagnostics();
++            mDiagnosticHandler.postDelayed(this, 1000);
++        }
++    };
++    private void refreshDiagnostics() {
++        AdblockController controller = AdblockController.getInstance(ProfileManager.getLastUsedRegularProfile());
++        ShieldsDiagnostics snapshot = controller.getDiagnostics();
++        mDiagnostics.setSummary(snapshot.getOverview());
++        mStartUpdate.setSummary(snapshot.getUpdateSummary());
++        mStartUpdate.setEnabled(controller.isEnabled() && !snapshot.isChecking());
++        String report = snapshot.getFullReport();
++        if (mDiagnosticDialog != null && mDiagnosticDialog.isShowing() && !report.equals(mLastReport))
++            mDiagnosticDialog.setMessage(report);
++        mLastReport = report;
++    }
++
+     private ChromeSwitchPreference mAdblockEnabled;
+     private ChromeSwitchPreference mAcceptableAdsEnabled;
+     private ChromeSwitchPreference mAutoInstalledEnabled;
+@@ -89,9 +116,7 @@ public class AdblockSettingsFragment
+         mStartUpdate.setOnPreferenceClickListener(preference -> {
+             AdblockController.getInstance(
+                 ProfileManager.getLastUsedRegularProfile()).startUpdate();
+-            Toast toast = Toast.makeText(getContext(),
+-                "Checking for updates in progress", Toast.LENGTH_LONG);
+-            toast.show();
++            refreshDiagnostics();
+             // handle the click so the default action isn't triggered.
+             return true;
+         });
+@@ -104,6 +129,20 @@ public class AdblockSettingsFragment
+                 (ChromeSwitchPreference) findPreference(SETTINGS_AUTO_INSTALL_ENABLED_KEY);
+         mAllowedDomains = findPreference(SETTINGS_ALLOWED_DOMAINS_KEY);
+         mMoreOptions = findPreference(SETTINGS_MORE_OPTIONS_KEY);
++        mDiagnostics = new Preference(getContext());
++        mDiagnostics.setKey("roadium_shields_diagnostics");
++        mDiagnostics.setTitle("Filter diagnostics");
++        mDiagnostics.setOrder(mStartUpdate.getOrder() + 1);
++        mDiagnostics.setOnPreferenceClickListener(preference -> {
++            ShieldsDiagnostics snapshot = AdblockController.getInstance(ProfileManager.getLastUsedRegularProfile()).getDiagnostics();
++            mLastReport = snapshot.getFullReport();
++            mDiagnosticDialog = new AlertDialog.Builder(getContext())
++                    .setTitle("Local filter diagnostics").setMessage(mLastReport)
++                    .setPositiveButton(android.R.string.ok, null).create();
++            mDiagnosticDialog.show();
++            return true;
++        });
++        getPreferenceScreen().addPreference(mDiagnostics);
+     }
+ 
+     private boolean areMoreOptionsEnabled() {
+@@ -145,6 +184,7 @@ public class AdblockSettingsFragment
+         mAutoInstalledEnabled.setChecked(
+                 controller.isAutoInstallEnabled());
+         mAutoInstalledEnabled.setOnPreferenceChangeListener(this);
++        refreshDiagnostics();
+     }
+ 
+     private void maybeEnableMoreOptions() {
+@@ -208,5 +248,18 @@ public class AdblockSettingsFragment
+     public void onResume() {
+         super.onResume();
+         synchronizePreferences();
++        mDiagnosticsResumed = true;
++        mDiagnosticHandler.removeCallbacks(mRefreshDiagnostics);
++        mDiagnosticHandler.postDelayed(mRefreshDiagnostics, 1000);
++    }
++
++    @Override public void onPause() {
++        mDiagnosticsResumed = false;
++        mDiagnosticHandler.removeCallbacks(mRefreshDiagnostics);
++        if (mDiagnosticDialog != null) {
++            mDiagnosticDialog.dismiss();
++            mDiagnosticDialog = null;
++        }
++        super.onPause();
+     }
+ }
+diff --git a/components/adblock/android/BUILD.gn b/components/adblock/android/BUILD.gn
+index 7791421..62b0eb1 100644
+--- a/components/adblock/android/BUILD.gn
++++ b/components/adblock/android/BUILD.gn
+@@ -50,6 +50,7 @@ android_library("adblock_controller_java") {
+   sources = [
+     "java/src/org/chromium/components/adblock/AdblockController.java",
+     "java/src/org/chromium/components/adblock/AdblockSwitches.java",
++    "java/src/org/chromium/components/adblock/ShieldsDiagnostics.java",
+     "java/src/org/chromium/components/adblock/ContentType.java",
+     "java/src/org/chromium/components/adblock/FilteringConfiguration.java",
+     "java/src/org/chromium/components/adblock/ResourceClassificationNotifier.java",
+@@ -105,3 +106,13 @@ android_library("adblock_java_tests_base") {
+     "//third_party/junit:junit",
+   ]
+ }
++
++robolectric_binary("roadium_shields_junit_tests") {
++  sources = [ "junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java" ]
++  deps = [
++    ":adblock_controller_java",
++    "//base:base_java_test_support",
++    "//base:base_junit_test_support",
++    "//third_party/junit:junit",
++  ]
++}
+diff --git a/components/adblock/android/adblock_controller_jni.cc b/components/adblock/android/adblock_controller_jni.cc
+index 14bcfb1..49ce537 100644
+--- a/components/adblock/android/adblock_controller_jni.cc
++++ b/components/adblock/android/adblock_controller_jni.cc
+@@ -26,6 +26,8 @@
+ #include "base/i18n/time_formatting.h"
+ #include "base/strings/utf_string_conversions.h"
+ #include "base/logging.h"
++#include "base/json/json_writer.h"
++#include "components/adblock/content/browser/factories/subscription_persistent_metadata_factory.h"
+ #include "components/adblock/android/jni_headers/AdblockController_jni.h"
+ #include "components/adblock/content/browser/factories/subscription_service_factory.h"
+ #include "components/adblock/core/common/adblock_constants.h"
+@@ -65,8 +67,8 @@ ScopedJavaLocalRef<jobject> ToJava(JNIEnv* env,
+                                        ConvertUTF8ToJavaString(env, version),
+                                        ConvertUTF8ToJavaString(env, adblock::Subscription::SubscriptionInstallationStateToString(state)),
+                                        ConvertUTF8ToJavaString(env, installation_time),
+-                                       download_success_count ? JNI_TRUE : JNI_FALSE,
+-                                       download_error_count ? JNI_TRUE : JNI_FALSE,
++                                       static_cast<jlong>(download_success_count),
++                                       static_cast<jlong>(download_error_count),
+                                        ToJavaArrayOfStrings(env, languages),
+                                        autoinstalled ? JNI_TRUE : JNI_FALSE);
+ }
+@@ -135,7 +137,7 @@ JNI_AdblockController_StartUpdate(JNIEnv* env,
+   auto* subscription_service =
+   adblock::SubscriptionServiceFactory::GetForBrowserContext(
+       content::BrowserContextFromJavaHandle(jbrowser_context_handle));
+-  subscription_service->StartUpdate();
++  subscription_service->StartUpdateCheck();
+ }
+ 
+ static base::android::ScopedJavaLocalRef<jobjectArray>
+@@ -203,4 +205,91 @@ JNI_AdblockController_GetRecommendedSubscriptions(JNIEnv* env) {
+   return ToJavaArrayOfObjects(env, CSubscriptionsToJObjects(env, list));
+ }
+ 
++static base::android::ScopedJavaLocalRef<jstring>
++JNI_AdblockController_GetDiagnosticSnapshot(JNIEnv* env,
++    const base::android::JavaRef<jobject>& context_handle) {
++  DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
++  auto* context = content::BrowserContextFromJavaHandle(context_handle);
++  auto* service = adblock::SubscriptionServiceFactory::GetForBrowserContext(context);
++  auto* metadata = adblock::SubscriptionPersistentMetadataFactory::GetForBrowserContext(context);
++  if (!service || !metadata) return ConvertUTF8ToJavaString(env, "{}");
++  auto* configuration = service->GetAdblockFilteringConfiguration();
++  base::DictValue root;
++  root.Set("blocking_enabled", configuration->IsEnabled());
++  root.Set("advanced_enabled", service->IsPrivilegedFiltersEnabled());
++  root.Set("easylist_url", adblock::DefaultSubscriptionUrl().spec());
++  root.Set("anticv_url", "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt");
++  const auto result = service->GetUpdateCheckResult();
++  base::DictValue update;
++  update.Set("batch_id", result.batch_id);
++  update.Set("checked", result.checked);
++  update.Set("updated", result.updated);
++  update.Set("failed", result.failed);
++  update.Set("cancelled", result.cancelled);
++  update.Set("timed_out", result.timed_out);
++  update.Set("running", result.running);
++  base::ListValue outcomes;
++  for (const auto& entry : result.entries) {
++    base::DictValue outcome;
++    outcome.Set("url", entry.url);
++    outcome.Set("configuration", entry.configuration);
++    outcome.Set("outcome", entry.outcome);
++    outcome.Set("error", entry.error);
++    outcomes.Append(std::move(outcome));
++  }
++  update.Set("entries", std::move(outcomes));
++  root.Set("update", std::move(update));
++  auto time = [](base::Time value) -> double {
++    return value.is_null() ? 0 : value.InMillisecondsFSinceUnixEpochIgnoringNull();
++  };
++  auto counts = [](const adblock::RuleStatistics& s) {
++    return base::DictValue().Set("accepted", s.accepted)
++        .Set("parser_rejected", s.parser_rejected)
++        .Set("unsupported_commands", s.unsupported_commands)
++        .Set("prohibited_privilege", s.prohibited_privilege)
++        .Set("unsafe_arguments", s.unsafe_arguments)
++        .Set("unsupported_options", s.unsupported_options);
++  };
++  base::ListValue lists;
++  for (const auto& subscription : service->GetCurrentSubscriptions(configuration)) {
++    const auto url = subscription->GetSourceUrl();
++    const auto state = subscription->GetInstallationState();
++    const auto d = metadata->GetDiagnostics(url);
++    base::DictValue item;
++    item.Set("url", url.SchemeIs("data") ? "Inline subscription (contents omitted)" : url.spec());
++    std::string title = subscription->GetTitle();
++    if (title.empty()) {
++      for (const auto& known : adblock::config::GetKnownSubscriptions()) {
++        if (known.url == url) { title = known.title; break; }
++      }
++    }
++    item.Set("title", title.substr(0, 128));
++    item.Set("version", subscription->GetCurrentVersion().substr(0, 64));
++    item.Set("stored_version", metadata->GetVersion(url).substr(0, 64));
++    item.Set("state", adblock::Subscription::SubscriptionInstallationStateToString(state));
++    item.Set("active", configuration->IsEnabled() &&
++        (state == adblock::Subscription::InstallationState::Installed ||
++         state == adblock::Subscription::InstallationState::AutoInstalled ||
++         state == adblock::Subscription::InstallationState::Preloaded));
++    item.Set("privileged_allowed", metadata->AllowPrivilegedFilters(url));
++    item.Set("installed_at", time(metadata->GetLastInstallationTime(url)));
++    item.Set("successful_requests", metadata->GetDownloadSuccessCount(url));
++    item.Set("consecutive_failures", metadata->GetDownloadErrorCount(url));
++    item.Set("stage", static_cast<int>(d.stage));
++    item.Set("downloaded", d.downloaded);
++    item.Set("parsed", d.parsed);
++    item.Set("error", d.error);
++    item.Set("source", d.source.empty() ? "not recorded" : d.source);
++    item.Set("last_success", time(d.last_success));
++    item.Set("last_success_source", d.last_success_source.empty() ? "not recorded" : d.last_success_source);
++    if (d.rules) item.Set("rules", counts(*d.rules));
++    if (d.active_rules) item.Set("active_rules", counts(*d.active_rules));
++    lists.Append(std::move(item));
++  }
++  root.Set("subscriptions", std::move(lists));
++  std::string json;
++  base::JSONWriter::Write(root, &json);
++  return ConvertUTF8ToJavaString(env, json);
++}
++
+ DEFINE_JNI(AdblockController)
+diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java b/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
+index c3bc3db..aca33d6 100644
+--- a/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
++++ b/components/adblock/android/java/src/org/chromium/components/adblock/AdblockController.java
+@@ -123,9 +123,9 @@ public class AdblockController {
+         public String getDescription() {
+             return state()
+                     + " Version: " + version()
+-                    + " Last update: " + installation_time()
+-                    + " (total " + download_error_count() + " downloads errors, "
+-                    + download_success_count() + " success)";
++                    + " Installation time: " + installation_time()
++                    + " (consecutive download failures " + download_error_count() + ", "
++                    + download_success_count() + " successful requests, including HEAD)";
+         }
+ 
+         public String title() {
+@@ -198,6 +198,11 @@ public class AdblockController {
+         mFilteringConfiguration.removeFilterList(url);
+     }
+ 
++    @UiThread
++    public ShieldsDiagnostics getDiagnostics() {
++        return new ShieldsDiagnostics(AdblockControllerJni.get().getDiagnosticSnapshot(mBrowserContextHandle));
++    }
++
+     @UiThread
+     public void startUpdate() {
+         AdblockControllerJni.get().startUpdate(mBrowserContextHandle);
+@@ -325,6 +330,7 @@ public class AdblockController {
+     @NativeMethods
+     public interface Natives {
+         void startUpdate(BrowserContextHandle contextHandle);
++        String getDiagnosticSnapshot(BrowserContextHandle contextHandle);
+         boolean isPrivilegedFiltersEnabled(BrowserContextHandle contextHandle);
+         void setPrivilegedFiltersEnabled(BrowserContextHandle contextHandle, boolean enabled);
+         Object[] getCustomSubscriptions(BrowserContextHandle contextHandle);
+diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java b/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
+new file mode 100644
+index 0000000..62e976b
+--- /dev/null
++++ b/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
+@@ -0,0 +1,173 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++package org.chromium.components.adblock;
++
++import org.json.JSONArray;
++import org.json.JSONException;
++import org.json.JSONObject;
++
++import java.net.URL;
++import java.text.DateFormat;
++import java.util.Date;
++
++/** Read-only local snapshot. Conversion state is separate from engine activation. */
++public final class ShieldsDiagnostics {
++    private final JSONObject mData;
++    private final boolean mAvailable;
++
++    public ShieldsDiagnostics(String json) {
++        JSONObject data;
++        boolean available;
++        try {
++            data = new JSONObject(json);
++            available = data.has("blocking_enabled") && data.has("advanced_enabled")
++                    && data.optJSONArray("subscriptions") != null;
++        } catch (JSONException | NullPointerException e) {
++            data = new JSONObject();
++            available = false;
++        }
++        mData = data;
++        mAvailable = available;
++    }
++
++    public boolean isChecking() {
++        JSONObject update = mData.optJSONObject("update");
++        return mAvailable && update != null && update.optBoolean("running");
++    }
++
++    public String getUpdateSummary() {
++        if (!mAvailable) return "Update diagnostics unavailable";
++        JSONObject update = mData.optJSONObject("update");
++        if (update == null || update.optInt("batch_id") == 0)
++            return "No manual check requested in this session";
++        if (update.optBoolean("running")) return "Checking selected subscriptions…";
++        int checked = update.optInt("checked");
++        if (checked == 0) return "No selected subscriptions eligible for this check";
++        String text = "Checked " + checked + ": " + update.optInt("updated")
++                + " activated, " + update.optInt("failed") + " failed, "
++                + update.optInt("cancelled") + " cancelled, " + update.optInt("timed_out")
++                + " timed out";
++        if (update.optInt("timed_out") > 0)
++            text += ". Automatic downloads may still be pending; see filter diagnostics.";
++        return text;
++    }
++
++    public String getOverview() {
++        if (!mAvailable) return "Filter diagnostics unavailable";
++        String easylist = mData.optString("easylist_url");
++        String anticv = mData.optString("anticv_url");
++        return "Ad blocking: " + (mData.optBoolean("blocking_enabled") ? "Enabled" : "Disabled")
++                + "\nAdvanced filtering: " + (mData.optBoolean("advanced_enabled") ? "Enabled" : "Disabled")
++                + "\nEasyList: " + operational(find(easylist))
++                + "\nAnti-circumvention: " + operational(find(anticv))
++                + ". Privileged scriptlets: "
++                + (find(anticv) != null && find(anticv).optBoolean("privileged_allowed")
++                        ? "eligible for supported rules" : "not eligible")
++                + "\nTap for local update errors and conversion counts.";
++    }
++
++    private JSONObject find(String url) {
++        JSONArray subscriptions = mData.optJSONArray("subscriptions");
++        if (subscriptions == null) return null;
++        for (int i = 0; i < subscriptions.length(); i++) {
++            JSONObject sub = subscriptions.optJSONObject(i);
++            if (sub != null && url.equals(sub.optString("url"))) return sub;
++        }
++        return null;
++    }
++
++    private String operational(JSONObject sub) {
++        if (sub == null) return "not selected";
++        if (!mData.optBoolean("blocking_enabled")) return "paused (ad blocking off)";
++        if (sub.optBoolean("active")) {
++            JSONObject counts = sub.optJSONObject("active_rules");
++            return counts != null && counts.optInt("accepted") == 0
++                    ? "loaded with zero accepted rules" : "loaded in the active engine";
++        }
++        return "selected; no active data";
++    }
++
++    public String describeSubscription(URL url) {
++        if (!mAvailable) return "Filter diagnostics unavailable";
++        JSONObject sub = find(url.toString());
++        return sub == null ? "Not selected" : describe(sub);
++    }
++
++    private String describe(JSONObject sub) {
++        String version = sub.optString("version");
++        String stored = sub.optString("stored_version");
++        String text = "Engine: " + operational(sub)
++                + "\nState: " + sub.optString("state", "Unknown")
++                + "\nLoaded version: " + (version.isEmpty() ? "not available" : version)
++                + "\nStored version: " + (stored.isEmpty() || stored.equals("0") ? "not recorded/provided" : stored)
++                + "\nLast installation: " + date(sub.optLong("installed_at"))
++                + "\nLast successful activation/update: " + date(sub.optLong("last_success"))
++                + "\nLatest attempt: " + stage(sub.optInt("stage"))
++                + "; downloaded " + (sub.optInt("stage") == 0 ? "not recorded" : yesNo(sub.optBoolean("downloaded")))
++                + ", parsed " + (sub.optInt("stage") == 0 ? "not recorded" : yesNo(sub.optBoolean("parsed")))
++                + "\nLatest source: " + sub.optString("source", "not recorded")
++                + "\nLast active source: " + sub.optString("last_success_source", "not recorded")
++                + "\nSuccessful requests: " + sub.optLong("successful_requests") + " (includes HEAD)"
++                + "\nRecorded consecutive download failures: " + sub.optLong("consecutive_failures");
++        String error = sub.optString("error");
++        text += "\nLatest error: " + (error.isEmpty() ? "none recorded" : error);
++        JSONObject rules = sub.optJSONObject("rules");
++        if (rules == null) return text + "\nLatest conversion counts: not recorded";
++        return text + "\nLatest conversion: " + rules.optInt("accepted") + " accepted; rejected — parser "
++                + rules.optInt("parser_rejected") + ", unsupported commands "
++                + rules.optInt("unsupported_commands") + ", privilege "
++                + rules.optInt("prohibited_privilege") + ", arguments "
++                + rules.optInt("unsafe_arguments") + ", unsupported options/no operation "
++                + rules.optInt("unsupported_options");
++    }
++
++    public String getFullReport() {
++        if (!mAvailable) return "Filter diagnostics unavailable";
++        StringBuilder report = new StringBuilder(getOverview()).append("\n\n")
++                .append(getUpdateSummary());
++        JSONObject update = mData.optJSONObject("update");
++        JSONArray outcomes = update == null ? null : update.optJSONArray("entries");
++        if (outcomes != null && outcomes.length() > 0) {
++            report.append("\nManual check results:");
++            for (int i = 0; i < outcomes.length(); i++) {
++                JSONObject entry = outcomes.optJSONObject(i);
++                if (entry == null) continue;
++                int outcome = entry.optInt("outcome", -1);
++                String label = outcome == 0 ? "activated" : outcome == 1 ? "failed"
++                        : outcome == 2 ? "cancelled" : outcome == 3 ? "timed out" : "unknown";
++                report.append("\n").append(entry.optString("url")).append(": ").append(label);
++                String error = entry.optString("error");
++                if (!error.isEmpty()) report.append(" — ").append(error);
++            }
++        }
++        JSONArray subscriptions = mData.optJSONArray("subscriptions");
++        for (int i = 0; i < subscriptions.length(); i++) {
++            JSONObject sub = subscriptions.optJSONObject(i);
++            if (sub == null) continue;
++            report.append("\n\n").append(sub.optString("title")).append("\n")
++                    .append(sub.optString("url")).append("\n").append(describe(sub));
++        }
++        return report.toString();
++    }
++
++    private static String yesNo(boolean value) { return value ? "Yes" : "No"; }
++
++    private static String date(long millis) {
++        return millis <= 0 ? "not recorded" : DateFormat.getDateTimeInstance(
++                DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(millis));
++    }
++
++    private static String stage(int stage) {
++        switch (stage) {
++            case 1: return "download requested/in progress";
++            case 2: return "downloaded; awaiting conversion";
++            case 3: return "parsed; awaiting storage/activation";
++            case 4: return "activated";
++            case 5: return "failed";
++            case 6: return "cancelled";
++            case 7: return "waiting for automatic retry";
++            case 8: return "interrupted";
++            default: return "not recorded";
++        }
++    }
++}
+diff --git a/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java b/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java
+new file mode 100644
+index 0000000..70fce10
+--- /dev/null
++++ b/components/adblock/android/junit/src/org/chromium/components/adblock/ShieldsDiagnosticsTest.java
+@@ -0,0 +1,142 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++package org.chromium.components.adblock;
++
++import static org.junit.Assert.assertFalse;
++import static org.junit.Assert.assertTrue;
++
++import org.json.JSONArray;
++import org.json.JSONObject;
++import org.junit.Test;
++import org.junit.runner.RunWith;
++import org.robolectric.annotation.Config;
++
++import org.chromium.base.test.BaseRobolectricTestRunner;
++
++import java.net.URL;
++
++@RunWith(BaseRobolectricTestRunner.class)
++@Config(manifest = Config.NONE, sdk = {29, 36})
++public class ShieldsDiagnosticsTest {
++    private JSONObject snapshot() throws Exception {
++        return new JSONObject().put("blocking_enabled", true).put("advanced_enabled", false)
++                .put("easylist_url", "https://example.com/easylist.txt")
++                .put("anticv_url", "https://example.com/anticv.txt")
++                .put("subscriptions", new JSONArray());
++    }
++
++    @Test public void selectedPendingListDoesNotClaimActiveFiltering() throws Exception {
++        JSONObject data = snapshot();
++        data.getJSONArray("subscriptions").put(new JSONObject()
++                .put("url", "https://example.com/easylist.txt").put("active", false)
++                .put("state", "Installing").put("stage", 1));
++        ShieldsDiagnostics diagnostics = new ShieldsDiagnostics(data.toString());
++        assertTrue(diagnostics.getOverview().contains("EasyList: selected; no active data"));
++        assertTrue(diagnostics.describeSubscription(new URL("https://example.com/easylist.txt"))
++                .contains("downloaded No, parsed No"));
++    }
++
++    @Test public void failedUpdateRetainsIndependentActiveState() throws Exception {
++        JSONObject data = snapshot();
++        data.getJSONArray("subscriptions").put(new JSONObject()
++                .put("url", "https://example.com/easylist.txt").put("active", true)
++                .put("version", "previous").put("stage", 5).put("error", "HTTP 404")
++                .put("successful_requests", 12).put("consecutive_failures", 3));
++        String description = new ShieldsDiagnostics(data.toString())
++                .describeSubscription(new URL("https://example.com/easylist.txt"));
++        assertTrue(description.contains("loaded in the active engine"));
++        assertTrue(description.contains("Loaded version: previous"));
++        assertTrue(description.contains("Latest error: HTTP 404"));
++        assertTrue(description.contains("Successful requests: 12"));
++        assertTrue(description.contains("consecutive download failures: 3"));
++    }
++
++    @Test public void downloadedAndParsedAreNotActivation() throws Exception {
++        JSONObject data = snapshot();
++        data.getJSONArray("subscriptions").put(new JSONObject()
++                .put("url", "https://example.com/easylist.txt").put("active", false)
++                .put("stage", 3).put("downloaded", true).put("parsed", true));
++        String text = new ShieldsDiagnostics(data.toString())
++                .describeSubscription(new URL("https://example.com/easylist.txt"));
++        assertTrue(text.contains("no active data"));
++        assertTrue(text.contains("parsed; awaiting storage/activation"));
++        assertTrue(text.contains("downloaded Yes, parsed Yes"));
++        assertTrue(text.contains("Last successful activation/update: not recorded"));
++    }
++
++    @Test public void legacyHistoryStaysUnknownRatherThanFalse() throws Exception {
++        JSONObject data = snapshot();
++        data.getJSONArray("subscriptions").put(new JSONObject()
++                .put("url", "https://example.com/easylist.txt").put("active", true));
++        String text = new ShieldsDiagnostics(data.toString())
++                .describeSubscription(new URL("https://example.com/easylist.txt"));
++        assertTrue(text.contains("downloaded not recorded, parsed not recorded"));
++        assertTrue(text.contains("Latest conversion counts: not recorded"));
++    }
++
++    @Test public void manualBatchShowsActualMixedResultAndTimeout() throws Exception {
++        JSONObject data = snapshot();
++        JSONObject update = new JSONObject().put("batch_id", 4).put("checked", 4)
++                .put("updated", 1).put("failed", 1).put("cancelled", 1).put("timed_out", 1);
++        data.put("update", update);
++        ShieldsDiagnostics diagnostics = new ShieldsDiagnostics(data.toString());
++        assertFalse(diagnostics.isChecking());
++        assertTrue(diagnostics.getUpdateSummary().contains("1 activated, 1 failed, 1 cancelled, 1 timed out"));
++        assertTrue(diagnostics.getUpdateSummary().contains("Automatic downloads may still be pending"));
++        update.put("running", true);
++        assertTrue(new ShieldsDiagnostics(data.toString()).isChecking());
++    }
++
++    @Test public void emptyAndUnavailableStatesCannotRemainChecking() throws Exception {
++        JSONObject data = snapshot().put("update", new JSONObject().put("batch_id", 1));
++        assertTrue(new ShieldsDiagnostics(data.toString()).getUpdateSummary().contains("No selected subscriptions"));
++        assertFalse(new ShieldsDiagnostics("invalid").isChecking());
++        assertTrue(new ShieldsDiagnostics("{}").getOverview().contains("unavailable"));
++    }
++
++    @Test public void globalDisableAndAdvancedEligibilityRemainIndependent() throws Exception {
++        JSONObject data = snapshot().put("blocking_enabled", false);
++        data.getJSONArray("subscriptions").put(new JSONObject()
++                .put("url", "https://example.com/anticv.txt").put("active", false)
++                .put("privileged_allowed", false));
++        String overview = new ShieldsDiagnostics(data.toString()).getOverview();
++        assertTrue(overview.contains("Ad blocking: Disabled"));
++        assertTrue(overview.contains("Advanced filtering: Disabled"));
++        assertTrue(overview.contains("paused (ad blocking off)"));
++        assertTrue(overview.contains("Privileged scriptlets: not eligible"));
++    }
++
++    @Test public void removedListKeepsCapturedManualCancellationResult() throws Exception {
++        JSONObject data = snapshot().put("update", new JSONObject().put("batch_id", 2)
++                .put("checked", 1).put("cancelled", 1)
++                .put("entries", new JSONArray().put(new JSONObject()
++                        .put("url", "https://example.com/removed.txt").put("outcome", 2)
++                        .put("error", "Subscription stopped before activation"))));
++        String report = new ShieldsDiagnostics(data.toString()).getFullReport();
++        assertTrue(report.contains("https://example.com/removed.txt: cancelled"));
++        assertTrue(report.contains("Subscription stopped before activation"));
++    }
++
++    @Test public void legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels() throws Exception {
++        AdblockController.Subscription subscription = new AdblockController.Subscription(
++                new URL("https://example.com/list.txt"), "List", "123", "Installed",
++                "installation", 42, 7, new String[] {}, false);
++        String text = subscription.getDescription();
++        assertTrue(text.contains("42 successful requests"));
++        assertTrue(text.contains("consecutive download failures 7"));
++        assertTrue(text.contains("Installation time:"));
++        assertFalse(text.contains("total"));
++    }
++
++    @Test public void conversionReasonsAreVisibleWithoutRuleContents() throws Exception {
++        JSONObject data = snapshot();
++        data.getJSONArray("subscriptions").put(new JSONObject()
++                .put("url", "https://example.com/easylist.txt")
++                .put("rules", new JSONObject().put("accepted", 5)
++                        .put("unsupported_commands", 2).put("prohibited_privilege", 3)));
++        String text = new ShieldsDiagnostics(data.toString()).getFullReport();
++        assertTrue(text.contains("5 accepted"));
++        assertTrue(text.contains("unsupported commands 2, privilege 3"));
++        assertFalse(text.contains("simulate-mouse-event"));
++    }
++}
+diff --git a/components/adblock/core/common/flatbuffer_data.cc b/components/adblock/core/common/flatbuffer_data.cc
+index 7cec5ae..a87dae2 100644
+--- a/components/adblock/core/common/flatbuffer_data.cc
++++ b/components/adblock/core/common/flatbuffer_data.cc
+@@ -41,6 +41,10 @@ void DestroyMemoryMappedFile(std::unique_ptr<base::MemoryMappedFile> memory,
+ 
+ }  // namespace
+ 
++std::optional<RuleStatistics> FlatbufferData::GetRuleStatistics() const {
++  return {};
++}
++
+ InMemoryFlatbufferData::InMemoryFlatbufferData(std::string data)
+     : data_(std::move(data)) {}
+ 
+diff --git a/components/adblock/core/common/flatbuffer_data.h b/components/adblock/core/common/flatbuffer_data.h
+index 4697460..89b772a 100644
+--- a/components/adblock/core/common/flatbuffer_data.h
++++ b/components/adblock/core/common/flatbuffer_data.h
+@@ -20,6 +20,8 @@
+ 
+ #include <atomic>
+ #include <memory>
++#include <limits>
++#include <optional>
+ #include <string>
+ 
+ #include "base/files/file_path.h"
+@@ -27,12 +29,29 @@
+ 
+ namespace adblock {
+ 
++// Fixed-size local counters. One input rule has one acceptance/rejection result.
++// Counters saturate; rule contents and browsing activity are never retained.
++struct RuleStatistics {
++  int accepted = 0;
++  int parser_rejected = 0;
++  int unsupported_commands = 0;
++  int prohibited_privilege = 0;
++  int unsafe_arguments = 0;
++  int unsupported_options = 0;
++
++  static void Increment(int& value) {
++    if (value < std::numeric_limits<int>::max()) ++value;
++  }
++};
++
+ // Holds raw flatbuffer data.
+ // All methods must be thread-safe, the object can be accessed from multiple
+ // task runners concurrently.
+ class FlatbufferData {
+  public:
+   virtual ~FlatbufferData() = default;
++  // Optional immutable conversion sidecar; no FlatBuffers schema change.
++  virtual std::optional<RuleStatistics> GetRuleStatistics() const;
+ 
+   virtual const uint8_t* data() const = 0;
+   virtual size_t size() const = 0;
+diff --git a/components/adblock/core/converter/flatbuffer_converter.cc b/components/adblock/core/converter/flatbuffer_converter.cc
+index ac6e767..e11d21e 100644
+--- a/components/adblock/core/converter/flatbuffer_converter.cc
++++ b/components/adblock/core/converter/flatbuffer_converter.cc
+@@ -126,7 +126,8 @@ void FlatbufferConverter::ConvertFilter(
+         flatbuffer_serializer.SerializeContentFilter(
+             std::move(content_filter.value()));
+       } else {
+-        VLOG(1) << "[eyeo] Invalid content filter: " << line;
++        flatbuffer_serializer.RecordParserRejection();
++        VLOG(1) << "[eyeo] Invalid content filter (contents omitted)";
+       }
+       break;
+     case FilterType::Snippet:
+@@ -136,7 +137,8 @@ void FlatbufferConverter::ConvertFilter(
+         flatbuffer_serializer.SerializeSnippetFilter(
+             std::move(snippet_filter.value()));
+       } else {
+-        VLOG(1) << "[eyeo] Invalid snippet filter: " << line;
++        flatbuffer_serializer.RecordParserRejection();
++        VLOG(1) << "[eyeo] Invalid snippet filter (contents omitted)";
+       }
+       break;
+     case FilterType::Url:
+@@ -144,7 +146,8 @@ void FlatbufferConverter::ConvertFilter(
+               std::string(filter_str.data(), filter_str.size()))) {
+         flatbuffer_serializer.SerializeUrlFilter(std::move(url_filter.value()));
+       } else {
+-        LOG(INFO) << "[eyeo] Invalid url filter: " << line;
++        flatbuffer_serializer.RecordParserRejection();
++        VLOG(1) << "[eyeo] Parser rejected URL rule (contents omitted)";
+       }
+       break;
+   }
+diff --git a/components/adblock/core/converter/serializer/flatbuffer_serializer.cc b/components/adblock/core/converter/serializer/flatbuffer_serializer.cc
+index 620a80a..2d49d5e 100644
+--- a/components/adblock/core/converter/serializer/flatbuffer_serializer.cc
++++ b/components/adblock/core/converter/serializer/flatbuffer_serializer.cc
+@@ -94,8 +94,12 @@ namespace {
+ 
+ class Buffer : public FlatbufferData {
+  public:
+-  explicit Buffer(flatbuffers::DetachedBuffer&& buffer)
+-      : buffer_(std::move(buffer)) {}
++  explicit Buffer(flatbuffers::DetachedBuffer&& buffer, RuleStatistics statistics)
++      : buffer_(std::move(buffer)), statistics_(statistics) {}
++
++  std::optional<RuleStatistics> GetRuleStatistics() const override {
++    return statistics_;
++  }
+ 
+   const uint8_t* data() const override { return buffer_.data(); }
+ 
+@@ -107,6 +111,7 @@ class Buffer : public FlatbufferData {
+ 
+  private:
+   flatbuffers::DetachedBuffer buffer_;
++  const RuleStatistics statistics_;
+ };
+ 
+ FlatbufferSerializer::FlatbufferSerializer(GURL subscription_url,
+@@ -141,7 +146,7 @@ FlatbufferSerializer::GetSerializedSubscription() {
+       WriteSnippetFilterIndex(snippet_index_));
+ 
+   builder_.Finish(subscription, flat::SubscriptionIdentifier());
+-  return std::make_unique<Buffer>(builder_.Release());
++  return std::make_unique<Buffer>(builder_.Release(), statistics_);
+ }
+ 
+ void FlatbufferSerializer::SerializeMetadata(const Metadata metadata) {
+@@ -180,40 +185,51 @@ void FlatbufferSerializer::SerializeContentFilter(
+     case FilterType::InlineCss:
+       if (!allow_privileged_) {
+         VLOG(1) << "[eyeo] Inline CSS filters not allowed";
+-        break;
++        RuleStatistics::Increment(statistics_.prohibited_privilege);
++        return;
+       }
+       AddInlineCssFilterForDomains(inline_css_index_,
+                                    content_filter.domains.GetIncludeDomains(),
+                                    CreateInlineCssFilter(content_filter));
+       break;
+     default:
+-      break;
++      RuleStatistics::Increment(statistics_.unsupported_options);
++      return;
+   }
++  RuleStatistics::Increment(statistics_.accepted);
+ }
+ 
+ void FlatbufferSerializer::SerializeSnippetFilter(
+     const SnippetFilter snippet_filter) {
+   if (!allow_privileged_) {
+     LOG(INFO) << "[eyeo] Snippet filters not allowed";
++    RuleStatistics::Increment(statistics_.prohibited_privilege);
+     return;
+   }
+   for (const auto& cur : snippet_filter.snippet_script) {
+     auto command = base::UTF8ToUTF16(cur.front());
+     if (!IsInList(command, kAllowedSnippets)) {
+-      LOG(INFO) << "[eyeo] Snippet filter command not allowed: " << command;
++      LOG(INFO) << "[eyeo] Unsupported snippet command";
++      RuleStatistics::Increment(statistics_.unsupported_commands);
+       return;
+     }
+     if (base::EqualsCaseInsensitiveASCII(command, "override-property-read")) {
++      if (cur.size() < 3) {
++        RuleStatistics::Increment(statistics_.unsafe_arguments);
++        return;
++      }
+       for (auto it = cur.begin()+2; it != cur.end(); ++it) {
+         auto p = base::UTF8ToUTF16(*it);
+         if (!IsInList(p, kAllowedPropertyReadValues)) {
+-          LOG(INFO) << "[eyeo] Snippet override-property-read param not allowed: " << *it;
++          LOG(INFO) << "[eyeo] Prohibited snippet argument";
++          RuleStatistics::Increment(statistics_.unsafe_arguments);
+           return;
+         }
+       }
+     }
+   }
+ 
++  RuleStatistics::Increment(statistics_.accepted);
+   std::vector<flatbuffers::Offset<adblock::flat::SnippetFunctionCall>> offsets;
+   offsets.reserve(snippet_filter.snippet_script.size());
+   for (const auto& cur : snippet_filter.snippet_script) {
+@@ -234,9 +250,11 @@ void FlatbufferSerializer::SerializeUrlFilter(const UrlFilter url_filter) {
+   const auto& options = url_filter.options;
+   if (!allow_privileged_ && options.Headers().has_value()) {
+     LOG(INFO) << "[eyeo] Header filters not allowed";
++    RuleStatistics::Increment(statistics_.prohibited_privilege);
+     return;
+   }
+ 
++  url_rule_counted_ = false;
+   auto offset = flat::CreateUrlFilter(
+       builder_, builder_.CreateString(url_filter.original_filter_text),
+       builder_.CreateString(url_filter.pattern), options.IsMatchCase(),
+@@ -305,6 +323,7 @@ void FlatbufferSerializer::SerializeUrlFilter(const UrlFilter url_filter) {
+         }
+       }
+     }
++    if (!url_rule_counted_) RuleStatistics::Increment(statistics_.unsupported_options);
+     return;
+   }
+ 
+@@ -326,12 +345,17 @@ void FlatbufferSerializer::SerializeUrlFilter(const UrlFilter url_filter) {
+         break;
+     }
+   }
++  if (!url_rule_counted_) RuleStatistics::Increment(statistics_.unsupported_options);
+ }
+ 
+ void FlatbufferSerializer::AddUrlFilterToIndex(
+     UrlFilterIndex& index,
+     absl::optional<std::string_view> pattern_text,
+     flatbuffers::Offset<flat::UrlFilter> filter) {
++  if (!url_rule_counted_) {
++    RuleStatistics::Increment(statistics_.accepted);
++    url_rule_counted_ = true;
++  }
+   const auto keyword =
+       pattern_text ? FindCandidateKeyword(index, *pattern_text) : "";
+   index[keyword].push_back(filter);
+diff --git a/components/adblock/core/converter/serializer/flatbuffer_serializer.h b/components/adblock/core/converter/serializer/flatbuffer_serializer.h
+index 7d2f0eb..2ce2bdf 100644
+--- a/components/adblock/core/converter/serializer/flatbuffer_serializer.h
++++ b/components/adblock/core/converter/serializer/flatbuffer_serializer.h
+@@ -43,6 +43,9 @@ class FlatbufferSerializer final : public Serializer {
+   ~FlatbufferSerializer() override;
+ 
+   std::unique_ptr<FlatbufferData> GetSerializedSubscription();
++  void RecordParserRejection() {
++    RuleStatistics::Increment(statistics_.parser_rejected);
++  }
+ 
+   void SerializeMetadata(const Metadata metadata) override;
+   void SerializeContentFilter(const ContentFilter content_filter) override;
+@@ -50,6 +53,8 @@ class FlatbufferSerializer final : public Serializer {
+   void SerializeUrlFilter(const UrlFilter url_filter) override;
+ 
+  private:
++  RuleStatistics statistics_;
++  bool url_rule_counted_ = false;
+   using UrlFilterIndex =
+       std::map<std::string, std::vector<flatbuffers::Offset<flat::UrlFilter>>>;
+   using ElemhideIndex = std::unordered_map<
+diff --git a/components/adblock/core/net/BUILD.gn b/components/adblock/core/net/BUILD.gn
+index 3e64906..816a7ea 100644
+--- a/components/adblock/core/net/BUILD.gn
++++ b/components/adblock/core/net/BUILD.gn
+@@ -20,6 +20,7 @@ source_set("net") {
+     "adblock_request_throttle_impl.cc",
+     "adblock_request_throttle_impl.h",
+     "adblock_resource_request.h",
++    "adblock_resource_request.cc",
+     "adblock_resource_request_impl.cc",
+     "adblock_resource_request_impl.h",
+   ]
+diff --git a/components/adblock/core/net/adblock_resource_request.cc b/components/adblock/core/net/adblock_resource_request.cc
+new file mode 100644
+index 0000000..7c6ae5a
+--- /dev/null
++++ b/components/adblock/core/net/adblock_resource_request.cc
+@@ -0,0 +1,8 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++#include "components/adblock/core/net/adblock_resource_request.h"
++
++namespace adblock {
++AdblockResourceRequest::AdblockResourceRequest() = default;
++AdblockResourceRequest::~AdblockResourceRequest() = default;
++}  // namespace adblock
+diff --git a/components/adblock/core/net/adblock_resource_request.h b/components/adblock/core/net/adblock_resource_request.h
+index a649153..50c99d8 100644
+--- a/components/adblock/core/net/adblock_resource_request.h
++++ b/components/adblock/core/net/adblock_resource_request.h
+@@ -29,6 +29,7 @@ namespace adblock {
+ // It implements observing network state and retries.
+ class AdblockResourceRequest {
+  public:
++  AdblockResourceRequest();
+   // Controls retry behavior when download failed.
+   enum class RetryPolicy {
+     // Will retry with a progressive back-off until download succeeded.
+@@ -43,7 +44,23 @@ class AdblockResourceRequest {
+       scoped_refptr<net::HttpResponseHeaders> headers)>;
+   enum class Method { GET, HEAD };
+ 
+-  virtual ~AdblockResourceRequest() = default;
++  using AttemptDiagnosticCallback = base::RepeatingCallback<void(
++      const GURL&, int net_error, int http_status, bool retrying)>;
++  void SetAttemptDiagnosticCallback(AttemptDiagnosticCallback callback) {
++    attempt_diagnostic_callback_ = std::move(callback);
++  }
++
++ protected:
++  void NotifyAttemptDiagnostic(const GURL& url, int net_error, int http_status, bool retrying) {
++    if (attempt_diagnostic_callback_) attempt_diagnostic_callback_.Run(url, net_error, http_status, retrying);
++  }
++
++ private:
++  AttemptDiagnosticCallback attempt_diagnostic_callback_;
++
++ public:
++
++  virtual ~AdblockResourceRequest();
+ 
+   virtual void Start(GURL url,
+                      Method method,
+diff --git a/components/adblock/core/net/adblock_resource_request_impl.cc b/components/adblock/core/net/adblock_resource_request_impl.cc
+index c75ef3f..6482b96 100644
+--- a/components/adblock/core/net/adblock_resource_request_impl.cc
++++ b/components/adblock/core/net/adblock_resource_request_impl.cc
+@@ -160,6 +160,9 @@ void AdblockResourceRequestImpl::OnDownloadFinished(
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   TRACE_EVENT_NESTABLE_ASYNC_END0("eyeo", "Downloading resource", this);
+ 
++  NotifyAttemptDiagnostic(loader_->GetFinalURL().is_valid() ? loader_->GetFinalURL() : url_, loader_->NetError(),
++      loader_->ResponseInfo() && loader_->ResponseInfo()->headers ? loader_->ResponseInfo()->headers->response_code() : 0,
++      downloaded_file.empty() && retry_policy_ == RetryPolicy::RetryUntilSucceeded);
+   if (downloaded_file.empty() &&
+       retry_policy_ == RetryPolicy::RetryUntilSucceeded) {
+     Retry();
+diff --git a/components/adblock/core/subscription/BUILD.gn b/components/adblock/core/subscription/BUILD.gn
+index b0694b0..345de21 100644
+--- a/components/adblock/core/subscription/BUILD.gn
++++ b/components/adblock/core/subscription/BUILD.gn
+@@ -49,14 +49,17 @@ source_set("subscription") {
+     "subscription_downloader_impl.cc",
+     "subscription_downloader_impl.h",
+     "subscription_persistent_metadata.h",
++    "subscription_persistent_metadata.cc",
+     "subscription_persistent_metadata_impl.cc",
+     "subscription_persistent_metadata_impl.h",
+     "subscription_persistent_storage.h",
+     "subscription_persistent_storage_impl.cc",
+     "subscription_persistent_storage_impl.h",
+     "subscription_service.h",
++    "subscription_service.cc",
+     "subscription_service_impl.cc",
+     "subscription_service_impl.h",
++    "subscription_update_result.h",
+     "subscription_validator.h",
+     "subscription_validator_impl.cc",
+     "subscription_validator_impl.h",
+@@ -184,3 +187,18 @@ source_set("perf_tests") {
+     "//components/test/data/adblock/5000_urls.txt.gz",
+   ]
+ }
++
++# Roadium Card 01 deterministic diagnostics and lifecycle regressions.
++import("//testing/test.gni")
++test("roadium_shields_unit_tests") {
++  sources = [ "../../test/shields_diagnostics_unittest.cc" ]
++  deps = [
++    "//base/test:run_all_unittests",
++    "//base/test:test_support",
++    "//components/adblock/core/configuration",
++    "//components/adblock/core/converter",
++    "//components/adblock/core/subscription",
++    "//components/prefs:test_support",
++    "//testing/gtest",
++  ]
++}
+diff --git a/components/adblock/core/subscription/filtering_configuration_maintainer.h b/components/adblock/core/subscription/filtering_configuration_maintainer.h
+index 4d200dd..0224e3f 100644
+--- a/components/adblock/core/subscription/filtering_configuration_maintainer.h
++++ b/components/adblock/core/subscription/filtering_configuration_maintainer.h
+@@ -23,6 +23,8 @@
+ 
+ #include "base/memory/scoped_refptr.h"
+ #include "components/adblock/core/subscription/subscription.h"
++#include "components/adblock/core/subscription/subscription_update_result.h"
++#include "base/functional/callback.h"
+ #include "components/adblock/core/subscription/subscription_collection.h"
+ #include "components/adblock/core/subscription/subscription_persistent_metadata.h"
+ 
+@@ -43,6 +45,8 @@ class FilteringConfigurationMaintainer {
+       const = 0;
+ 
+   virtual void StartUpdate() = 0;
++  // Diagnostic completion for a manual check; does not replace routine updates.
++  virtual void StartUpdateWithCallback(base::OnceCallback<void(UpdateCheckResult)> callback) = 0;
+   virtual raw_ptr<SubscriptionPersistentMetadata> GetMetadata() = 0;
+ 
+   // Allows inspecting what Subscriptions are currently in use. This includes
+diff --git a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
+index 264ea2f..f5e0875 100644
+--- a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
++++ b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
+@@ -85,6 +85,13 @@ FilteringConfigurationMaintainerImpl::FilteringConfigurationMaintainerImpl(
+ }
+ 
+ FilteringConfigurationMaintainerImpl::~FilteringConfigurationMaintainerImpl() {
++  FinishAllManual(ManualOutcome::Cancelled);
++  for (const auto& pending : ongoing_installations_) {
++    auto diagnostic = persistent_metadata_->GetDiagnostics(pending->GetSourceUrl());
++    diagnostic.stage = DiagnosticStage::Cancelled;
++    diagnostic.error = "Configuration stopped before activation";
++    persistent_metadata_->SetDiagnostics(pending->GetSourceUrl(), diagnostic);
++  }
+   configuration_->RemoveObserver(this);
+ }
+ 
+@@ -278,8 +285,75 @@ void FilteringConfigurationMaintainerImpl::StartUpdate() {
+   LOG(INFO) << "[eyeo] Running forced update";
+   for (auto& subscription : current_state_) {
+     const auto& url = subscription->GetSourceUrl();
+-    DownloadAndInstallSubscription(url);
++    if (std::ranges::find(ongoing_installations_, url, &Subscription::GetSourceUrl) == ongoing_installations_.end())
++      DownloadAndInstallSubscription(url);
++  }
++}
++
++void FilteringConfigurationMaintainerImpl::StartUpdateWithCallback(
++    base::OnceCallback<void(UpdateCheckResult)> callback) {
++  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++  FinishAllManual(ManualOutcome::Cancelled);
++  manual_result_ = {};
++  auto urls = configuration_->GetFilterLists();
++  manual_pending_ = std::set<GURL>(urls.begin(), urls.end());
++  manual_result_.checked = static_cast<int>(manual_pending_.size());
++  manual_callback_ = std::move(callback);
++  if (manual_pending_.empty()) {
++    std::move(manual_callback_).Run(manual_result_);
++    return;
+   }
++  if (!IsInitialized()) {
++    for (const auto& url : manual_pending_) {
++      auto diagnostic = persistent_metadata_->GetDiagnostics(url);
++      diagnostic.stage = DiagnosticStage::Failed;
++      diagnostic.error = "Subscription storage still initializing; check could not start";
++      persistent_metadata_->SetDiagnostics(url, diagnostic);
++    }
++    FinishAllManual(ManualOutcome::Failed);
++    return;
++  }
++  // Bound only the manual result window. Existing automatic retry/backoff
++  // continues independently; a timed-out check never reports activation.
++  manual_deadline_.Start(FROM_HERE, base::Seconds(45),
++      base::BindOnce(&FilteringConfigurationMaintainerImpl::FinishAllManual,
++                    weak_ptr_factory_.GetWeakPtr(), ManualOutcome::TimedOut));
++  for (const auto& url : urls) {
++    if (std::ranges::find(ongoing_installations_, url, &Subscription::GetSourceUrl) == ongoing_installations_.end())
++      DownloadAndInstallSubscription(url);
++  }
++}
++
++void FilteringConfigurationMaintainerImpl::FinishManual(
++    const GURL& url, ManualOutcome outcome) {
++  if (!manual_pending_.erase(url)) return;
++  UpdateCheckEntry entry;
++  entry.url = url.SchemeIs("data") ? "Inline subscription (contents omitted)" : url.spec();
++  entry.configuration = configuration_->GetName();
++  entry.outcome = static_cast<int>(outcome);
++  const auto diagnostic = persistent_metadata_->GetDiagnostics(url);
++  if (outcome == ManualOutcome::Failed)
++    entry.error = diagnostic.error.empty() ? "No valid update data received" : diagnostic.error;
++  if (outcome == ManualOutcome::Cancelled)
++    entry.error = "Subscription or configuration stopped before activation";
++  if (outcome == ManualOutcome::TimedOut)
++    entry.error = "Check timed out after 45 seconds; the subscription update may continue";
++  manual_result_.entries.push_back(std::move(entry));
++  switch (outcome) {
++    case ManualOutcome::Updated: ++manual_result_.updated; break;
++    case ManualOutcome::Failed: ++manual_result_.failed; break;
++    case ManualOutcome::Cancelled: ++manual_result_.cancelled; break;
++    case ManualOutcome::TimedOut: ++manual_result_.timed_out; break;
++  }
++  if (manual_pending_.empty() && manual_callback_) {
++    manual_deadline_.Stop();
++    std::move(manual_callback_).Run(manual_result_);
++  }
++}
++
++void FilteringConfigurationMaintainerImpl::FinishAllManual(ManualOutcome outcome) {
++  auto pending = manual_pending_;
++  for (const auto& url : pending) FinishManual(url, outcome);
+ }
+ 
+ raw_ptr<SubscriptionPersistentMetadata>
+@@ -367,8 +441,9 @@ void FilteringConfigurationMaintainerImpl::OnSubscriptionDataAvailable(
+     return;
+   }
+   if (!raw_data) {
+-    // Download failed.
++    // Download failed; the downloader records the transport/conversion reason.
+     ongoing_installations_.erase(ongoing_installation);
++    FinishManual(ongoing_installation->GetSourceUrl(), ManualOutcome::Failed);
+     UpdatePreloadedSubscriptionProvider();
+     return;
+   }
+@@ -388,7 +463,7 @@ void FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage(
+       ongoing_installations_.end()) {
+     // Installation was canceled. We must now remove the subscription from
+     // storage. Do not add it to |current_state|.
+-    storage_->RemoveSubscription(subscription);
++    if (subscription) storage_->RemoveSubscription(subscription);
+     UpdatePreloadedSubscriptionProvider();
+     return;
+   }
+@@ -398,6 +473,11 @@ void FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage(
+     // There was an error adding subscription to storage.
+     LOG(WARNING) << "[eyeo] Failed to add subscription, current number "
+                  << "of subscriptions: " << current_state_.size();
++    auto diagnostic = persistent_metadata_->GetDiagnostics(ongoing_installation->GetSourceUrl());
++    diagnostic.stage = DiagnosticStage::Failed;
++    diagnostic.error = "Storage or validation failed; previous filtering data retained";
++    persistent_metadata_->SetDiagnostics(ongoing_installation->GetSourceUrl(), diagnostic);
++    FinishManual(ongoing_installation->GetSourceUrl(), ManualOutcome::Failed);
+     UpdatePreloadedSubscriptionProvider();
+     return;
+   }
+@@ -414,6 +494,18 @@ void FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage(
+             << ", current number of subscriptions: " << current_state_.size();
+   }
+   UpdatePreloadedSubscriptionProvider();
++  // Record completion only once the accepted subscription is in current_state_.
++  const auto identity = ongoing_installation->GetSourceUrl();
++  auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
++  diagnostic.stage = DiagnosticStage::Activated;
++  diagnostic.downloaded = true;
++  diagnostic.parsed = true;
++  diagnostic.error.clear();
++  diagnostic.last_success = base::Time::Now();
++  diagnostic.last_success_source = diagnostic.source;
++  diagnostic.active_rules = diagnostic.rules;
++  persistent_metadata_->SetDiagnostics(identity, diagnostic);
++  FinishManual(identity, ManualOutcome::Updated);
+   // Notify "observer"
+   subscription_updated_callback_.Run(subscription->GetSourceUrl());
+ }
+@@ -463,6 +555,11 @@ bool FilteringConfigurationMaintainerImpl::UninstallSubscriptionInternal(
+       ongoing_installations_, subscription_url, &Subscription::GetSourceUrl);
+   if (ongoing_installation_it != ongoing_installations_.end()) {
+     ongoing_installations_.erase(ongoing_installation_it);
++    auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
++    diagnostic.stage = DiagnosticStage::Cancelled;
++    diagnostic.error = "Subscription removed before activation";
++    persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
++    FinishManual(subscription_url, ManualOutcome::Cancelled);
+     DVLOG(1) << "[eyeo] Canceling installation of subscription "
+              << subscription_url;
+     downloader_->CancelDownload(subscription_url);
+diff --git a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h
+index 18efeb6..6705d1f 100644
+--- a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h
++++ b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h
+@@ -31,6 +31,7 @@
+ #include "components/adblock/core/subscription/subscription_downloader.h"
+ #include "components/adblock/core/subscription/subscription_persistent_metadata.h"
+ #include "components/adblock/core/subscription/subscription_persistent_storage.h"
++#include "base/timer/timer.h"
+ 
+ namespace adblock {
+ 
+@@ -62,6 +63,7 @@ class FilteringConfigurationMaintainerImpl
+   void RemoveAutoInstalledSubscriptions() final;
+ 
+   void StartUpdate() final;
++  void StartUpdateWithCallback(base::OnceCallback<void(UpdateCheckResult)> callback) final;
+   raw_ptr<SubscriptionPersistentMetadata> GetMetadata() final;
+ 
+   // FilteringConfiguration::Observer:
+@@ -72,6 +74,13 @@ class FilteringConfigurationMaintainerImpl
+   void InitializeStorage();
+ 
+  private:
++  enum class ManualOutcome { Updated, Failed, Cancelled, TimedOut };
++  void FinishManual(const GURL& url, ManualOutcome outcome);
++  void FinishAllManual(ManualOutcome outcome);
++  std::set<GURL> manual_pending_;
++  UpdateCheckResult manual_result_;
++  base::OnceCallback<void(UpdateCheckResult)> manual_callback_;
++  base::OneShotTimer manual_deadline_;
+   enum class StorageStatus {
+     Initialized,
+     Uninitialized,
+diff --git a/components/adblock/core/subscription/subscription_downloader_impl.cc b/components/adblock/core/subscription/subscription_downloader_impl.cc
+index 98254a0..9b3d2b7 100644
+--- a/components/adblock/core/subscription/subscription_downloader_impl.cc
++++ b/components/adblock/core/subscription/subscription_downloader_impl.cc
+@@ -16,6 +16,7 @@
+  */
+ 
+ #include "components/adblock/core/subscription/subscription_downloader_impl.h"
++#include "net/base/net_errors.h"
+ 
+ #include <algorithm>
+ #include <fstream>
+@@ -98,15 +99,28 @@ void SubscriptionDownloaderImpl::StartDownload(
+     AdblockResourceRequest::RetryPolicy retry_policy,
+     DownloadCompletedCallback on_finished) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++  auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
++  diagnostic.stage = DiagnosticStage::Downloading;
++  diagnostic.error.clear();
++  diagnostic.source = subscription_url.spec();
++  diagnostic.downloaded = false;
++  diagnostic.parsed = false;
++  diagnostic.rules.reset();
++  persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+   if (!IsUrlAllowed(subscription_url)) {
+     LOG(WARNING) << "[eyeo] Download from URL not allowed, will not download "
+                  << subscription_url;
++    diagnostic.stage = DiagnosticStage::Failed;
++    diagnostic.error = "Subscription URL scheme not allowed";
++    persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+     std::move(on_finished).Run(nullptr);
+     return;
+   }
+ 
+   ongoing_downloads_[subscription_url] =
+-      OngoingDownload{request_maker_.Run(), std::move(on_finished)};
++      OngoingDownload{request_maker_.Run(), std::move(on_finished), base::UnguessableToken::Create()};
++  std::get<ResourceRequestPtr>(ongoing_downloads_[subscription_url])->SetAttemptDiagnosticCallback(
++      base::BindRepeating(&SubscriptionDownloaderImpl::OnAttemptDiagnostic, weak_ptr_factory_.GetWeakPtr(), subscription_url));
+   std::get<ResourceRequestPtr>(ongoing_downloads_[subscription_url])
+       ->Start(
+           subscription_url, AdblockResourceRequest::Method::GET,
+@@ -121,6 +135,12 @@ void SubscriptionDownloaderImpl::CancelDownload(const GURL& subscription_url) {
+   LOG(WARNING) << "[eyeo] Download cancelled: "
+                 << subscription_url;
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++  if (ongoing_downloads_.contains(subscription_url)) {
++    auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
++    diagnostic.stage = DiagnosticStage::Cancelled;
++    diagnostic.error = "Download cancelled";
++    persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
++  }
+   ongoing_downloads_.erase(subscription_url);
+ }
+ 
+@@ -175,6 +195,17 @@ void SubscriptionDownloaderImpl::OnHeadersOnlyDownloaded(
+   ongoing_ping_.reset();
+ }
+ 
++void SubscriptionDownloaderImpl::OnAttemptDiagnostic(
++    const GURL& identity, const GURL& source, int net_error, int http_status, bool retrying) {
++  auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
++  diagnostic.source = source.spec();
++  if (http_status >= 400) diagnostic.error = "HTTP " + std::to_string(http_status);
++  else if (net_error != net::OK) diagnostic.error = net::ErrorToShortString(net_error);
++  else diagnostic.error.clear();
++  if (retrying) diagnostic.stage = DiagnosticStage::Retrying;
++  persistent_metadata_->SetDiagnostics(identity, diagnostic);
++}
++
+ void SubscriptionDownloaderImpl::OnDownloadFinished(
+     const GURL& subscription_url,
+     base::FilePath downloaded_file,
+@@ -185,6 +216,10 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
+   DCHECK(download_it != ongoing_downloads_.end());
+ 
+   if (downloaded_file.empty()) {
++    auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
++    diagnostic.stage = DiagnosticStage::Failed;
++    if (diagnostic.error.empty()) diagnostic.error = headers ? "HTTP " + std::to_string(headers->response_code()) : "Network failure";
++    persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+     persistent_metadata_->IncrementDownloadErrorCount(subscription_url);
+     LOG(WARNING) << "[eyeo] Failed to retrieve content for "
+                   << subscription_url << ", will abort";
+@@ -202,23 +237,29 @@ void SubscriptionDownloaderImpl::OnDownloadFinished(
+       TRACE_ID_LOCAL(GenerateTraceId(subscription_url)), "url",
+       subscription_url.spec());
+ 
++  auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
++  diagnostic.downloaded = true;
++  diagnostic.error.clear();
++  diagnostic.stage = DiagnosticStage::Downloaded;
++  persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+   bool allow_privileged_filter =
+     persistent_metadata_->AllowPrivilegedFilters(subscription_url);
+   conversion_executor_->ConvertFilterListFile(
+       subscription_url, downloaded_file, allow_privileged_filter,
+       base::BindOnce(&SubscriptionDownloaderImpl::OnConversionFinished,
+-                     weak_ptr_factory_.GetWeakPtr(), subscription_url));
++                     weak_ptr_factory_.GetWeakPtr(), subscription_url, std::get<base::UnguessableToken>(download_it->second)));
+ }
+ 
+ void SubscriptionDownloaderImpl::OnConversionFinished(
+     const GURL& subscription_url,
++    base::UnguessableToken token,
+     ConversionResult converter_result) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   TRACE_EVENT_NESTABLE_ASYNC_END0(
+       "eyeo", "Converting subscription",
+       TRACE_ID_LOCAL(GenerateTraceId(subscription_url)));
+   const auto download_it = ongoing_downloads_.find(subscription_url);
+-  if (download_it == ongoing_downloads_.end()) {
++  if (download_it == ongoing_downloads_.end() || std::get<base::UnguessableToken>(download_it->second) != token) {
+     LOG(WARNING) << "[eyeo] Conversion result discarded, subscription download "
+                "was cancelled.";
+     return;
+@@ -226,6 +267,13 @@ void SubscriptionDownloaderImpl::OnConversionFinished(
+ 
+   if (absl::holds_alternative<std::unique_ptr<FlatbufferData>>(
+           converter_result)) {
++    auto& data = absl::get<std::unique_ptr<FlatbufferData>>(converter_result);
++    auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
++    diagnostic.parsed = data != nullptr;
++    diagnostic.stage = data ? DiagnosticStage::Parsed : DiagnosticStage::Failed;
++    diagnostic.rules = data ? data->GetRuleStatistics() : std::nullopt;
++    if (!data) diagnostic.error = "Converter returned no filter data";
++    persistent_metadata_->SetDiagnostics(subscription_url, diagnostic);
+     LOG(WARNING) << "[eyeo] Finished converting " << subscription_url
+             << " successfully";
+     std::move(std::get<DownloadCompletedCallback>(download_it->second))
+@@ -270,6 +318,10 @@ void SubscriptionDownloaderImpl::AbortWithWarning(
+   if (ongoing_download_it == ongoing_downloads_.end()) {
+     return;
+   }
++  auto diagnostic = persistent_metadata_->GetDiagnostics(ongoing_download_it->first);
++  diagnostic.stage = DiagnosticStage::Failed;
++  diagnostic.error = "Conversion/redirect: " + warning;
++  persistent_metadata_->SetDiagnostics(ongoing_download_it->first, diagnostic);
+   LOG(WARNING) << "[eyeo] " << warning << " Aborting download of "
+                 << ongoing_download_it->first;
+   std::move(std::get<DownloadCompletedCallback>(ongoing_download_it->second))
+diff --git a/components/adblock/core/subscription/subscription_downloader_impl.h b/components/adblock/core/subscription/subscription_downloader_impl.h
+index 03a55c2..8ee4104 100644
+--- a/components/adblock/core/subscription/subscription_downloader_impl.h
++++ b/components/adblock/core/subscription/subscription_downloader_impl.h
+@@ -27,6 +27,7 @@
+ #include "base/memory/raw_ptr.h"
+ #include "base/memory/weak_ptr.h"
+ #include "base/sequence_checker.h"
++#include "base/unguessable_token.h"
+ #include "components/adblock/core/net/adblock_resource_request.h"
+ #include "components/adblock/core/subscription/conversion_executors.h"
+ #include "components/adblock/core/subscription/subscription_downloader.h"
+@@ -61,7 +62,7 @@ class SubscriptionDownloaderImpl final : public SubscriptionDownloader {
+   using ResourceRequestPtr = std::unique_ptr<AdblockResourceRequest>;
+   // Represents subscription downloads in progress.
+   using OngoingDownload =
+-      std::tuple<ResourceRequestPtr, DownloadCompletedCallback>;
++      std::tuple<ResourceRequestPtr, DownloadCompletedCallback, base::UnguessableToken>;
+   using OngoingDownloads = std::map<GURL, OngoingDownload>;
+   using OngoingDownloadsIt = OngoingDownloads::iterator;
+   // There's never more than one concurrent HEAD request - for the
+@@ -79,7 +80,10 @@ class SubscriptionDownloaderImpl final : public SubscriptionDownloader {
+                                base::FilePath downloaded_file,
+                                scoped_refptr<net::HttpResponseHeaders> headers);
+   void OnConversionFinished(const GURL& subscription_url,
++                            base::UnguessableToken token,
+                             ConversionResult converter_result);
++  void OnAttemptDiagnostic(const GURL& identity, const GURL& source,
++                           int net_error, int http_status, bool retrying);
+   void AbortWithWarning(const OngoingDownloadsIt ongoing_download_it,
+                         const std::string& warning);
+ 
+diff --git a/components/adblock/core/subscription/subscription_persistent_metadata.cc b/components/adblock/core/subscription/subscription_persistent_metadata.cc
+new file mode 100644
+index 0000000..1d1de25
+--- /dev/null
++++ b/components/adblock/core/subscription/subscription_persistent_metadata.cc
+@@ -0,0 +1,9 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++#include "components/adblock/core/subscription/subscription_persistent_metadata.h"
++
++namespace adblock {
++SubscriptionDiagnostics SubscriptionPersistentMetadata::GetDiagnostics(const GURL&) const {
++  return {};
++}
++}  // namespace adblock
+diff --git a/components/adblock/core/subscription/subscription_persistent_metadata.h b/components/adblock/core/subscription/subscription_persistent_metadata.h
+index dee6b3e..12e2a8a 100644
+--- a/components/adblock/core/subscription/subscription_persistent_metadata.h
++++ b/components/adblock/core/subscription/subscription_persistent_metadata.h
+@@ -21,11 +21,29 @@
+ #include <string>
+ 
+ #include "base/time/time.h"
++#include "components/adblock/core/common/flatbuffer_data.h"
+ #include "components/keyed_service/core/keyed_service.h"
+ #include "url/gurl.h"
+ 
+ namespace adblock {
+ 
++enum class DiagnosticStage {
++  Unknown, Downloading, Downloaded, Parsed, Activated, Failed, Cancelled,
++  Retrying, Interrupted,
++};
++
++struct SubscriptionDiagnostics {
++  DiagnosticStage stage = DiagnosticStage::Unknown;
++  bool downloaded = false;
++  bool parsed = false;
++  std::string error;
++  std::string source;
++  base::Time last_success;
++  std::string last_success_source;
++  std::optional<RuleStatistics> rules;
++  std::optional<RuleStatistics> active_rules;
++};
++
+ // Persistently stores metadata about Subscriptions.
+ // Metadata is data about Subscriptions that may not be encoded in the
+ // Subscriptions themselves, like number of errors encountered while
+@@ -34,6 +52,10 @@ namespace adblock {
+ // provide data for GET/HEAD query parameters.
+ class SubscriptionPersistentMetadata : public KeyedService {
+  public:
++  // One latest attempt and one last-success record per existing subscription;
++  // no history, rule contents, browsing URLs or analytics transmission.
++  virtual SubscriptionDiagnostics GetDiagnostics(const GURL& url) const;
++  virtual void SetDiagnostics(const GURL& url, SubscriptionDiagnostics data) {}
+   // Sets the expiration date to Now() + |expires_in|.
+   // Expiration time can be:
+   // - Parsed from the filter list (see Subscription::GetTimeUntilExpires())
+diff --git a/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc b/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
+index 3cb590d..b217740 100644
+--- a/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
++++ b/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
+@@ -18,6 +18,7 @@
+ #include "components/adblock/core/subscription/subscription_persistent_metadata_impl.h"
+ 
+ #include <string_view>
++#include <algorithm>
+ 
+ #include "absl/types/optional.h"
+ #include "base/json/values_util.h"
+@@ -36,9 +37,30 @@ constexpr std::string_view kDownloadCountKey = "download_count";
+ constexpr std::string_view kErrorCountKey = "error_count";
+ constexpr std::string_view kAutoInstalledExpirationTimeKey =
+     "auto_installed_expiration_time";
++base::DictValue StatisticsToDict(const RuleStatistics& s) {
++  return base::DictValue().Set("accepted", s.accepted)
++      .Set("parser_rejected", s.parser_rejected)
++      .Set("unsupported_commands", s.unsupported_commands)
++      .Set("prohibited_privilege", s.prohibited_privilege)
++      .Set("unsafe_arguments", s.unsafe_arguments)
++      .Set("unsupported_options", s.unsupported_options);
++}
++
++std::optional<RuleStatistics> ReadStatistics(const base::DictValue* d) {
++  if (!d) return {};
++  RuleStatistics s;
++  s.accepted = std::max(0, d->FindInt("accepted").value_or(0));
++  s.parser_rejected = std::max(0, d->FindInt("parser_rejected").value_or(0));
++  s.unsupported_commands = std::max(0, d->FindInt("unsupported_commands").value_or(0));
++  s.prohibited_privilege = std::max(0, d->FindInt("prohibited_privilege").value_or(0));
++  s.unsafe_arguments = std::max(0, d->FindInt("unsafe_arguments").value_or(0));
++  s.unsupported_options = std::max(0, d->FindInt("unsupported_options").value_or(0));
++  return s;
++}
+ }  // namespace
+ 
+ struct SubscriptionPersistentMetadataImpl::Metadata {
++  SubscriptionDiagnostics diagnostics;
+   base::Time expiration_time;
+   base::Time last_installation_time;
+   std::string version{"0"};
+@@ -173,6 +195,23 @@ void SubscriptionPersistentMetadataImpl::RemoveMetadata(
+   UpdatePrefs();
+ }
+ 
++SubscriptionDiagnostics SubscriptionPersistentMetadataImpl::GetDiagnostics(
++    const GURL& url) const {
++  auto it = metadata_map_.find(url);
++  return it == metadata_map_.end() ? SubscriptionDiagnostics{} : it->second.diagnostics;
++}
++
++void SubscriptionPersistentMetadataImpl::SetDiagnostics(
++    const GURL& url, SubscriptionDiagnostics data) {
++  if (data.source.rfind("data:", 0) == 0) data.source = "Inline subscription (contents omitted)";
++  if (data.last_success_source.rfind("data:", 0) == 0) data.last_success_source = "Inline subscription (contents omitted)";
++  data.error.resize(std::min(data.error.size(), size_t{160}));
++  data.source.resize(std::min(data.source.size(), size_t{2048}));
++  data.last_success_source.resize(std::min(data.last_success_source.size(), size_t{2048}));
++  metadata_map_[url].diagnostics = std::move(data);
++  UpdatePrefs();
++}
++
+ void SubscriptionPersistentMetadataImpl::UpdatePrefs() {
+   base::DictValue dict;
+   for (const auto& pair : metadata_map_) {
+@@ -189,6 +228,20 @@ void SubscriptionPersistentMetadataImpl::UpdatePrefs() {
+           kAutoInstalledExpirationTimeKey,
+           TimeToValue(pair.second.auto_installed_expiration_time.value()));
+     }
++    const auto& diagnostic = pair.second.diagnostics;
++    if (diagnostic.stage != DiagnosticStage::Unknown || !diagnostic.last_success.is_null()) {
++      base::DictValue details;
++      details.Set("stage", static_cast<int>(diagnostic.stage));
++      details.Set("downloaded", diagnostic.downloaded);
++      details.Set("parsed", diagnostic.parsed);
++      details.Set("error", diagnostic.error);
++      details.Set("source", diagnostic.source);
++      details.Set("last_success", TimeToValue(diagnostic.last_success));
++      details.Set("last_success_source", diagnostic.last_success_source);
++      if (diagnostic.rules) details.Set("rules", StatisticsToDict(*diagnostic.rules));
++      if (diagnostic.active_rules) details.Set("active_rules", StatisticsToDict(*diagnostic.active_rules));
++      subscription.Set("roadium_diagnostics", std::move(details));
++    }
+     dict.Set(pair.first.spec(), std::move(subscription));
+   }
+   prefs_->SetDict(common::prefs::kSubscriptionMetadata, std::move(dict));
+@@ -224,6 +277,25 @@ void SubscriptionPersistentMetadataImpl::LoadFromPrefs() {
+       subscription.auto_installed_expiration_time =
+           ValueToTime(auto_installed_expiration_time);
+     }
++    if (const auto* details = d->FindDict("roadium_diagnostics")) {
++      auto& diagnostic = subscription.diagnostics;
++      int stage = details->FindInt("stage").value_or(0);
++      if (stage >= 0 && stage <= static_cast<int>(DiagnosticStage::Interrupted))
++        diagnostic.stage = static_cast<DiagnosticStage>(stage);
++      diagnostic.downloaded = details->FindBool("downloaded").value_or(false);
++      diagnostic.parsed = details->FindBool("parsed").value_or(false);
++      if (const auto* error = details->FindString("error")) diagnostic.error = error->substr(0, 160);
++      if (const auto* source = details->FindString("source")) diagnostic.source = source->substr(0, 2048);
++      if (const auto* source = details->FindString("last_success_source")) diagnostic.last_success_source = source->substr(0, 2048);
++      diagnostic.last_success = ValueToTime(details->Find("last_success")).value_or(base::Time());
++      diagnostic.rules = ReadStatistics(details->FindDict("rules"));
++      diagnostic.active_rules = ReadStatistics(details->FindDict("active_rules"));
++      if (diagnostic.stage == DiagnosticStage::Downloading || diagnostic.stage == DiagnosticStage::Downloaded ||
++          diagnostic.stage == DiagnosticStage::Parsed || diagnostic.stage == DiagnosticStage::Retrying) {
++        diagnostic.stage = DiagnosticStage::Interrupted;
++        diagnostic.error = "Previous attempt interrupted before activation";
++      }
++    }
+     metadata_map_.emplace(dict_item.first, std::move(subscription));
+   }
+ }
+diff --git a/components/adblock/core/subscription/subscription_persistent_metadata_impl.h b/components/adblock/core/subscription/subscription_persistent_metadata_impl.h
+index 631c62d..c255c16 100644
+--- a/components/adblock/core/subscription/subscription_persistent_metadata_impl.h
++++ b/components/adblock/core/subscription/subscription_persistent_metadata_impl.h
+@@ -53,6 +53,8 @@ class SubscriptionPersistentMetadataImpl final
+   bool IsAutoInstalledExpired(const GURL& subscription_url) const final;
+ 
+   void RemoveMetadata(const GURL& subscription_url) final;
++  SubscriptionDiagnostics GetDiagnostics(const GURL& url) const final;
++  void SetDiagnostics(const GURL& url, SubscriptionDiagnostics data) final;
+ 
+  private:
+   struct Metadata;
+diff --git a/components/adblock/core/subscription/subscription_service.cc b/components/adblock/core/subscription/subscription_service.cc
+new file mode 100644
+index 0000000..dc38394
+--- /dev/null
++++ b/components/adblock/core/subscription/subscription_service.cc
+@@ -0,0 +1,12 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++#include "components/adblock/core/subscription/subscription_service.h"
++
++namespace adblock {
++void SubscriptionService::StartUpdateCheck() {
++  StartUpdate();
++}
++UpdateCheckResult SubscriptionService::GetUpdateCheckResult() const {
++  return {};
++}
++}  // namespace adblock
+diff --git a/components/adblock/core/subscription/subscription_service.h b/components/adblock/core/subscription/subscription_service.h
+index 453d733..ef3f4f7 100644
+--- a/components/adblock/core/subscription/subscription_service.h
++++ b/components/adblock/core/subscription/subscription_service.h
+@@ -27,6 +27,7 @@
+ #include "base/observer_list_types.h"
+ #include "components/adblock/core/configuration/filtering_configuration.h"
+ #include "components/adblock/core/subscription/subscription.h"
++#include "components/adblock/core/subscription/subscription_update_result.h"
+ #include "components/adblock/core/subscription/subscription_collection.h"
+ #include "components/adblock/core/subscription/subscription_persistent_metadata.h"
+ #include "components/keyed_service/core/keyed_service.h"
+@@ -39,6 +40,8 @@ namespace adblock {
+ class SubscriptionService : public KeyedService {
+  public:
+   virtual void StartUpdate() = 0;
++  virtual void StartUpdateCheck();
++  virtual UpdateCheckResult GetUpdateCheckResult() const;
+   virtual raw_ptr<SubscriptionPersistentMetadata> GetMetadata() = 0;
+   virtual raw_ptr<SubscriptionPersistentMetadata> GetMetadataFor(
+     raw_ptr<FilteringConfiguration> configuration) = 0;
+diff --git a/components/adblock/core/subscription/subscription_service_impl.cc b/components/adblock/core/subscription/subscription_service_impl.cc
+index 11aeb59..4d0d1c6 100644
+--- a/components/adblock/core/subscription/subscription_service_impl.cc
++++ b/components/adblock/core/subscription/subscription_service_impl.cc
+@@ -17,6 +17,8 @@
+ 
+ #include "components/adblock/core/subscription/subscription_service_impl.h"
+ 
++#include <limits>
++
+ #include <algorithm>
+ #include <iterator>
+ #include <memory>
+@@ -185,6 +187,44 @@ void SubscriptionServiceImpl::StartUpdate() {
+   }
+ }
+ 
++void SubscriptionServiceImpl::StartUpdateCheck() {
++  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++  if (manual_result_.running) return;  // Repeated taps join the same batch.
++  manual_result_ = {};
++  next_batch_id_ = next_batch_id_ == std::numeric_limits<int>::max() ? 1 : next_batch_id_ + 1;
++  manual_result_.batch_id = next_batch_id_;
++  manual_pending_configurations_ = 0;
++  for (const auto& entry : maintainers_) {
++    if (entry.second) {
++      ++manual_pending_configurations_;
++    }
++  }
++  manual_result_.running = manual_pending_configurations_ != 0;
++  const int batch_id = manual_result_.batch_id;
++  for (auto& entry : maintainers_) {
++    if (entry.second) entry.second->StartUpdateWithCallback(
++        base::BindOnce(&SubscriptionServiceImpl::OnManualCheckFinished,
++                       weak_ptr_factory_.GetWeakPtr(), batch_id));
++  }
++}
++
++UpdateCheckResult SubscriptionServiceImpl::GetUpdateCheckResult() const {
++  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++  return manual_result_;
++}
++
++void SubscriptionServiceImpl::OnManualCheckFinished(int batch_id, UpdateCheckResult result) {
++  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++  if (manual_result_.batch_id != batch_id || !manual_result_.running) return;
++  manual_result_.checked += result.checked;
++  manual_result_.updated += result.updated;
++  manual_result_.failed += result.failed;
++  manual_result_.cancelled += result.cancelled;
++  manual_result_.timed_out += result.timed_out;
++  for (auto& entry : result.entries) manual_result_.entries.push_back(std::move(entry));
++  if (--manual_pending_configurations_ == 0) manual_result_.running = false;
++}
++
+ bool SubscriptionServiceImpl::IsPrivilegedFiltersEnabled() {
+   auto* adblock_filtering_configuration = GetAdblockFilteringConfiguration();
+   return adblock_filtering_configuration->IsPrivilegedFiltersEnabled();
+diff --git a/components/adblock/core/subscription/subscription_service_impl.h b/components/adblock/core/subscription/subscription_service_impl.h
+index f97952c..64c20f4 100644
+--- a/components/adblock/core/subscription/subscription_service_impl.h
++++ b/components/adblock/core/subscription/subscription_service_impl.h
+@@ -43,6 +43,8 @@ class SubscriptionServiceImpl final : public SubscriptionService,
+                                       public FilteringConfiguration::Observer {
+  public:
+   void StartUpdate() override;
++  void StartUpdateCheck() override;
++  UpdateCheckResult GetUpdateCheckResult() const override;
+   raw_ptr<SubscriptionPersistentMetadata> GetMetadata() override;
+   raw_ptr<SubscriptionPersistentMetadata> GetMetadataFor(
+     raw_ptr<FilteringConfiguration> configuration) final;
+@@ -90,6 +92,10 @@ class SubscriptionServiceImpl final : public SubscriptionService,
+   void OnEnabledStateChanged(FilteringConfiguration* config) final;
+ 
+  private:
++  void OnManualCheckFinished(int batch_id, UpdateCheckResult result);
++  UpdateCheckResult manual_result_;
++  int manual_pending_configurations_ = 0;
++  int next_batch_id_ = 0;
+   void OnSubscriptionUpdated(const GURL& subscription_url);
+   std::unique_ptr<FilteringConfigurationMaintainer> MakeMaintainer(
+       FilteringConfiguration* configuration);
+diff --git a/components/adblock/core/subscription/subscription_update_result.h b/components/adblock/core/subscription/subscription_update_result.h
+new file mode 100644
+index 0000000..c4501a9
+--- /dev/null
++++ b/components/adblock/core/subscription/subscription_update_result.h
+@@ -0,0 +1,28 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++#ifndef COMPONENTS_ADBLOCK_CORE_SUBSCRIPTION_SUBSCRIPTION_UPDATE_RESULT_H_
++#define COMPONENTS_ADBLOCK_CORE_SUBSCRIPTION_SUBSCRIPTION_UPDATE_RESULT_H_
++
++#include <string>
++#include <vector>
++
++namespace adblock {
++struct UpdateCheckEntry {
++  std::string url;
++  std::string configuration;
++  // 0 activated, 1 failed, 2 cancelled, 3 timed out; -1 unknown.
++  int outcome = -1;
++  std::string error;
++};
++struct UpdateCheckResult {
++  int batch_id = 0;
++  int checked = 0;
++  int updated = 0;
++  int failed = 0;
++  int cancelled = 0;
++  int timed_out = 0;
++  bool running = false;
++  std::vector<UpdateCheckEntry> entries;
++};
++}  // namespace adblock
++#endif
+diff --git a/components/adblock/core/subscription/test/mock_filtering_configuration_maintainer.h b/components/adblock/core/subscription/test/mock_filtering_configuration_maintainer.h
+index 63d372b..c02ddbc 100644
+--- a/components/adblock/core/subscription/test/mock_filtering_configuration_maintainer.h
++++ b/components/adblock/core/subscription/test/mock_filtering_configuration_maintainer.h
+@@ -40,6 +40,9 @@ class MockFilteringConfigurationMaintainer
+               (),
+               (override, const));
+   MOCK_METHOD(void, RemoveAutoInstalledSubscriptions, (), (override));
++  MOCK_METHOD(void, StartUpdate, (), (override));
++  MOCK_METHOD(void, StartUpdateWithCallback, (base::OnceCallback<void(UpdateCheckResult)>), (override));
++  MOCK_METHOD(raw_ptr<SubscriptionPersistentMetadata>, GetMetadata, (), (override));
+   MOCK_METHOD(void, Destructor, (), ());
+ };
+ 
+diff --git a/components/adblock/test/shields_diagnostics_unittest.cc b/components/adblock/test/shields_diagnostics_unittest.cc
+new file mode 100644
+index 0000000..c673177
+--- /dev/null
++++ b/components/adblock/test/shields_diagnostics_unittest.cc
+@@ -0,0 +1,439 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++#include <map>
++#include <memory>
++#include <sstream>
++#include <utility>
++#include <vector>
++
++#include "base/functional/bind.h"
++#include "base/no_destructor.h"
++#include "base/json/json_writer.h"
++#include "base/test/task_environment.h"
++#include "base/test/bind.h"
++#include "components/adblock/core/common/adblock_prefs.h"
++#include "components/adblock/core/common/task_scheduler.h"
++#include "components/adblock/core/configuration/persistent_filtering_configuration.h"
++#include "components/adblock/core/converter/flatbuffer_converter.h"
++#include "components/adblock/core/subscription/filtering_configuration_maintainer_impl.h"
++#include "components/adblock/core/subscription/installed_subscription_impl.h"
++#include "components/adblock/core/subscription/subscription_downloader_impl.h"
++#include "components/adblock/core/subscription/subscription_persistent_metadata_impl.h"
++#include "components/adblock/core/subscription/subscription_service_impl.h"
++#include "components/prefs/testing_pref_service.h"
++#include "net/base/net_errors.h"
++#include "net/http/http_response_headers.h"
++#include "testing/gtest/include/gtest/gtest.h"
++
++namespace adblock {
++namespace {
++const GURL& TestUrl() { static const base::NoDestructor<GURL> url("https://uazo.github.io/cromite/filters/easylist.txt"); return *url; }
++const GURL& TrustedUrl() { static const base::NoDestructor<GURL> url("https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt"); return *url; }
++
++std::unique_ptr<FlatbufferData> Data(const GURL& url) {
++  return base::MakeRefCounted<FlatbufferConverter>()->Convert(
++      std::vector<std::string>{"||ads.example^"}, url, false);
++}
++
++scoped_refptr<InstalledSubscription> Installed(const GURL& url) {
++  return base::MakeRefCounted<InstalledSubscriptionImpl>(Data(url),
++      Subscription::InstallationState::Installed, base::Time::Now());
++}
++
++class DeferredStorage : public SubscriptionPersistentStorage {
++ public:
++  std::vector<scoped_refptr<InstalledSubscription>> initial;
++  std::unique_ptr<FlatbufferData> candidate;
++  StoreCallback store_callback;
++  void LoadSubscriptions(LoadCallback callback) override {
++    std::move(callback).Run(initial);
++  }
++  void StoreSubscription(std::unique_ptr<FlatbufferData> data, StoreCallback callback) override {
++    candidate = std::move(data);
++    store_callback = std::move(callback);
++  }
++  void RemoveSubscription(scoped_refptr<InstalledSubscription>) override {}
++  void Complete(bool success) {
++    scoped_refptr<InstalledSubscription> subscription;
++    if (success) subscription = base::MakeRefCounted<InstalledSubscriptionImpl>(
++        std::move(candidate), Subscription::InstallationState::Installed, base::Time::Now());
++    std::move(store_callback).Run(subscription);
++  }
++};
++
++class DeferredDownloads : public SubscriptionDownloader {
++ public:
++  std::map<GURL, DownloadCompletedCallback> callbacks;
++  int requests = 0;
++  void StartDownload(const GURL& url, AdblockResourceRequest::RetryPolicy,
++                     DownloadCompletedCallback callback) override {
++    ++requests;
++    callbacks[url] = std::move(callback);
++  }
++  void CancelDownload(const GURL& url) override { callbacks.erase(url); }
++  void DoHeadRequest(const GURL&, HeadRequestCallback callback) override {
++    std::move(callback).Run("");
++  }
++  void Complete(const GURL& url, bool success) {
++    auto node = callbacks.extract(url);
++    std::move(node.mapped()).Run(success ? Data(url) : nullptr);
++  }
++};
++
++class EmptyPreloaded : public PreloadedSubscriptionProvider {
++ public:
++  void UpdateSubscriptions(std::vector<GURL>, std::vector<GURL>) override {}
++  std::vector<scoped_refptr<InstalledSubscription>> GetCurrentPreloadedSubscriptions() const override { return {}; }
++};
++
++class Scheduler : public TaskScheduler {
++ public:
++  base::RepeatingClosure task;
++  void StartSchedule(base::RepeatingClosure callback) override { task = std::move(callback); }
++  void StopSchedule() override { task.Reset(); }
++};
++
++class DeferredConversion : public ConversionExecutors {
++ public:
++  mutable std::vector<base::OnceCallback<void(ConversionResult)>> callbacks;
++  scoped_refptr<InstalledSubscription> ConvertCustomFilters(const std::vector<std::string>& filters) const override {
++    auto data = base::MakeRefCounted<FlatbufferConverter>()->Convert(filters, GURL("adblock:custom"), false);
++    return base::MakeRefCounted<InstalledSubscriptionImpl>(std::move(data),
++        Subscription::InstallationState::Installed, base::Time::Now());
++  }
++  void ConvertFilterListFile(const GURL&, const base::FilePath&, bool,
++      base::OnceCallback<void(ConversionResult)> callback) const override {
++    callbacks.push_back(std::move(callback));
++  }
++};
++
++class ShieldsLifecycleTest : public testing::Test {
++ public:
++  base::test::TaskEnvironment tasks{base::test::TaskEnvironment::TimeSource::MOCK_TIME};
++  TestingPrefServiceSimple prefs;
++  std::unique_ptr<SubscriptionPersistentMetadataImpl> metadata;
++  std::unique_ptr<PersistentFilteringConfiguration> configuration;
++  DeferredConversion conversion;
++  DeferredStorage* storage = nullptr;
++  DeferredDownloads* downloads = nullptr;
++  Scheduler* scheduler = nullptr;
++  std::unique_ptr<FilteringConfigurationMaintainerImpl> maintainer;
++  UpdateCheckResult result;
++  int completions = 0;
++
++  void SetUp() override {
++    common::prefs::RegisterProfilePrefs(prefs.registry());
++    metadata = std::make_unique<SubscriptionPersistentMetadataImpl>(&prefs);
++    configuration = std::make_unique<PersistentFilteringConfiguration>(&prefs, "adblock");
++    configuration->AddFilterList(TestUrl());
++  }
++  void Prepare(bool installed = false, bool initialize = true) {
++    auto disk = std::make_unique<DeferredStorage>();
++    storage = disk.get();
++    if (installed) storage->initial.push_back(Installed(TestUrl()));
++    auto network = std::make_unique<DeferredDownloads>();
++    downloads = network.get();
++    auto timer = std::make_unique<Scheduler>();
++    scheduler = timer.get();
++    maintainer = std::make_unique<FilteringConfigurationMaintainerImpl>(configuration.get(),
++        std::move(disk), std::move(network), nullptr, std::make_unique<EmptyPreloaded>(),
++        std::move(timer), &conversion, metadata.get(), base::BindRepeating([](const GURL&) {}));
++    if (initialize) maintainer->InitializeStorage();
++  }
++  void Check() {
++    maintainer->StartUpdateWithCallback(base::BindOnce(
++        [](ShieldsLifecycleTest* self, UpdateCheckResult r) { self->result = r; ++self->completions; },
++        base::Unretained(this)));
++  }
++};
++
++TEST_F(ShieldsLifecycleTest, SuccessWaitsForStorageAndCollectionActivation) {
++  Prepare();
++  Check();
++  EXPECT_EQ(1, downloads->requests);  // Manual check joined initial installation.
++  downloads->Complete(TestUrl(), true);
++  EXPECT_EQ(0, completions);
++  EXPECT_TRUE(metadata->GetDiagnostics(TestUrl()).last_success.is_null());
++  storage->Complete(true);
++  EXPECT_EQ(1, completions);
++  EXPECT_EQ(1, result.updated);
++  ASSERT_EQ(1u, result.entries.size());
++  EXPECT_EQ(TestUrl().spec(), result.entries[0].url);
++  EXPECT_EQ(0, result.entries[0].outcome);
++  EXPECT_EQ(DiagnosticStage::Activated, metadata->GetDiagnostics(TestUrl()).stage);
++  EXPECT_FALSE(metadata->GetDiagnostics(TestUrl()).last_success.is_null());
++  EXPECT_EQ(Subscription::InstallationState::Installed,
++            maintainer->GetCurrentSubscriptions()[0]->GetInstallationState());
++}
++
++TEST_F(ShieldsLifecycleTest, StorageFailureRetainsPreviousWorkingData) {
++  Prepare(true);
++  auto previous = maintainer->GetCurrentSubscriptions()[0];
++  Check();
++  downloads->Complete(TestUrl(), true);
++  storage->Complete(false);
++  EXPECT_EQ(1, result.failed);
++  EXPECT_EQ(previous, maintainer->GetCurrentSubscriptions()[0]);
++  EXPECT_EQ(DiagnosticStage::Failed, metadata->GetDiagnostics(TestUrl()).stage);
++  EXPECT_NE(std::string::npos, metadata->GetDiagnostics(TestUrl()).error.find("Storage"));
++}
++
++TEST_F(ShieldsLifecycleTest, TimeoutIsFiniteAndLateActivationDoesNotRewriteBatch) {
++  Prepare();
++  Check();
++  tasks.FastForwardBy(base::Seconds(45));
++  ASSERT_EQ(1, completions);
++  EXPECT_EQ(1, result.timed_out);
++  ASSERT_EQ(1u, result.entries.size());
++  EXPECT_EQ(3, result.entries[0].outcome);
++  downloads->Complete(TestUrl(), true);
++  storage->Complete(true);
++  EXPECT_EQ(1, completions);
++  EXPECT_EQ(0, result.updated);
++  EXPECT_EQ(3, result.entries[0].outcome);
++  EXPECT_EQ(DiagnosticStage::Activated, metadata->GetDiagnostics(TestUrl()).stage);
++}
++
++TEST_F(ShieldsLifecycleTest, CancelDuringStorageHandlesNullResultWithoutCrash) {
++  Prepare();
++  Check();
++  downloads->Complete(TestUrl(), true);
++  configuration->RemoveFilterList(TestUrl());
++  ASSERT_EQ(1, completions);
++  EXPECT_EQ(1, result.cancelled);
++  ASSERT_EQ(1u, result.entries.size());
++  EXPECT_EQ(2, result.entries[0].outcome);
++  storage->Complete(false);
++  EXPECT_EQ(1, completions);
++  EXPECT_TRUE(maintainer->GetCurrentSubscriptions().empty());
++}
++
++TEST_F(ShieldsLifecycleTest, DestructionCompletesCancellationOnce) {
++  Prepare();
++  Check();
++  maintainer.reset();
++  EXPECT_EQ(1, completions);
++  EXPECT_EQ(1, result.cancelled);
++}
++
++TEST_F(ShieldsLifecycleTest, EmptyAndUninitializedChecksFinishTruthfully) {
++  configuration->RemoveFilterList(TestUrl());
++  Prepare(false, false);
++  Check();
++  EXPECT_EQ(1, completions);
++  EXPECT_EQ(0, result.checked);
++  configuration->AddFilterList(TestUrl());
++  Check();
++  EXPECT_EQ(2, completions);
++  EXPECT_EQ(1, result.failed);
++  EXPECT_EQ(0, downloads->requests);
++  EXPECT_NE(std::string::npos, metadata->GetDiagnostics(TestUrl()).error.find("initializing"));
++}
++
++TEST_F(ShieldsLifecycleTest, RoutineUpdatesRunWithoutRecommendedInstaller) {
++  Prepare(true);
++  ASSERT_TRUE(scheduler->task);
++  scheduler->task.Run();
++  EXPECT_EQ(1, downloads->requests);
++}
++
++TEST_F(ShieldsLifecycleTest, MetadataSurvivesReloadAndMarksInterruptedAttempts) {
++  SubscriptionDiagnostics d;
++  d.stage = DiagnosticStage::Parsed;
++  d.downloaded = true;
++  d.parsed = true;
++  d.last_success = base::Time::Now() - base::Hours(1);
++  d.error = std::string(1000, 'e');
++  d.source = std::string(4000, 's');
++  d.rules = RuleStatistics{};
++  d.rules->unsupported_commands = 7;
++  metadata->SetDiagnostics(TestUrl(), d);
++  metadata->IncrementDownloadSuccessCount(TestUrl());
++  metadata->IncrementDownloadSuccessCount(TestUrl());
++  metadata->IncrementDownloadErrorCount(TestUrl());
++  SubscriptionPersistentMetadataImpl reloaded(&prefs);
++  const auto saved = reloaded.GetDiagnostics(TestUrl());
++  EXPECT_EQ(DiagnosticStage::Interrupted, saved.stage);
++  EXPECT_EQ(d.last_success, saved.last_success);
++  EXPECT_EQ(2048u, saved.source.size());
++  ASSERT_TRUE(saved.rules);
++  EXPECT_EQ(7, saved.rules->unsupported_commands);
++  EXPECT_EQ(2, reloaded.GetDownloadSuccessCount(TestUrl()));
++  EXPECT_EQ(1, reloaded.GetDownloadErrorCount(TestUrl()));
++  EXPECT_FALSE(prefs.GetBoolean(common::prefs::kAllowPrivilegedFilters));
++}
++
++TEST_F(ShieldsLifecycleTest, DiagnosticSidecarOmitsInlineRulePayloadAndBoundsErrors) {
++  const GURL url("data:text/plain,private-fixture-rule");
++  SubscriptionDiagnostics d;
++  d.stage = DiagnosticStage::Failed;
++  d.source = url.spec();
++  d.last_success_source = url.spec();
++  d.error = std::string(1000, 'e');
++  metadata->SetDiagnostics(url, d);
++  const auto* record = prefs.GetDict(common::prefs::kSubscriptionMetadata).FindDict(url.spec());
++  ASSERT_TRUE(record);
++  const auto* details = record->FindDict("roadium_diagnostics");
++  ASSERT_TRUE(details);
++  std::string json;
++  base::JSONWriter::Write(*details, &json);
++  EXPECT_EQ(std::string::npos, json.find("private-fixture-rule"));
++  EXPECT_EQ(160u, metadata->GetDiagnostics(url).error.size());
++}
++
++TEST(ShieldsConverterTest, UnsupportedCompoundRuleIsRejectedAsOneRule) {
++  auto data = base::MakeRefCounted<FlatbufferConverter>()->Convert(
++      std::vector<std::string>{"||ads.example^", "example.com##.ad",
++          "example.com#$#race start; skip-video video; simulate-mouse-event button",
++          "~example.com#$#race start"}, TrustedUrl(), true);
++  auto statistics = data->GetRuleStatistics();
++  ASSERT_TRUE(statistics);
++  EXPECT_EQ(2, statistics->accepted);
++  EXPECT_EQ(1, statistics->unsupported_commands);
++  EXPECT_EQ(1, statistics->parser_rejected);
++  auto subscription = base::MakeRefCounted<InstalledSubscriptionImpl>(std::move(data),
++      Subscription::InstallationState::Installed, base::Time::Now());
++  EXPECT_TRUE(subscription->MatchSnippets("example.com").empty());
++}
++
++TEST(ShieldsConverterTest, UntrustedListCannotExecuteSupportedPrivilegedSnippet) {
++  TestingPrefServiceSimple prefs;
++  common::prefs::RegisterProfilePrefs(prefs.registry());
++  prefs.SetBoolean(common::prefs::kAllowPrivilegedFilters, true);
++  SubscriptionPersistentMetadataImpl metadata(&prefs);
++  const GURL custom("https://example.com/custom.txt");
++  EXPECT_TRUE(metadata.AllowPrivilegedFilters(TrustedUrl()));
++  EXPECT_FALSE(metadata.AllowPrivilegedFilters(custom));
++  auto data = base::MakeRefCounted<FlatbufferConverter>()->Convert(
++      std::vector<std::string>{"||ads.example^", "example.com#$#override-property-read adValue undefined"},
++      custom, metadata.AllowPrivilegedFilters(custom));
++  ASSERT_TRUE(data->GetRuleStatistics());
++  EXPECT_EQ(1, data->GetRuleStatistics()->accepted);
++  EXPECT_EQ(1, data->GetRuleStatistics()->prohibited_privilege);
++  auto subscription = base::MakeRefCounted<InstalledSubscriptionImpl>(std::move(data),
++      Subscription::InstallationState::Installed, base::Time::Now());
++  EXPECT_TRUE(subscription->MatchSnippets("example.com").empty());
++}
++
++TEST(ShieldsConverterTest, InvalidArgumentsAreCountedWithoutPartialExecution) {
++  auto data = base::MakeRefCounted<FlatbufferConverter>()->Convert(
++      std::vector<std::string>{"example.com#$#override-property-read",
++          "example.com#$#override-property-read adValue arbitraryCode",
++          "example.com#$#override-property-read adValue undefined"}, TrustedUrl(), true);
++  ASSERT_TRUE(data->GetRuleStatistics());
++  EXPECT_EQ(2, data->GetRuleStatistics()->unsafe_arguments);
++  EXPECT_EQ(1, data->GetRuleStatistics()->accepted);
++  auto subscription = base::MakeRefCounted<InstalledSubscriptionImpl>(std::move(data),
++      Subscription::InstallationState::Installed, base::Time::Now());
++  EXPECT_EQ(1u, subscription->MatchSnippets("example.com").size());
++}
++
++class Resource : public AdblockResourceRequest {
++ public:
++  GURL url;
++  ResponseCallback response;
++  void Start(GURL u, Method, ResponseCallback cb, RetryPolicy, const std::string) override {
++    url = u;
++    response = std::move(cb);
++  }
++  void Redirect(GURL u, const std::string) override { url = u; }
++  size_t GetNumberOfRedirects() const override { return 0; }
++  void FailHttp() {
++    auto cb = response;
++    NotifyAttemptDiagnostic(url, net::ERR_HTTP_RESPONSE_CODE_FAILURE, 404, false);
++    cb.Run(url, {}, base::MakeRefCounted<net::HttpResponseHeaders>("HTTP/1.1 404 Not Found\r\n\r\n"));
++  }
++  void Deliver() {
++    auto cb = response;
++    cb.Run(url, base::FilePath(FILE_PATH_LITERAL("fixture.txt")), nullptr);
++  }
++};
++
++TEST_F(ShieldsLifecycleTest, HttpFailureHasReasonAndDoesNotClaimParsedOrActive) {
++  Resource* request = nullptr;
++  SubscriptionDownloaderImpl downloader(base::BindLambdaForTesting([&request]() -> std::unique_ptr<AdblockResourceRequest> {
++    auto result = std::make_unique<Resource>();
++    request = result.get();
++    return result;
++  }), &conversion, metadata.get());
++  int failures = 0;
++  downloader.StartDownload(TestUrl(), AdblockResourceRequest::RetryPolicy::DoNotRetry,
++      base::BindLambdaForTesting([&failures](std::unique_ptr<FlatbufferData> data) { EXPECT_FALSE(data); ++failures; }));
++  request->FailHttp();
++  EXPECT_EQ(1, failures);
++  const auto d = metadata->GetDiagnostics(TestUrl());
++  EXPECT_EQ(DiagnosticStage::Failed, d.stage);
++  EXPECT_EQ("HTTP 404", d.error);
++  EXPECT_FALSE(d.downloaded);
++  EXPECT_FALSE(d.parsed);
++  EXPECT_TRUE(d.last_success.is_null());
++}
++
++TEST_F(ShieldsLifecycleTest, StaleConversionCannotCompleteReplacementDownload) {
++  Resource* request = nullptr;
++  SubscriptionDownloaderImpl downloader(base::BindLambdaForTesting([&request]() -> std::unique_ptr<AdblockResourceRequest> {
++    auto result = std::make_unique<Resource>();
++    request = result.get();
++    return result;
++  }), &conversion, metadata.get());
++  int finished = 0;
++  auto callback = [&finished]() { return base::BindLambdaForTesting([&finished](std::unique_ptr<FlatbufferData> data) { EXPECT_TRUE(data); ++finished; }); };
++  downloader.StartDownload(TestUrl(), AdblockResourceRequest::RetryPolicy::DoNotRetry, callback());
++  request->Deliver();
++  ASSERT_EQ(1u, conversion.callbacks.size());
++  downloader.CancelDownload(TestUrl());
++  downloader.StartDownload(TestUrl(), AdblockResourceRequest::RetryPolicy::DoNotRetry, callback());
++  std::move(conversion.callbacks[0]).Run(Data(TestUrl()));
++  EXPECT_EQ(0, finished);
++  EXPECT_EQ(DiagnosticStage::Downloading, metadata->GetDiagnostics(TestUrl()).stage);
++  request->Deliver();
++  std::move(conversion.callbacks[1]).Run(Data(TestUrl()));
++  EXPECT_EQ(1, finished);
++  EXPECT_EQ(DiagnosticStage::Parsed, metadata->GetDiagnostics(TestUrl()).stage);
++  EXPECT_TRUE(metadata->GetDiagnostics(TestUrl()).last_success.is_null());
++}
++
++class BatchMaintainer : public FilteringConfigurationMaintainer {
++ public:
++  int checks = 0;
++  base::OnceCallback<void(UpdateCheckResult)> callback;
++  void StartUpdate() override {}
++  void StartUpdateWithCallback(base::OnceCallback<void(UpdateCheckResult)> cb) override { ++checks; callback = std::move(cb); }
++  raw_ptr<SubscriptionPersistentMetadata> GetMetadata() override { return nullptr; }
++  std::unique_ptr<SubscriptionCollection> GetSubscriptionCollection() const override { return nullptr; }
++  std::vector<scoped_refptr<Subscription>> GetCurrentSubscriptions() const override { return {}; }
++  void RemoveAutoInstalledSubscriptions() override {}
++};
++
++TEST(ShieldsServiceTest, BatchAggregatesOutcomesAndRepeatedTapsJoin) {
++  base::test::TaskEnvironment tasks;
++  TestingPrefServiceSimple prefs;
++  common::prefs::RegisterProfilePrefs(prefs.registry());
++  std::vector<BatchMaintainer*> maintainers;
++  SubscriptionServiceImpl service(&prefs,
++      base::BindLambdaForTesting([&maintainers](FilteringConfiguration*, SubscriptionServiceImpl::SubscriptionUpdatedCallback) -> std::unique_ptr<FilteringConfigurationMaintainer> {
++        auto result = std::make_unique<BatchMaintainer>();
++        maintainers.push_back(result.get());
++        return result;
++      }), base::BindRepeating([](FilteringConfiguration*) {}));
++  service.InstallFilteringConfiguration(std::make_unique<PersistentFilteringConfiguration>(&prefs, "adblock"));
++  service.InstallFilteringConfiguration(std::make_unique<PersistentFilteringConfiguration>(&prefs, "second"));
++  service.StartUpdateCheck();
++  const int batch = service.GetUpdateCheckResult().batch_id;
++  service.StartUpdateCheck();
++  EXPECT_EQ(1, maintainers[0]->checks);
++  EXPECT_EQ(batch, service.GetUpdateCheckResult().batch_id);
++  UpdateCheckResult first; first.checked = 2; first.updated = 1; first.failed = 1;
++  std::move(maintainers[0]->callback).Run(first);
++  EXPECT_TRUE(service.GetUpdateCheckResult().running);
++  UpdateCheckResult second; second.checked = 1; second.cancelled = 1;
++  std::move(maintainers[1]->callback).Run(second);
++  const auto result = service.GetUpdateCheckResult();
++  EXPECT_FALSE(result.running);
++  EXPECT_EQ(3, result.checked);
++  EXPECT_EQ(1, result.updated);
++  EXPECT_EQ(1, result.failed);
++  EXPECT_EQ(1, result.cancelled);
++}
++}  // namespace
++}  // namespace adblock

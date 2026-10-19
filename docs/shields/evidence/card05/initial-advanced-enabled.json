@@ -1,0 +1,36 @@
+{
+  "reload": {
+    "fixture": "http://127.0.0.1:8766/card05.html",
+    "action": "reload",
+    "state": {
+      "href": "http://127.0.0.1:8766/card05.html",
+      "ready": "complete",
+      "probeType": "undefined",
+      "probeString": "undefined",
+      "probeIsUndefined": true,
+      "unsupportedClicks": 0,
+      "cosmeticDisplay": "none"
+    },
+    "advertisingFailures": []
+  },
+  "probe": {
+    "fixture": "http://127.0.0.1:8766/card05.html",
+    "action": "advertising",
+    "state": {
+      "href": "http://127.0.0.1:8766/card05.html",
+      "ready": "complete",
+      "probeType": "undefined",
+      "probeString": "undefined",
+      "probeIsUndefined": true,
+      "unsupportedClicks": 0,
+      "cosmeticDisplay": "none"
+    },
+    "advertising": "fetch failed: TypeError",
+    "advertisingFailures": [
+      {
+        "errorText": "net::ERR_BLOCKED_BY_ADMINISTRATOR",
+        "blockedReason": null
+      }
+    ]
+  }
+}

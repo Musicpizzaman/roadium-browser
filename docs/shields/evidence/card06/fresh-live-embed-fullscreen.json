@@ -1,0 +1,25 @@
+{
+  "action": "fullscreen",
+  "target": "1",
+  "time": "2026-10-18T03:49:28.173Z",
+  "state": {
+    "url": "http://127.0.0.1:8766/embed.html",
+    "title": "Card06 controlled YouTube embed host",
+    "ready": "complete",
+    "ua": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+    "videos": [],
+    "adShowing": false,
+    "errorText": null,
+    "consent": false,
+    "frames": [
+      {
+        "src": "https://www.youtube.com/embed/aqz-KE-bpKQ",
+        "title": "Blender Big Buck Bunny public playback test"
+      }
+    ]
+  },
+  "operation": {
+    "entered": true
+  },
+  "exceptions": []
+}

@@ -1,0 +1,11 @@
+{
+  "fixture": "http://127.0.0.1:8765/shields.html",
+  "result": "Fetch failed: TypeError. Developer tools distinguish filtering from connectivity errors.",
+  "advertisingResourceFailures": [
+    {
+      "errorText": "net::ERR_INTERNET_DISCONNECTED",
+      "blockedReason": null,
+      "type": "Fetch"
+    }
+  ]
+}

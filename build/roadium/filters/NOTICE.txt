@@ -1,0 +1,19 @@
+Roadium bundled filter inputs
+
+Frozen without rule modifications from Cromite pages commit
+338336d9e640489c648d47d606cb0030064c4e0f, version 202610130952.
+The original text, including its notices, is retained inside each gzip file.
+See manifest.json for immutable URLs, identities, sizes and SHA-256 hashes.
+
+EasyList: The EasyList authors (https://easylist.to/).
+Used under the GNU General Public License version 3 or later option.
+License notice: https://easylist.to/pages/licence.html
+
+ABP Anti-Circumvention: eyeo GmbH and the ABP Anti-Circumvention filter authors.
+Used under GNU General Public License version 3.
+Project: https://gitlab.com/eyeo/anti-cv/abp-filters-anti-cv
+License: https://gitlab.com/eyeo/anti-cv/abp-filters-anti-cv/-/blob/master/LICENSE
+
+A copy of GNU GPL version 3 is included in LICENSE-GPL-3.0.txt. These filters
+are supplied without warranty. Source inputs and build/conversion recipes are
+distributed with Roadium's GPL source. No Acceptable Ads list is bundled.

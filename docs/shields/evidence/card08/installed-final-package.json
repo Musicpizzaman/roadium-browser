@@ -1,0 +1,6 @@
+{
+  "status": "passed",
+  "apk_sha256": "ace4cca1b84d6ccac5d1d445da9714af8df9f4e76c62e815889a8ff7d8537400",
+  "source_patch_sha256": "341ddbe7d5d3885f8fc93c68d0e781a6a620200a33c1b7810d7b2db0ae1c6960",
+  "source_overlay_tree": "6aa2d7a3c56cc89cdc401ac116481b80ab01d93b"
+}

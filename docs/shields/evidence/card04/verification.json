@@ -1,0 +1,141 @@
+{
+  "card": 4,
+  "status": "implemented-and-verified",
+  "verified_utc": "2026-10-16T03:14:19.641745+00:00",
+  "source_patch_sha256": "ebdbd3da426e96ab7ab49aaf4e04c1c3512c4edd23e1c0d35455304052f96552",
+  "previous_four_patches_unchanged": true,
+  "cumulative_source_patch_sha256": "40951ab23f981e0978178293af7f0705cbfbf1eabc5cf11daddb0236f039496b",
+  "source_overlay_tree": "a33a2961c7502d487058c810b1084f7c66aa1fd5",
+  "tests": {
+    "native": 57,
+    "diagnostics_executions": 28,
+    "media_executions": 26,
+    "focused_total": 111,
+    "overlay_loader": 16,
+    "package_resource_gate": 8,
+    "post_review_rerun": "passed"
+  },
+  "exact_approved_mapping_pairs": 31,
+  "artifacts": [
+    {
+      "architecture": "x64",
+      "file": "ChromePublic.apk",
+      "sha256": "f416a8962b9ede8b1cd7c21a5042471792ac886616b4e57a23cb574be52766ad"
+    },
+    {
+      "architecture": "x64",
+      "file": "ChromePublic.aab",
+      "sha256": "01100515ff1d753c56d03be9498bee0be05606ed2a6e76b1ee57197cefecc129"
+    },
+    {
+      "architecture": "arm64",
+      "file": "ChromePublic.apk",
+      "sha256": "3834b731842d32970fbb49c53b2dccd0ecaed8624b795ee4bc2d417b965cb9af"
+    },
+    {
+      "architecture": "arm64",
+      "file": "ChromePublic.aab",
+      "sha256": "61080463f5781250b5fd0fe7d99f89cc7d81f4a8e9431d4d14897255ee1b215d"
+    }
+  ],
+  "installed": {
+    "installed_apk_sha256": "f416a8962b9ede8b1cd7c21a5042471792ac886616b4e57a23cb574be52766ad",
+    "method": "Protected root-only flags, task-specific certificate SPKI and exact host resolution; SELinux enforcing; stock verified release-code APK",
+    "profile_user": 13,
+    "isolated_browser_uid": 1310204,
+    "transport_requests": 24,
+    "transport_phases": [
+      {
+        "phase": "fallback-success",
+        "primary_requests": 2,
+        "fallback_requests": 2,
+        "primary_status": 503,
+        "passed": true
+      },
+      {
+        "phase": "fallback-advanced-enabled",
+        "primary_requests": 1,
+        "fallback_requests": 1,
+        "primary_status": 503,
+        "passed": true
+      },
+      {
+        "phase": "primary-success",
+        "primary_requests": 2,
+        "fallback_requests": 0,
+        "primary_status": 200,
+        "passed": true
+      },
+      {
+        "phase": "both-transports-fail",
+        "primary_requests": 2,
+        "fallback_requests": 2,
+        "primary_status": 503,
+        "passed": true
+      },
+      {
+        "phase": "redirect-rejected",
+        "primary_requests": 2,
+        "fallback_requests": 2,
+        "primary_status": 302,
+        "passed": true
+      },
+      {
+        "phase": "html-rejected",
+        "primary_requests": 2,
+        "fallback_requests": 2,
+        "primary_status": 200,
+        "passed": true
+      },
+      {
+        "phase": "metadata-redirect-rejected",
+        "primary_requests": 2,
+        "fallback_requests": 2,
+        "primary_status": 200,
+        "passed": true
+      }
+    ],
+    "unapproved_destination_requests": 0,
+    "credential_bearing_fixture_requests": 0,
+    "canonical_subscription_identity_retained": true,
+    "explicit_advanced_opt_out_preserved": true,
+    "ui_enable_safely_refreshed_only_trusted_anticv": true,
+    "observable_runtime_cases": 8,
+    "primary_success_skips_fallback": true,
+    "both_source_failure_retains_working_data_and_restart": true,
+    "http_and_metadata_redirects_rejected_before_target_fetch": true,
+    "http_200_html_rejected": true
+  },
+  "cleanup": {
+    "user": 13,
+    "original_preferences_byte_identical": true,
+    "original_shared_preference_files_byte_identical": 7,
+    "original_cached_lists_hash_verified": 5,
+    "original_explicit_opt_out_and_global_choice_restored": true,
+    "original_selected_lists_custom_rules_and_exceptions_restored": true,
+    "profile_owner_and_selinux_label_restored": true,
+    "developer_flags_removed": true,
+    "temporary_capture_helper_removed": true,
+    "test_ports_removed": true,
+    "wifi": 1,
+    "mobile_data": 1,
+    "existing_androidwifi_network_reconnected": true,
+    "selinux": "Enforcing",
+    "vehicle_properties_modified_by_card04": false,
+    "driving_state_reverification": "pending; CarService unavailable",
+    "host_tls_server_stopped": true,
+    "fixture_listener_closed": true
+  },
+  "independent_local_reviews": [
+    "source",
+    "mapping-and-diagnostics",
+    "tests",
+    "cleanup"
+  ],
+  "remaining_release_gates": [
+    "Physical ARM64 Android 12 vehicle checks and driving state verification",
+    "Production upload-key signing; AABs are unsigned",
+    "Extended live connectivity soak"
+  ],
+  "cards_05_through_09": "on hold"
+}

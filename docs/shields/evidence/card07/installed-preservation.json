@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "managed_selected": 6,
+  "total_selected": 8,
+  "custom_list": true,
+  "experimental_opt_in": true,
+  "manual_rule": true,
+  "site_exception": true,
+  "global_disabled": true,
+  "advanced_disabled": true,
+  "homepage": true
+}

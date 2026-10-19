@@ -1,0 +1,231 @@
+{
+  "global_tags": [],
+  "all_tests": [
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#conversionReasonsAreVisibleWithoutRuleContents[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#conversionReasonsAreVisibleWithoutRuleContents[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#downloadedAndParsedAreNotActivation[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#downloadedAndParsedAreNotActivation[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#emptyAndUnavailableStatesCannotRemainChecking[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#emptyAndUnavailableStatesCannotRemainChecking[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#failedUpdateRetainsIndependentActiveState[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#failedUpdateRetainsIndependentActiveState[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#globalDisableAndAdvancedEligibilityRemainIndependent[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#globalDisableAndAdvancedEligibilityRemainIndependent[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacyHistoryStaysUnknownRatherThanFalse[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacyHistoryStaysUnknownRatherThanFalse[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#manualBatchShowsActualMixedResultAndTimeout[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#manualBatchShowsActualMixedResultAndTimeout[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListKeepsCapturedManualCancellationResult[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListKeepsCapturedManualCancellationResult[36]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#selectedPendingListDoesNotClaimActiveFiltering[29]",
+    "org.chromium.components.adblock.ShieldsDiagnosticsTest#selectedPendingListDoesNotClaimActiveFiltering[36]"
+  ],
+  "disabled_tests": [],
+  "per_iteration_data": [
+    {
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#manualBatchShowsActualMixedResultAndTimeout[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 28,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 57,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#downloadedAndParsedAreNotActivation[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 44,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#conversionReasonsAreVisibleWithoutRuleContents[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 94,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#downloadedAndParsedAreNotActivation[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 67,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListKeepsCapturedManualCancellationResult[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 44,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#selectedPendingListDoesNotClaimActiveFiltering[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 2331,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#globalDisableAndAdvancedEligibilityRemainIndependent[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 26,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#failedUpdateRetainsIndependentActiveState[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 25,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#removedListKeepsCapturedManualCancellationResult[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 41,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 108,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacyHistoryStaysUnknownRatherThanFalse[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 31,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#conversionReasonsAreVisibleWithoutRuleContents[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 43,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#failedUpdateRetainsIndependentActiveState[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 25,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#legacyHistoryStaysUnknownRatherThanFalse[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 54,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#selectedPendingListDoesNotClaimActiveFiltering[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 6469,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#emptyAndUnavailableStatesCannotRemainChecking[36]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 43,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#manualBatchShowsActualMixedResultAndTimeout[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 40,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#globalDisableAndAdvancedEligibilityRemainIndependent[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 50,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ],
+      "org.chromium.components.adblock.ShieldsDiagnosticsTest#emptyAndUnavailableStatesCannotRemainChecking[29]": [
+        {
+          "status": "SUCCESS",
+          "elapsed_time_ms": 44,
+          "output_snippet": "",
+          "losless_snippet": true,
+          "output_snippet_base64": "",
+          "links": {}
+        }
+      ]
+    }
+  ],
+  "links": {}
+}

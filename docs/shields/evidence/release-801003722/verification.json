@@ -1,0 +1,87 @@
+{
+  "format": 1,
+  "status": "unsigned internal-test candidate prepared; production acceptance blocked",
+  "candidate_version_code": 801003722,
+  "x64_version_code": 801003728,
+  "chromium_version": "153.0.8010.37",
+  "source_overlay_sha256": "341ddbe7d5d3885f8fc93c68d0e781a6a620200a33c1b7810d7b2db0ae1c6960",
+  "source_overlay_tree": "6aa2d7a3c56cc89cdc401ac116481b80ab01d93b",
+  "baseline_sha256": "c359e7c6ac4635567e52dc2bda0edbd53f6622e88ebe4784ab03ef9349644416",
+  "all_nine_overlay_bytes_preserved": true,
+  "version_offset": 20,
+  "focused_executions": {
+    "native": 231,
+    "shields": 54,
+    "media": 26
+  },
+  "tooling_tests": {
+    "loader": 16,
+    "resources": 8,
+    "gates": 8
+  },
+  "total_tests": 343,
+  "full_suite": "suite.json",
+  "windows_offline": "windows-offline-suite.json",
+  "installed_upgrade": "installed-update.json",
+  "arm64_packaging": "arm64-build-manifest.json",
+  "x64_packaging": "x64-build-manifest.json",
+  "arm64_elf16k_libraries": 7,
+  "apk_zipalign16k": "passed",
+  "bundle_alignment": "PAGE_ALIGNMENT_16K",
+  "debuggable": false,
+  "test_only": false,
+  "unsigned_arm64_bundle": {
+    "path": "E:\\Android Auto Projects\\RoadiumBuild\\artifacts\\153.0.8010.37-roadium-shields-internal-arm64\\Roadium-Browser-801003722-arm64-unsigned.aab",
+    "sha256": "4c4f157683b535055c71c2ff7eaed027811728faa98ca9d1d6b7a390f30a6837"
+  },
+  "signing": "user to perform in existing Roadium Bundle Signer; no signed output created by this task",
+  "play_upload": "not performed; user-operated Google Play Console instructions supplied",
+  "rollout": "not performed",
+  "scope": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "excluded_cards": [
+    10
+  ],
+  "card10": "not implemented; photo confirms Android12/security patch but not native bounds; no universal quality-control API established",
+  "production_release_checker_status": "blocked",
+  "blockers": [
+    "x64: diagnostic APK certificate; production signing remains separate",
+    "x64: AAB upload signature not verified",
+    "arm64: diagnostic APK certificate; production signing remains separate",
+    "arm64: AAB upload signature not verified",
+    "manual acceptance must bind these exact source and package hashes",
+    "installed_fresh_upgrade_offline_recovery",
+    "site_controls_and_private_scope",
+    "parked_and_restricted_media",
+    "physical_android12_blazer_ev",
+    "extended_update_storage_soak",
+    "card06_live_playback_limits",
+    "production_signing_and_play_readiness",
+    "fork_ci_and_native_runner_provisioned"
+  ],
+  "cleanup": {
+    "status": "passed",
+    "owned_emulator_pid": 98284,
+    "owned_user": 11,
+    "user_name": "ShieldsRelease722",
+    "original_users_preserved": [
+      0,
+      10
+    ],
+    "foreground_restored_to": 0,
+    "task_flags_removed": true,
+    "temporary_preferences_removed": true,
+    "owned_console_shutdown": true,
+    "host_adb_and_containers_preserved": true
+  },
+  "probe_note": "Initial installed-upgrade probe waited for filtering prefs before actual first-run completion; actual Welcome and search-engine flow completed in own test user, flags removed, then installed upgrade smoke passed. Initial probe was not counted as pass."
+}

@@ -1,0 +1,169 @@
+Additional test environment:
+    CHROME_HEADLESS=1
+    LANG=en_US.UTF-8
+Command: /home/lg/vpython_root/store/python_venv-hmr5stuq9egr1bnu13fhahv43c/contents/bin/python3 build/android/test_runner.py junit --output-directory out/x64 --wrapper-script-args /home/lg/working_dir/chromium/src/out/x64/bin/run_roadium_shields_junit_tests --json-results-file /home/lg/working_dir/card09-regression-accepted/shields.json --test-suite roadium_shields_junit_tests --native-libs-dir out/x64/robolectric_x64 --robolectric-runtime-deps-dir third_party/robolectric/cipd/lib --resource-apk out/x64/obj/components/adblock/android/roadium_shields_junit_tests.robo.ap_ --shadows-allowlist testing/android/junit/shadows-allowlist.txt --json-results-file /home/lg/working_dir/card09-regression-accepted/shields.json
+
+W 21:24:23.293    0.480s Main  Running tests with 2 shard(s) using 2 concurrent process(es).
+
+Shard 0 output:
+ 0| [==========] Running 27 tests.
+ 0| [----------] Global test environment set-up.
+ 0| 
+ 0| [----------] Run 14 test cases from org.chromium.components.adblock.ShieldsDiagnosticsTest
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.selectedPendingListDoesNotClaimActiveFiltering[29]
+ 0| WARNING: A restricted method in java.lang.System has been called
+ 0| WARNING: java.lang.System::load has been called by org.conscrypt.NativeLibraryUtil in an unnamed module (file:/home/lg/working_dir/chromium/src/third_party/android_deps/autorolled/cipd/libs/org_conscrypt_conscrypt_openjdk_uber/conscrypt-openjdk-uber.jar)
+ 0| WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+ 0| WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+ 0| 
+ 0| [WARN] Unknown chunk type '200'.
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.selectedPendingListDoesNotClaimActiveFiltering[29] (933 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[29] (22 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.conversionReasonsAreVisibleWithoutRuleContents[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.conversionReasonsAreVisibleWithoutRuleContents[29] (19 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacyHistoryStaysUnknownRatherThanFalse[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacyHistoryStaysUnknownRatherThanFalse[29] (13 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListRetainsCapturedFallbackDetails[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListRetainsCapturedFallbackDetails[29] (17 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.emptyAndUnavailableStatesCannotRemainChecking[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.emptyAndUnavailableStatesCannotRemainChecking[29] (17 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.downloadedAndParsedAreNotActivation[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.downloadedAndParsedAreNotActivation[29] (12 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[29] (17 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListKeepsCapturedManualCancellationResult[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListKeepsCapturedManualCancellationResult[29] (11 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.fallbackFailureAndActiveSourceAreIndependent[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.fallbackFailureAndActiveSourceAreIndependent[29] (14 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.globalDisableAndAdvancedEligibilityRemainIndependent[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.globalDisableAndAdvancedEligibilityRemainIndependent[29] (16 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.failedUpdateRetainsIndependentActiveState[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.failedUpdateRetainsIndependentActiveState[29] (13 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessRequiresCurrentActivePermittedData[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessRequiresCurrentActivePermittedData[29] (13 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.manualBatchShowsActualMixedResultAndTimeout[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.manualBatchShowsActualMixedResultAndTimeout[29] (12 ms)
+ 0| [----------] Run 14 test cases from org.chromium.components.adblock.ShieldsDiagnosticsTest (1590 ms)
+ 0| 
+ 0| [----------] Run 6 test cases from org.chromium.components.adblock.ShieldsPresetsTest
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.existingFourDefaultsAreBalancedWithoutMigration[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.existingFourDefaultsAreBalancedWithoutMigration[29] (19 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.everyCategoryOnlyChangesItsOwnedLists[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.everyCategoryOnlyChangesItsOwnedLists[29] (37 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[29] (17 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.customCannotResetManagedChoices[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.customCannotResetManagedChoices[29] (13 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.canonicalIdentityIsExactAndExperimentalIsNeverAdded[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.canonicalIdentityIsExactAndExperimentalIsNeverAdded[29] (13 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.categoryDeviationAndRecoveryAreDerivedFromActualSelections[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.categoryDeviationAndRecoveryAreDerivedFromActualSelections[29] (13 ms)
+ 0| [----------] Run 6 test cases from org.chromium.components.adblock.ShieldsPresetsTest (120 ms)
+ 0| 
+ 0| [----------] Run 7 test cases from org.chromium.components.adblock.ShieldsSiteStateTest
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.malformedHostsAndRuleInjectionAreRejected[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.malformedHostsAndRuleInjectionAreRejected[29] (17 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[29] (24 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[29] (13 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.concurrentExceptionsRemainDistinctReasons[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.concurrentExceptionsRemainDistinctReasons[29] (13 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.nonWebPagesHaveNoSiteControls[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.nonWebPagesHaveNoSiteControls[29] (12 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.suffixRequiresDnsLabelBoundary[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.suffixRequiresDnsLabelBoundary[29] (17 ms)
+ 0| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.globalPauseAlwaysWinsOverEitherException[29]
+ 0| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.globalPauseAlwaysWinsOverEitherException[29] (10 ms)
+ 0| [----------] Run 7 test cases from org.chromium.components.adblock.ShieldsSiteStateTest (111 ms)
+ 0| 
+ 0| [----------] Global test environment tear-down.
+ 0| [==========] 27 tests ran. (1824 ms total)
+ 0| [  PASSED  ] 27 tests.
+
+Shard 1 output:
+ 1| [==========] Running 27 tests.
+ 1| [----------] Global test environment set-up.
+ 1| 
+ 1| [----------] Run 14 test cases from org.chromium.components.adblock.ShieldsDiagnosticsTest
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.selectedPendingListDoesNotClaimActiveFiltering[36]
+ 1| WARNING: A restricted method in java.lang.System has been called
+ 1| WARNING: java.lang.System::load has been called by org.robolectric.nativeruntime.DefaultNativeRuntimeLoader in an unnamed module
+ 1| WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+ 1| WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+ 1| 
+ 1| [WARN] Unknown chunk type '200'.
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.selectedPendingListDoesNotClaimActiveFiltering[36] (2227 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacySubscriptionDescriptionRetainsFullCountersAndAccurateLabels[36] (26 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.conversionReasonsAreVisibleWithoutRuleContents[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.conversionReasonsAreVisibleWithoutRuleContents[36] (16 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacyHistoryStaysUnknownRatherThanFalse[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.legacyHistoryStaysUnknownRatherThanFalse[36] (13 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListRetainsCapturedFallbackDetails[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListRetainsCapturedFallbackDetails[36] (16 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.emptyAndUnavailableStatesCannotRemainChecking[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.emptyAndUnavailableStatesCannotRemainChecking[36] (15 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.downloadedAndParsedAreNotActivation[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.downloadedAndParsedAreNotActivation[36] (11 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessCannotOverrideGlobalOrAdvancedOptOut[36] (13 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListKeepsCapturedManualCancellationResult[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.removedListKeepsCapturedManualCancellationResult[36] (12 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.fallbackFailureAndActiveSourceAreIndependent[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.fallbackFailureAndActiveSourceAreIndependent[36] (12 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.globalDisableAndAdvancedEligibilityRemainIndependent[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.globalDisableAndAdvancedEligibilityRemainIndependent[36] (12 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.failedUpdateRetainsIndependentActiveState[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.failedUpdateRetainsIndependentActiveState[36] (11 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessRequiresCurrentActivePermittedData[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.advancedReadinessRequiresCurrentActivePermittedData[36] (14 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsDiagnosticsTest.manualBatchShowsActualMixedResultAndTimeout[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsDiagnosticsTest.manualBatchShowsActualMixedResultAndTimeout[36] (11 ms)
+ 1| [----------] Run 14 test cases from org.chromium.components.adblock.ShieldsDiagnosticsTest (2871 ms)
+ 1| 
+ 1| [----------] Run 6 test cases from org.chromium.components.adblock.ShieldsPresetsTest
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.existingFourDefaultsAreBalancedWithoutMigration[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.existingFourDefaultsAreBalancedWithoutMigration[36] (16 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.everyCategoryOnlyChangesItsOwnedLists[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.everyCategoryOnlyChangesItsOwnedLists[36] (15 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.allTransitionsKeepUnmanagedSelectionsAndAreIdempotent[36] (14 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.customCannotResetManagedChoices[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.customCannotResetManagedChoices[36] (11 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.canonicalIdentityIsExactAndExperimentalIsNeverAdded[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.canonicalIdentityIsExactAndExperimentalIsNeverAdded[36] (11 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsPresetsTest.categoryDeviationAndRecoveryAreDerivedFromActualSelections[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsPresetsTest.categoryDeviationAndRecoveryAreDerivedFromActualSelections[36] (10 ms)
+ 1| [----------] Run 6 test cases from org.chromium.components.adblock.ShieldsPresetsTest (85 ms)
+ 1| 
+ 1| [----------] Run 7 test cases from org.chromium.components.adblock.ShieldsSiteStateTest
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.malformedHostsAndRuleInjectionAreRejected[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.malformedHostsAndRuleInjectionAreRejected[36] (14 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.idnCaseAndFinalDotCanonicalizeWithoutWideningScope[36] (24 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.legacyUnicodeRecordIsPreservedButNeverClaimedAsActiveException[36] (11 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.concurrentExceptionsRemainDistinctReasons[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.concurrentExceptionsRemainDistinctReasons[36] (13 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.nonWebPagesHaveNoSiteControls[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.nonWebPagesHaveNoSiteControls[36] (12 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.suffixRequiresDnsLabelBoundary[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.suffixRequiresDnsLabelBoundary[36] (14 ms)
+ 1| [ RUN      ] org.chromium.components.adblock.ShieldsSiteStateTest.globalPauseAlwaysWinsOverEitherException[36]
+ 1| [       OK ] org.chromium.components.adblock.ShieldsSiteStateTest.globalPauseAlwaysWinsOverEitherException[36] (12 ms)
+ 1| [----------] Run 7 test cases from org.chromium.components.adblock.ShieldsSiteStateTest (104 ms)
+ 1| 
+ 1| [----------] Global test environment tear-down.
+ 1| [==========] 27 tests ran. (3063 ms total)
+ 1| [  PASSED  ] 27 tests.
+C 21:24:26.870    4.056s Main  64 log lines omitted.
+C 21:24:26.870    4.057s Main  ********************************************************************************
+C 21:24:26.870    4.057s Main  Summary
+C 21:24:26.870    4.057s Main  ********************************************************************************
+C 21:24:26.871    4.057s Main  [==========] 54 tests ran.
+C 21:24:26.871    4.057s Main  [  PASSED  ] 54 tests.
+C 21:24:26.871    4.057s Main  ********************************************************************************
+C 21:24:26.873    4.060s Main  RAW LOGS: file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_18T21_24_22/raw_logs/raw_logs.txt
+C 21:24:26.884    4.070s Main  TEST RESULTS: file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_18T21_24_22/test_results_presentation/test_results_presentation.html

@@ -1,0 +1,53 @@
+{
+  "chromium_version": "153.0.8010.37",
+  "compression": "gzip, level 9, mtime 0; compressed bytes checked in, not regenerated during builds",
+  "format": 1,
+  "inputs": [
+    {
+      "attribution": "The EasyList authors (https://easylist.to/)",
+      "bytes": 2147920,
+      "canonical_url": "https://uazo.github.io/cromite/filters/easylist.txt",
+      "file": "easylist.txt.gz",
+      "flatbuffer_bytes": 8184160,
+      "flatbuffer_sha256": "0dd8cfbf16b64b283f5cf3fd6d79c5279c8c916875e76b1d94508e5bc70eebfc",
+      "gzip_bytes": 753776,
+      "gzip_sha256": "39e2f30ceece619596cb03a6e2ff08a7cf692650ec11ce0ed1df164bfeb9d8a9",
+      "license": "GPL-3.0-or-later",
+      "rule_statistics": {
+        "accepted": 81698,
+        "parser_rejected": 5,
+        "prohibited_privilege": 37,
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      },
+      "sha256": "1e2a42fcfc24642be33392385c6912179fc96b068c39b21a6b9601aea4343bce",
+      "source_url": "https://raw.githubusercontent.com/uazo/cromite/338336d9e640489c648d47d606cb0030064c4e0f/filters/easylist.txt",
+      "version": "202610130952"
+    },
+    {
+      "attribution": "eyeo GmbH and the ABP Anti-Circumvention filter authors",
+      "bytes": 496681,
+      "canonical_url": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+      "file": "abp-filters-anti-cv.txt.gz",
+      "flatbuffer_bytes": 690616,
+      "flatbuffer_sha256": "d9fc6dd71d2456012d5577ea163cf0e58cec6c86d0f11583b520adf89e1e647f",
+      "gzip_bytes": 109368,
+      "gzip_sha256": "456b445a1c1faa9e2f3eabd11df7aac3fb0011ac003f9cbf1d48e5842001b1f2",
+      "license": "GPL-3.0-only",
+      "rule_statistics": {
+        "accepted": 3861,
+        "parser_rejected": 48,
+        "prohibited_privilege": 0,
+        "unsafe_arguments": 28,
+        "unsupported_commands": 518,
+        "unsupported_options": 0
+      },
+      "sha256": "2fcfb54891e7f7880909f5438d9691d4233dcde4b00b105d7bd315e6a0fad51a",
+      "source_url": "https://raw.githubusercontent.com/uazo/cromite/338336d9e640489c648d47d606cb0030064c4e0f/filters/abp-filters-anti-cv.txt",
+      "version": "202610130952"
+    }
+  ],
+  "notices_sha256": "b74bcf5e169f438b8e61ef6a81e281ebcac1e68784d0d8c0f3b86c31d90fd4d4",
+  "revision": "338336d9e640489c648d47d606cb0030064c4e0f"
+}

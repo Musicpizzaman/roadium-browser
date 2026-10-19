@@ -1,0 +1,17 @@
+{
+  "initial_layout": "34886cbc85673f3b145ab19b12476a75e6793f06d759ebb5c9d5e272179c3c6a",
+  "reviewed_layout_revision": "5adef4bd5b8c0ca3c80de72ef5b2494212602f4ff4d08a52296d80e0eba7dfd1",
+  "final_parser_guard_revision": "2160ae827e8783cb7356a5be79753c03e82198e36d38634af7e0959bfa27dbb2",
+  "performed_on_reviewed_layout": [
+    "activity-and-lifecycle.json",
+    "global-and-preset-state.json",
+    "idn-and-redirects.json",
+    "persistence-and-ownership.json"
+  ],
+  "final_guard_change": "Ignore raw non-ASCII saved domain entries when inferring coverage; preserve them unchanged. Normal canonical ASCII host behavior, handlers, native state and lifetime are unchanged.",
+  "final_guard_checks": "Passed expanded Java suite, installed legacy-record regression and normal controls; final scope-caption checks passed.",
+  "final_accepted_source_revision": "341ddbe7d5d3885f8fc93c68d0e781a6a620200a33c1b7810d7b2db0ae1c6960",
+  "final_overlay_sha256": "c22996e7566fc8e188d5b3f79aead1bae57b238c8d4120a66e296d1d13e8ece2",
+  "test_only_expectation_correction": "The final regression test explicitly encodes its Unicode fixture and replaces the obsolete expected match;54 executions passed.",
+  "final_scope_text_correction": "Browser client original-profile routing was audited and verified in an actual private tab. Help discloses regular/Incognito sharing and other-tab reload requirements; final caption/package checked."
+}

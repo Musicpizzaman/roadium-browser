@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "light": "strict-enabled-light.png",
+  "dark": "strict-enabled-dark.png",
+  "dark_categories": "categories-dark.png",
+  "checks": [
+    "Labels and switches readable in both existing palettes",
+    "Logical preference order inspected through accessibility hierarchy",
+    "Row and direct-widget activation verified"
+  ],
+  "physical_focus_and_touchscreen_acceptance": "release gate"
+}

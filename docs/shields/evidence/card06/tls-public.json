@@ -1,0 +1,5 @@
+{
+  "spki_sha256_base64": "wZCLw7R96wfn0nnuw5jyi+8b+gBHBDwd/znF/E358RI=",
+  "certificate_sha256": "d83375374a3b8b10e7d45d49e0d6decebf5f01a8f8bee060df4d67df3332cd8a",
+  "purpose": "Ephemeral local developer TLS injection; not a production signing key"
+}

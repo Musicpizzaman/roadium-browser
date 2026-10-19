@@ -1,0 +1,14 @@
+Additional test environment:
+    CHROME_HEADLESS=1
+    LANG=en_US.UTF-8
+Command: /home/lg/vpython_root/store/python_venv-hmr5stuq9egr1bnu13fhahv43c/contents/bin/python3 build/android/test_runner.py gtest --output-directory out/x64 --wrapper-script-args out/x64/bin/run_roadium_shields_unit_tests -d emulator-5554 --test-launcher-retry-limit 0 --json-results-file out/x64/card08-test-results/post-review-native.json --runtime-deps-path out/x64/gen.runtime/components/adblock/core/subscription/roadium_shields_unit_tests__test_runner_script.runtime_deps --suite roadium_shields_unit_tests --use-local-devil-tools -d emulator-5554 --test-launcher-retry-limit 0 --json-results-file out/x64/card08-test-results/post-review-native.json
+
+C 19:34:56.904    1.713s list_tests(emulator-5554)  Logcat saved to file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_18T19_34_55/logcat/logcat_list_tests_shard0_20261018T193455-UTC_emulator-5554
+C 19:34:59.346    4.155s _RunTestsOnDevice(emulator-5554)  Logcat saved to file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_18T19_34_55/logcat/logcat_-4103292030773269555_shard0_20261018T193456-UTC_emulator-5554
+C 19:34:59.694    4.503s Main  ********************************************************************************
+C 19:34:59.697    4.506s Main  Summary
+C 19:34:59.697    4.506s Main  ********************************************************************************
+C 19:34:59.698    4.506s Main  [==========] 231 tests ran.
+C 19:34:59.698    4.507s Main  [  PASSED  ] 231 tests.
+C 19:34:59.698    4.507s Main  ********************************************************************************
+C 19:34:59.727    4.535s Main  TEST RESULTS: file:///home/lg/working_dir/chromium/src/out/x64/TEST_RESULTS_2026_10_18T19_34_55/test_results_presentation/test_results_presentation.html

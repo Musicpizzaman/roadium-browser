@@ -1,0 +1,58 @@
+{
+  "profile": "upgrade",
+  "user": 10,
+  "advanced_stored": "unset/default false",
+  "first_run_stored": false,
+  "subscriptions": {
+    "https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt": {
+      "download_count": 1,
+      "error_count": 0,
+      "expiration_time": "13435841000544004",
+      "last_installation_time": "13435409000543993",
+      "version": "0"
+    },
+    "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": {
+      "download_count": 1,
+      "error_count": 0,
+      "expiration_time": "13435412601242964",
+      "last_installation_time": "13435409001242957",
+      "version": "202610010932"
+    },
+    "https://uazo.github.io/cromite/filters/badblock_lite.txt": {
+      "download_count": 1,
+      "error_count": 0,
+      "expiration_time": "13435412601295693",
+      "last_installation_time": "13435409001295680",
+      "version": "27July2026v1"
+    },
+    "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt": {
+      "download_count": 1,
+      "error_count": 0,
+      "expiration_time": "13435841001478965",
+      "last_installation_time": "13435409001478945",
+      "version": "0"
+    },
+    "https://uazo.github.io/cromite/filters/easylist.txt": {
+      "download_count": 1,
+      "error_count": 0,
+      "expiration_time": "13435495401351616",
+      "last_installation_time": "13435409001351597",
+      "version": "202610010932"
+    }
+  },
+  "configurations": {
+    "adblock": {
+      "domains": [],
+      "enabled": true,
+      "filters": [],
+      "subscriptions": [
+        "https://uazo.github.io/cromite/filters/easylist.txt",
+        "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+        "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+        "https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt"
+      ],
+      "temp_filters": []
+    }
+  }
+}

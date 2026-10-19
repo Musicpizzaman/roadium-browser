@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The diff implements a robust storage transaction model for adblock subscriptions. Key changes include: 1) Introduction of `storage::Permit` to guard subscription writes against concurrent policy changes. 2) Distinct lifecycle methods (`Retire`, `Discard`, `Remove`) to differentiate between rolling updates, cancellations, and explicit uninstalls. 3) Migration of success counters to occur only after successful activation in the maintainer, preventing false positives from failed/cancelled writes. 4) Improved diagnostic reporting for recovery states and bundle availability. 5) Thread-safe storage operations via a dedicated `SequencedTaskRunner` and `storage::Boundary`.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"Unit tests for `StoreSubscriptionGuarded` with expired permits are needed.\",\n    \"Integration tests for `Retire` vs `Discard` behavior in the storage layer.\"\n  ],\n  \"recommended_changes\": [\n    \"Ensure `storage::Boundary` is correctly configured for the specific disk I/O requirements of the adblock component.\",\n    \"Verify that `DiscardSubscription` correctly triggers the cleanup of any temporary files if the storage implementation creates them.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The diff implements a robust storage transaction model for adblock subscriptions. Key changes include: 1) Introduction of `storage::Permit` to guard subscription writes against concurrent policy changes. 2) Distinct lifecycle methods (`Retire`, `Discard`, `Remove`) to differentiate between rolling updates, cancellations, and explicit uninstalls. 3) Migration of success counters to occur only after successful activation in the maintainer, preventing false positives from failed/cancelled writes. 4) Improved diagnostic reporting for recovery states and bundle availability. 5) Thread-safe storage operations via a dedicated `SequencedTaskRunner` and `storage::Boundary`.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [],
+    "security_issues": [],
+    "test_gaps": [
+      "Unit tests for `StoreSubscriptionGuarded` with expired permits are needed.",
+      "Integration tests for `Retire` vs `Discard` behavior in the storage layer."
+    ],
+    "recommended_changes": [
+      "Ensure `storage::Boundary` is correctly configured for the specific disk I/O requirements of the adblock component.",
+      "Verify that `DiscardSubscription` correctly triggers the cleanup of any temporary files if the storage implementation creates them."
+    ]
+  },
+  "isError": false
+}

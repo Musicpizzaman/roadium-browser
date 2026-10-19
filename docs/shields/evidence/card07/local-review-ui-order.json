@@ -1,0 +1,22 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"This PR corrects the UI ordering of preferences in AdblockSettingsFragment to prevent interleaving of legacy and new rows. By increasing the order values (e.g., protection level to 10, categories to 20+), it creates distinct buckets for different preference types. The explicit ordering of mAdblockEnabled, mPrivilegedFilters, and other keys ensures a consistent, grouped layout. No logic changes or dependency issues were identified.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"Visual regression tests for the UI order are not explicitly mentioned but are implied by the fix.\"\n  ],\n  \"recommended_changes\": [\n    \"Ensure that 'fragment_adblock_settings_open_repo_url' and 'fragment_adblock_settings_open_snippets_url' are guaranteed to be initialized before this method is called to avoid NullPointerExceptions.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "This PR corrects the UI ordering of preferences in AdblockSettingsFragment to prevent interleaving of legacy and new rows. By increasing the order values (e.g., protection level to 10, categories to 20+), it creates distinct buckets for different preference types. The explicit ordering of mAdblockEnabled, mPrivilegedFilters, and other keys ensures a consistent, grouped layout. No logic changes or dependency issues were identified.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [],
+    "security_issues": [],
+    "test_gaps": [
+      "Visual regression tests for the UI order are not explicitly mentioned but are implied by the fix."
+    ],
+    "recommended_changes": [
+      "Ensure that 'fragment_adblock_settings_open_repo_url' and 'fragment_adblock_settings_open_snippets_url' are guaranteed to be initialized before this method is called to avoid NullPointerExceptions."
+    ]
+  },
+  "isError": false
+}

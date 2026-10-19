@@ -1,0 +1,260 @@
+{
+  "status": "passed",
+  "observable_runtime_cases": 20,
+  "installed_apk_sha256": "002c2eb636653496fdd1804958f92bcc66fcf5a4293f7e8585d56987acf2ce6b",
+  "user": 11,
+  "device": "API33 x64 Automotive emulator; read-only session",
+  "fresh_document_blocking_and_policy_verified": true,
+  "custom_url_rules_and_exceptions_preserved": true,
+  "force_stop_boundaries": 4,
+  "failed_updates_counted_once": true,
+  "preference_snapshot_timing": "Raw preferences snapshots precede live reports and may lag asynchronous recovery persistence; loaded versions/origins use live engine diagnostics and backing-file hashes",
+  "current_previous_retention_bound": 2,
+  "repair_after_previous_recovery": true,
+  "bundled_offline_recovery": true,
+  "no_data_custom_state_honest": true,
+  "credential_headers_observed": false,
+  "transport_requests_total": 45,
+  "transport_scope_note": "Initial default-list/component requests are retained transparently; phases identify controlled accepted filter cases",
+  "cases": [
+    {
+      "case": "initial-advanced-enabled",
+      "selected_lists": 3,
+      "advanced": true,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "second-generation",
+      "selected_lists": 3,
+      "advanced": true,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "advanced-opt-out-baseline",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "previous-version-recovery",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "previous",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "previous"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "force-stop-download",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "force-stop-candidate",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "force-stop-previous",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "force-stop-published",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "storage-error-retention",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "storage-error-restart",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "invalid-retention",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "invalid-restart",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "orphan-recovery",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "schema-recovery",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "previous"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "explicit-removal-recovery",
+      "selected_lists": 2,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "activation-restart",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "repeated-update-recovery",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "offline-bundled-recovery",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "unavailable; update scheduled",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "bundled baseline",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "bundled baseline"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "missing-bundled-recovery",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "unavailable; update scheduled",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "bundled baseline",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "bundled baseline"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    },
+    {
+      "case": "repair-after-recovery",
+      "selected_lists": 3,
+      "advanced": false,
+      "loaded_origins": {
+        "https://custom.card05.invalid/list.txt": "current",
+        "https://uazo.github.io/cromite/filters/easylist.txt": "current",
+        "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": "current"
+      },
+      "observable_blocking": "passed",
+      "configuration": "preserved"
+    }
+  ]
+}

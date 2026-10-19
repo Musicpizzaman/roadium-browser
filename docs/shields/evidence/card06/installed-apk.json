@@ -1,0 +1,11 @@
+{
+  "sha256": "d18d2781075d5bb788341788894680814f45f9575f948ee328a952dbd0325a4b",
+  "verified": true,
+  "users": [
+    11
+  ],
+  "source_patch": {
+    "path": "build/roadium/patches/0007-roadium-youtube-compatibility.patch",
+    "sha256": "9c01a74974f2bde3024a0430c57cff8e2e9e49ef269a1a3c131a271fae619e72"
+  }
+}

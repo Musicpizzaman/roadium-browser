@@ -1,0 +1,31 @@
+<!doctype html><meta charset="utf-8"><title>Roadium Card06 runtime fixture</title>
+<h1>Card06 DOM, JSON, property and media fixture</h1>
+<div id="card06-dom-ad">Controlled DOM ad marker</div>
+<video id="ad1" class="ad-video" controls muted preload="auto" src="bear.webm"></video>
+<video id="ad2" class="ad-video" controls muted preload="auto" src="bear.webm"></video>
+<video id="ordinary" controls muted preload="auto" src="bear.webm"></video>
+<audio id="audio" controls preload="auto" src="bear.ogv"></audio>
+<iframe src="card06-frame.html" title="Own same-origin frame"></iframe>
+<script>
+window.roadiumProbe='fixture-value'; window.rejectedProbe='fixture-value';window.badValue='fixture-value';
+window.ytInitialPlayerResponse={adPlacements:['ad'],ordinary:'content'};
+window.card06={frames:[],errors:[],start:Date.now()};
+addEventListener('error',e=>card06.errors.push(String(e.message)));
+addEventListener('message',e=>{if(e.origin===location.origin)card06.frames.push(e.data)});
+window.card06State=async()=>{
+  const object=JSON.parse('{"playerResponse":{"adPlacements":[1],"playerAds":[2],"adSlots":[3],"videoDetails":{"title":"normal"}},"ordinary":true}');
+  const array=JSON.parse('[{"playerResponse":{"adPlacements":[1],"videoDetails":{"title":"array content"}}}]');
+  const response=await new Response('{"playerResponse":{"playerAds":[2],"videoDetails":{"title":"response content"}}}').json();
+  const missing=JSON.parse('{"ordinary":true}');
+  const removalGrammar=JSON.parse('{"entries":[{"command":{"reelWatchEndpoint":{"adClientParams":{"isAd":true}}}},{"ordinary":true}]}');
+  let malformed=false;try{JSON.parse('{broken')}catch(e){malformed=e instanceof SyntaxError}
+  let aborted=false;try{window.adBreakHeartbeatParams='ad'}catch(e){aborted=e instanceof ReferenceError}
+  return {visibility:document.visibilityState,roadiumProbe:typeof roadiumProbe==='undefined'?'undefined':roadiumProbe,rejectedProbe,badValue,
+    propertyAd:typeof ytInitialPlayerResponse.adPlacements,object,array,response,missing,removalGrammar,malformed,aborted,
+    domHidden:getComputedStyle(document.getElementById('card06-dom-ad')).display==='none',frames:card06.frames,
+    videos:[...document.querySelectorAll('video')].map(v=>({id:v.id,time:v.currentTime,duration:v.duration,paused:v.paused,ended:v.ended,error:v.error?.code??null})),errors:card06.errors};
+};
+window.card06Trigger=()=>{const marker=document.createElement('div');marker.id='card06-ad-marker';document.body.append(marker);};
+window.card06Ordinary=async()=>{const v=document.getElementById('ordinary');v.currentTime=.25;await v.play();await new Promise(r=>setTimeout(r,400));v.pause();const time=v.currentTime;v.currentTime=.75;await new Promise(r=>setTimeout(r,200));return {advanced:time>.25,time,seek:v.currentTime,paused:v.paused,duration:v.duration};};
+window.card06WebAudio=async()=>{const a=new AudioContext();await a.resume();const o=a.createOscillator(),g=a.createGain();g.gain.value=0;o.connect(g).connect(a.destination);o.start();await new Promise(r=>setTimeout(r,100));o.stop();const state=a.state;await a.close();return state;};
+</script>

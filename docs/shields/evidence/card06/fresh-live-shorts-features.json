@@ -1,0 +1,29 @@
+{
+  "kind": "page",
+  "time": "2026-10-18T03:49:12.206Z",
+  "result": {
+    "url": "https://m.youtube.com/shorts/aPrJ0lgWAYY",
+    "title": "YouTube",
+    "video": true,
+    "error": null,
+    "before": {
+      "time": 0,
+      "duration": null,
+      "paused": true,
+      "ready": 0
+    },
+    "play": "timeout",
+    "after": {
+      "time": 0,
+      "paused": false,
+      "ready": 0
+    },
+    "captions": {
+      "button": false,
+      "tracks": []
+    },
+    "qualities": [],
+    "qualityBefore": "unknown"
+  },
+  "exception": null
+}

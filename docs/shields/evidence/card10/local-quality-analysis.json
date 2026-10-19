@@ -1,0 +1,39 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"To implement a preference for 720p without overriding ABR or manual selection, I propose adding a `SetPreferredResolution` method to `RenditionManager`. This method will store a target resolution. In `SelectBestVariant`, if no manual `preferred_video_rendition_` is set, the algorithm will attempt to find the closest available rendition to the target resolution (e.g., 720p) that still satisfies the current ABR bandwidth constraints and player dimensions. This respects the 'no force higher' rule because the ABR check remains the hard ceiling. Implementation requires a new member `preferred_resolution_` and logic in `SelectBestVariant` to bias the search towards the target resolution when ABR allows. Plumbing requires the Android Automotive media service to pass the user's persistent preference via the renderer to this manager.\",\n  \"architecture_observations\": [\n    \"`RenditionManager` already handles user preferences via `preferred_video_rendition_` and `preferred_audio_rendition_`.\",\n    \"The `SelectBestVariant` method is the central decision point for ABR and resolution logic.\",\n    \"The current architecture separates manual selection (which overrides ABR) from ABR (which follows bandwidth).\",\n    \"The `player_resolution_` is used as a ceiling, which aligns with the requirement to not upscale.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"media/formats/hls/rendition_manager.h\",\n      \"change\": \"Add `void SetPreferredResolution(std::optional<gfx::Size> resolution);` to public methods. Add `std::optional<gfx::Size> preferred_resolution_;` to private members.\"\n    },\n    {\n      \"file\": \"media/formats/hls/rendition_manager.cc\",\n      \"change\": \"Implement `SetPreferredResolution` to call `Reselect`. Modify `SelectBestVariant` to iterate through `selectable_variants_` and pick the one closest to `preferred_resolution_` that is $\\\\le$ `abr_speed` and $\\\\le$ `player_resolution_` (with scale factor).\"\n    }\n  ],\n  \"patch\": \"\",\n  \"risks\": [\n    \"If the target resolution is significantly higher than available bandwidth, ABR must still win to prevent stalling.\",\n    \"Incorrect implementation could lead to 'fighting' between the 720p preference and the ABR algorithm if not carefully integrated into the selection loop.\"\n  ],\n  \"tests\": [\n    \"Unit test: Verify `SelectBestVariant` picks 720p when bandwidth and player size allow, even if lower bitrates are available.\",\n    \"Unit test: Verify `SelectBestVariant` picks a lower bitrate if 720p exceeds `abr_speed`.\",\n    \"Unit test: Verify manual `SetPreferredVideoRendition` still overrides the 720p preference.\",\n    \"Integration test: Ensure Android Automotive preference plumbing correctly propagates to `RenditionManager`.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "To implement a preference for 720p without overriding ABR or manual selection, I propose adding a `SetPreferredResolution` method to `RenditionManager`. This method will store a target resolution. In `SelectBestVariant`, if no manual `preferred_video_rendition_` is set, the algorithm will attempt to find the closest available rendition to the target resolution (e.g., 720p) that still satisfies the current ABR bandwidth constraints and player dimensions. This respects the 'no force higher' rule because the ABR check remains the hard ceiling. Implementation requires a new member `preferred_resolution_` and logic in `SelectBestVariant` to bias the search towards the target resolution when ABR allows. Plumbing requires the Android Automotive media service to pass the user's persistent preference via the renderer to this manager.",
+    "architecture_observations": [
+      "`RenditionManager` already handles user preferences via `preferred_video_rendition_` and `preferred_audio_rendition_`.",
+      "The `SelectBestVariant` method is the central decision point for ABR and resolution logic.",
+      "The current architecture separates manual selection (which overrides ABR) from ABR (which follows bandwidth).",
+      "The `player_resolution_` is used as a ceiling, which aligns with the requirement to not upscale."
+    ],
+    "proposed_changes": [
+      {
+        "file": "media/formats/hls/rendition_manager.h",
+        "change": "Add `void SetPreferredResolution(std::optional<gfx::Size> resolution);` to public methods. Add `std::optional<gfx::Size> preferred_resolution_;` to private members."
+      },
+      {
+        "file": "media/formats/hls/rendition_manager.cc",
+        "change": "Implement `SetPreferredResolution` to call `Reselect`. Modify `SelectBestVariant` to iterate through `selectable_variants_` and pick the one closest to `preferred_resolution_` that is $\\le$ `abr_speed` and $\\le$ `player_resolution_` (with scale factor)."
+      }
+    ],
+    "patch": "",
+    "risks": [
+      "If the target resolution is significantly higher than available bandwidth, ABR must still win to prevent stalling.",
+      "Incorrect implementation could lead to 'fighting' between the 720p preference and the ABR algorithm if not carefully integrated into the selection loop."
+    ],
+    "tests": [
+      "Unit test: Verify `SelectBestVariant` picks 720p when bandwidth and player size allow, even if lower bitrates are available.",
+      "Unit test: Verify `SelectBestVariant` picks a lower bitrate if 720p exceeds `abr_speed`.",
+      "Unit test: Verify manual `SetPreferredVideoRendition` still overrides the 720p preference.",
+      "Integration test: Ensure Android Automotive preference plumbing correctly propagates to `RenditionManager`."
+    ]
+  },
+  "isError": false
+}

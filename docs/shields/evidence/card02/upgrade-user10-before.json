@@ -1,0 +1,67 @@
+{
+  "adblock": {
+    "install_first_run_subscriptions": false,
+    "last_used_schema_version": "Apu+MU09OCFx11xibV1gU0afrAVCmbvSp8K2NKDV2Yc=",
+    "subscription_metadata": {
+      "https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt": {
+        "download_count": 1,
+        "error_count": 0,
+        "expiration_time": "13435841000544004",
+        "last_installation_time": "13435409000543993",
+        "version": "0"
+      },
+      "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt": {
+        "download_count": 1,
+        "error_count": 0,
+        "expiration_time": "13435412601242964",
+        "last_installation_time": "13435409001242957",
+        "version": "202610010932"
+      },
+      "https://uazo.github.io/cromite/filters/badblock_lite.txt": {
+        "download_count": 1,
+        "error_count": 0,
+        "expiration_time": "13435412601295693",
+        "last_installation_time": "13435409001295680",
+        "version": "27July2026v1"
+      },
+      "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt": {
+        "download_count": 1,
+        "error_count": 0,
+        "expiration_time": "13435841001478965",
+        "last_installation_time": "13435409001478945",
+        "version": "0"
+      },
+      "https://uazo.github.io/cromite/filters/easylist.txt": {
+        "download_count": 1,
+        "error_count": 0,
+        "expiration_time": "13435495401351616",
+        "last_installation_time": "13435409001351597",
+        "version": "202610010932"
+      }
+    },
+    "subscription_signatures": {
+      "203BA76C8E0F1A3563138C7771242EE3.fb": "V4ljJ4YiMvy4PDec8z/qMzy1t9MUIoZaBdMKOVmwVRo=",
+      "56E9F00FEC753DCB0BEA179F886B0733.fb": "CLDERaWeJGd2ltp/imkd9Kr6h3XJGjnytSp08o2+TgY=",
+      "581B1AC320002CD7A7ACC6EE4E862CBC.fb": "J1uM3lmg9kn3eXKJhB0rgY6e8VyGQIxMM4cfLMOhEbo=",
+      "9163975F47F9E3EE85B61760A17C3EE2.fb": "8ru89BRuTzVVnt2pJpwS0wvr+6EOOmppjXPfkM7nkTk=",
+      "B591126035D921216422B0E12EB21750.fb": "Vep7BOH0vGvguXrvxg8Bxk/IKpuLTIFRINfIu/yUcsk="
+    }
+  },
+  "filtering": {
+    "configurations": {
+      "adblock": {
+        "domains": [],
+        "enabled": true,
+        "filters": [],
+        "subscriptions": [
+          "https://uazo.github.io/cromite/filters/easylist.txt",
+          "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+          "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+          "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+          "https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt"
+        ],
+        "temp_filters": []
+      }
+    }
+  }
+}

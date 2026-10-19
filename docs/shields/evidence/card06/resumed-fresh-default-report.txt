@@ -1,0 +1,79 @@
+Ad blocking: Enabled
+Advanced filtering: Enabled
+EasyList: loaded in the active engine
+Anti-circumvention: loaded in the active engine. Privileged scriptlets: eligible for supported rules
+Tap for local update errors and conversion counts.
+
+No manual check requested in this session
+
+EasyList
+https://uazo.github.io/cromite/filters/easylist.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 202610130952
+Stored version: 202610130952
+Last installation: 10/17/26 10:47:07 PM
+Last successful activation/update: 10/17/26 10:47:07 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://uazo.github.io/cromite/filters/easylist.txt
+Storage recovery: current
+Active data source: https://uazo.github.io/cromite/filters/easylist.txt
+Successful requests: 1 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 81698 accepted; rejected — parser 5, unsupported commands 0, privilege 37, arguments 0, unsupported options/no operation 0
+
+Celenity/BadBlock Lite
+https://uazo.github.io/cromite/filters/badblock_lite.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 04October2026v1
+Stored version: 04October2026v1
+Last installation: 10/17/26 10:47:07 PM
+Last successful activation/update: 10/17/26 10:47:07 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://uazo.github.io/cromite/filters/badblock_lite.txt
+Storage recovery: current
+Active data source: https://uazo.github.io/cromite/filters/badblock_lite.txt
+Successful requests: 1 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 14664 accepted; rejected — parser 873, unsupported commands 0, privilege 0, arguments 0, unsupported options/no operation 0
+
+badmojr/1Hosts
+https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: not available
+Stored version: not recorded/provided
+Last installation: 10/17/26 10:47:07 PM
+Last successful activation/update: 10/17/26 10:47:07 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt
+Storage recovery: current
+Active data source: https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt
+Successful requests: 1 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 102259 accepted; rejected — parser 0, unsupported commands 0, privilege 0, arguments 0, unsupported options/no operation 0
+
+ABP filters
+https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 202610130952
+Stored version: 202610130952
+Last installation: 10/17/26 10:47:07 PM
+Last successful activation/update: 10/17/26 10:47:07 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Storage recovery: current
+Active data source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Successful requests: 1 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 3861 accepted; rejected — parser 48, unsupported commands 518, privilege 0, arguments 28, unsupported options/no operation 0

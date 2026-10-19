@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "source_checkouts": [
+    "isolated Card05 partial source",
+    "verified x64 full Chromium source",
+    "verified ARM64 full Chromium source"
+  ],
+  "files": {
+    "components/adblock/android/adblock_controller_jni.cc": "a9e7d7d37968ab486988997b65458f31ac312f7f1eba474d74261929aec17f3b",
+    "components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java": "acc8285edb290d36e9116b40b4af58c6290ddf304f3ecec9b16e717af2619ae8",
+    "components/adblock/core/subscription/BUILD.gn": "3d87c0ca8a9c0c6358ef56a4da930d70faf8b5d4011a1baba39bd17a8d393d0e",
+    "components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc": "c3c0d9ee8886721e848fd305b98b5e4f2a41a6a6fcb62d399c6d31772c96f0ad",
+    "components/adblock/core/subscription/filtering_configuration_maintainer_impl.h": "4e30cd63aa6dd1a377d55c5eaa50e467b0f1c55d7db17517807bcfeb415562af",
+    "components/adblock/core/subscription/subscription_persistent_metadata.h": "77b96b265f58036b5841cf06fe4ba64a0b91c536bb78f8a71536b9e82e550105",
+    "components/adblock/core/subscription/subscription_persistent_metadata_impl.cc": "beb844565a11e8175031db174ac5a2afb0f4372a6377b3c1e5c26b4ac0519a20",
+    "components/adblock/core/subscription/subscription_persistent_storage.cc": "2e1a2d100dce8ec33e198c1a8223b6fec50b2ed47a2fbc9e417e5470f1151f97",
+    "components/adblock/core/subscription/subscription_persistent_storage.h": "e2ee6c50ec9f068e5e8519967eb0074ba69ac5664a61c784123c1971a2c09a61",
+    "components/adblock/core/subscription/subscription_persistent_storage_impl.cc": "aa3625cfb2246fa846f896271aa6c45c034ee3c8ca2e4ae53edcd8f5fe6dd408",
+    "components/adblock/core/subscription/subscription_persistent_storage_impl.h": "8d2dd82ab445986176c0018ad5f084ccedf008f6c29332fbe802d4bb99734ca0",
+    "components/adblock/core/subscription/subscription_storage_transaction.cc": "22188ff4bfe29a96881d9c96ccc0e5911b9ff53885e1d9ddac961227c6290a4f",
+    "components/adblock/core/subscription/subscription_storage_transaction.h": "6234eae91ddcdb55f376da46ffc908a821e6dac54d66fabf0519f171f1df1dd8",
+    "components/adblock/test/shields_recovery_unittest.cc": "234b85fcd26fbba223ed723e886bb8486235189938ae6d4e24881e5dafb31dd3"
+  }
+}

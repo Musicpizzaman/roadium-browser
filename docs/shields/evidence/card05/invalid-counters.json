@@ -1,0 +1,69 @@
+{
+  "before": {
+    "download_count": 5,
+    "error_count": 0,
+    "expiration_time": "13437957192509159",
+    "last_installation_time": "13436747592509129",
+    "roadium_diagnostics": {
+      "active_privileged": true,
+      "active_rules": {
+        "accepted": 3,
+        "parser_rejected": 0,
+        "prohibited_privilege": 0,
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      },
+      "downloaded": true,
+      "error": "",
+      "fallback_attempted": false,
+      "fallback_outcome": "",
+      "last_success": "13436747592509207",
+      "last_success_source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+      "parsed": true,
+      "parsed_privileged": true,
+      "primary_failure": "",
+      "recovery": "current",
+      "rules": {
+        "accepted": 3,
+        "parser_rejected": 0,
+        "prohibited_privilege": 0,
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      },
+      "source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+      "stage": 4
+    },
+    "version": "203001020003"
+  },
+  "after": {
+    "download_count": 5,
+    "error_count": 1,
+    "expiration_time": "13437957192509159",
+    "last_installation_time": "13436747592509129",
+    "roadium_diagnostics": {
+      "active_privileged": true,
+      "active_rules": {
+        "accepted": 3,
+        "parser_rejected": 0,
+        "prohibited_privilege": 0,
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      },
+      "downloaded": false,
+      "error": "Approved filter transport returned HTML",
+      "fallback_attempted": true,
+      "fallback_outcome": "failed",
+      "last_success": "13436747592509207",
+      "last_success_source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+      "parsed": false,
+      "primary_failure": "Approved filter transport returned HTML",
+      "recovery": "current",
+      "source": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/abp-filters-anti-cv.txt",
+      "stage": 5
+    },
+    "version": "203001020003"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Review of version-code bump from offset 10 to 20. To achieve ARM801003722 and x64801003728, the `roadium_version_code_offset` in `build/roadium/baseline.json` must be updated to 20. This change is purely metadata-driven and uses the existing `version_code.py` logic to calculate the new codes based on the pinned Chromium version. No architectural or source code changes are required.\",\n  \"architecture_observations\": [\n    \"Version code derivation is centralized in `tools/roadium/version_code.py` using `baseline.json` as the source of truth.\",\n    \"The offset is applied to the base Chromium version code generated via `android_chrome_version.GenerateVersionCodes`.\",\n    \"Build orchestration via `prepare-build.sh` and `compile.sh` automatically consumes the offset via the Python script.\",\n    \"Verification via `verify-artifacts.py` strictly enforces that the generated APK/AAB version codes match the expected offset-calculated value.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"build/roadium/baseline.json\",\n      \"change\": \"Update 'roadium_version_code_offset' from 10 to 20.\"\n    }\n  ],\n  \"patch\": \"--- a/build/roadium/baseline.json\\n+++ b/build/roadium/baseline.json\\n@@ -38,4 +38,4 @@\\n     }\\n   ],\\n-  \\\"roadium_version_code_offset\\\": 10\\n+  \\\"roadium_version_code_offset\\\": 20\\n }\",\n  \"risks\": [\n    \"Incorrect offset value would cause `verify-artifacts.py` to fail during the release gate check.\",\n    \"Manual intervention is required to update the JSON; automation is not present for this specific metadata bump.\"\n  ],\n  \"tests\": [\n    \"Run `python3 tools/roadium/version_code.py <src> build/roadium/baseline.json arm64` to verify output is 801003722.\",\n    \"Run `python3 tools/roadium/version_code.py <src> build/roadium/baseline.json x64` to verify output is 801003728.\",\n    \"Execute `./tools/roadium/prepare-build.sh` and check `gn args` output for `android_override_version_code`.\",\n    \"Run `./tools/roadium/verify-artifacts.py --arch arm64` after build to ensure manifest validation passes.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Review of version-code bump from offset 10 to 20. To achieve ARM801003722 and x64801003728, the `roadium_version_code_offset` in `build/roadium/baseline.json` must be updated to 20. This change is purely metadata-driven and uses the existing `version_code.py` logic to calculate the new codes based on the pinned Chromium version. No architectural or source code changes are required.",
+    "architecture_observations": [
+      "Version code derivation is centralized in `tools/roadium/version_code.py` using `baseline.json` as the source of truth.",
+      "The offset is applied to the base Chromium version code generated via `android_chrome_version.GenerateVersionCodes`.",
+      "Build orchestration via `prepare-build.sh` and `compile.sh` automatically consumes the offset via the Python script.",
+      "Verification via `verify-artifacts.py` strictly enforces that the generated APK/AAB version codes match the expected offset-calculated value."
+    ],
+    "proposed_changes": [
+      {
+        "file": "build/roadium/baseline.json",
+        "change": "Update 'roadium_version_code_offset' from 10 to 20."
+      }
+    ],
+    "patch": "--- a/build/roadium/baseline.json\n+++ b/build/roadium/baseline.json\n@@ -38,4 +38,4 @@\n     }\n   ],\n-  \"roadium_version_code_offset\": 10\n+  \"roadium_version_code_offset\": 20\n }",
+    "risks": [
+      "Incorrect offset value would cause `verify-artifacts.py` to fail during the release gate check.",
+      "Manual intervention is required to update the JSON; automation is not present for this specific metadata bump."
+    ],
+    "tests": [
+      "Run `python3 tools/roadium/version_code.py <src> build/roadium/baseline.json arm64` to verify output is 801003722.",
+      "Run `python3 tools/roadium/version_code.py <src> build/roadium/baseline.json x64` to verify output is 801003728.",
+      "Execute `./tools/roadium/prepare-build.sh` and check `gn args` output for `android_override_version_code`.",
+      "Run `./tools/roadium/verify-artifacts.py --arch arm64` after build to ensure manifest validation passes."
+    ]
+  },
+  "isError": false
+}

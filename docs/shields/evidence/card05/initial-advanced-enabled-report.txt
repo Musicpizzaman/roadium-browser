@@ -1,0 +1,61 @@
+Ad blocking: Enabled
+Advanced filtering: Enabled
+EasyList: loaded in the active engine
+Anti-circumvention: loaded in the active engine. Privileged scriptlets: eligible for supported rules
+Tap for local update errors and conversion counts.
+
+No manual check requested in this session
+
+Roadium Card05 controlled list
+https://uazo.github.io/cromite/filters/easylist.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 203001020001
+Stored version: 203001020001
+Last installation: 10/17/26 4:39:37 PM
+Last successful activation/update: 10/17/26 4:39:37 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://uazo.github.io/cromite/filters/easylist.txt
+Storage recovery: current
+Active data source: https://uazo.github.io/cromite/filters/easylist.txt
+Successful requests: 2 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 2 accepted; rejected — parser 0, unsupported commands 0, privilege 0, arguments 0, unsupported options/no operation 0
+
+Roadium Card05 controlled list
+https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 203001020001
+Stored version: 203001020001
+Last installation: 10/17/26 4:39:37 PM
+Last successful activation/update: 10/17/26 4:39:37 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Storage recovery: current
+Active data source: https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Successful requests: 2 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 3 accepted; rejected — parser 0, unsupported commands 0, privilege 0, arguments 0, unsupported options/no operation 0
+
+Roadium Card05 custom subscription
+https://custom.card05.invalid/list.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 203001020001
+Stored version: 203001020001
+Last installation: 10/17/26 4:39:37 PM
+Last successful activation/update: 10/17/26 4:39:37 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://custom.card05.invalid/list.txt
+Storage recovery: current
+Active data source: https://custom.card05.invalid/list.txt
+Successful requests: 1 (includes HEAD)
+Recorded consecutive download failures: 0
+Fallback: not attempted
+Latest error: none recorded
+Latest conversion: 1 accepted; rejected — parser 0, unsupported commands 0, privilege 0, arguments 0, unsupported options/no operation 0

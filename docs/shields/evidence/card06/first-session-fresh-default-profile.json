@@ -1,0 +1,19 @@
+{
+  "user": 13,
+  "name": "ShieldsCard06Fresh",
+  "config": {
+    "domains": [],
+    "enabled": true,
+    "filters": [],
+    "subscriptions": [
+      "https://uazo.github.io/cromite/filters/easylist.txt",
+      "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+      "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+      "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt"
+    ],
+    "temp_filters": []
+  },
+  "advanced_effective": true,
+  "advanced_user_value": null,
+  "no_fresh_preferences_edited": true
+}

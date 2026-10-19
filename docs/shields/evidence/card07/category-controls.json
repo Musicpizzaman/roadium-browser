@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "row_transitions": [
+    "Strict -> Social off -> Custom",
+    "Notification off -> Balanced",
+    "Tracking off -> Custom",
+    "Tracking on -> Balanced"
+  ],
+  "custom_action": "opens existing filter-list editor",
+  "direct_switch_widget": [
+    "Social on -> Custom",
+    "Social off -> Balanced"
+  ],
+  "automation_note": "Initial scrolling run failed; repeated with settled viewport bounds and passed. No browser source change was needed."
+}

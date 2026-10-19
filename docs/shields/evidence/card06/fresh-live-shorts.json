@@ -1,0 +1,25 @@
+{
+  "action": "live-shorts",
+  "target": "1",
+  "time": "2026-10-18T03:49:04.076Z",
+  "state": {
+    "url": "https://m.youtube.com/shorts/aPrJ0lgWAYY",
+    "title": "YouTube",
+    "ready": "complete",
+    "ua": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+    "videos": [
+      {
+        "time": 0,
+        "duration": null,
+        "paused": true,
+        "ready": 0,
+        "error": null
+      }
+    ],
+    "adShowing": false,
+    "errorText": null,
+    "consent": false,
+    "frames": []
+  },
+  "exceptions": []
+}

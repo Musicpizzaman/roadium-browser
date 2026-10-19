@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "installed_from": "Card06 x64 APK",
+  "installed_to": "Card07 initial x64 APK; later UI-order-only revision pending",
+  "selected_subscriptions_preserved": true,
+  "custom_lists_and_experimental_opt_in_preserved": true,
+  "manual_rules_preserved": true,
+  "site_exceptions_preserved": true,
+  "global_disabled_preserved": true,
+  "advanced_disabled_preserved": true,
+  "homepage_preserved": true
+}

@@ -1,0 +1,39 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"Analysis of Cromite filter identity mapping. The configuration defines canonical identities hosted at uazo.github.io. The inventory provides evidence for mapping these to raw.githubusercontent.com/uazo/cromite/pages/. Most identities in GetKnownSubscriptions() have corresponding entries in the inventory. 'easyprivacy.txt' is explicitly unmapped. The experimental filter list (raw.githubusercontent.com/uazo/cromite/master/...) is correctly identified as having no pages-list fallback. I propose a static helper to perform this bounded mapping.\",\n  \"architecture_observations\": [\n    \"Canonical host: https://uazo.github.io/cromite/filters/\",\n    \"Fallback host: https://raw.githubusercontent.com/uazo/cromite/pages/\",\n    \"Mapping is strictly filename-based; no arbitrary prefixing allowed.\",\n    \"Experimental identity (master branch) must remain distinct from pages-list.\",\n    \"Existing 'MaybeSplitCombinedAdblockList' is host-specific to ABP domains and should not be used for Cromite mapping.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"components/adblock/core/subscription/subscription_config.h\",\n      \"change\": \"Add declaration for 'GURL GetCromiteFallbackUrl(const GURL& canonical_url);'.\"\n    },\n    {\n      \"file\": \"components/adblock/core/subscription/subscription_config.cc\",\n      \"change\": \"Implement 'GetCromiteFallbackUrl' using strict filename extraction and host replacement.\"\n    }\n  ],\n  \"patch\": \"--- a/components/adblock/core/subscription/subscription_config.h\\n+++ b/components/adblock/core/subscription/subscription_config.h\\n@@ -105,6 +105,9 @@\\n     const std::vector<std::string_view>& MaybeSplitCombinedAdblockList(\\n         const GURL& filter_list);\\n \\n+// Returns the raw.githubusercontent.com/uazo/cromite/pages/ fallback for a\\n+// canonical uazo.github.io/cromite/filters/ URL. Returns empty GURL if invalid.\\n+GURL GetCromiteFallbackUrl(const GURL& canonical_url);\\n }\\n \\n }  // namespace adblock\\n\\n--- a/components/adblock/core/subscription/subscription_config.cc\\n+++ b/components/adblock/core/subscription/subscription_config.cc\\n@@ -315,4 +315,21 @@\\n   return *EMPTY_VALUE;\\n }\\n \\n+GURL GetCromiteFallbackUrl(const GURL& canonical_url) {\\n+  static const GURL kCanonicalHost(\\\"https://uazo.github.io/cromite/filters/\\\");\\n+  static const GURL kFallbackHost(\\\"https://raw.githubusercontent.com/uazo/cromite/pages/\\\");\\n+  \\n+  if (!canonical_url.scheme().empty() && \\n+      canonical_url.host() == kCanonicalHost.host() &&\\n+      canonical_url.path().starts_with(\\\"/filters/\\\")) {\\n+    \\n+    std::string filename = base::TrimString(canonical_url.path(), \\\"/\\\", base::TRIM_LEADING);\\n+    filename = filename.substr(filename.find_last_of('/') + 1);\\n+    \\n+    return GURL(kFallbackHost.spec() + filename);\\n+  }\\n+  return GURL();\\n+}\\n+\\n }  // namespace adblock\",\n  \"risks\": [\n    \"Incorrect path parsing could lead to mapping non-filter files.\",\n    \"Strict host checking is required to prevent accidental mapping of experimental/master URLs.\"\n  ],\n  \"tests\": [\n    \"Test mapping: https://uazo.github.io/cromite/filters/easylist.txt -> https://raw.githubusercontent.com/uazo/cromite/pages/easylist.txt\",\n    \"Test non-mapping: https://raw.githubusercontent.com/uazo/cromite/master/... -> empty GURL\",\n    \"Test invalid host: https://example.com/filters/test.txt -> empty GURL\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "Analysis of Cromite filter identity mapping. The configuration defines canonical identities hosted at uazo.github.io. The inventory provides evidence for mapping these to raw.githubusercontent.com/uazo/cromite/pages/. Most identities in GetKnownSubscriptions() have corresponding entries in the inventory. 'easyprivacy.txt' is explicitly unmapped. The experimental filter list (raw.githubusercontent.com/uazo/cromite/master/...) is correctly identified as having no pages-list fallback. I propose a static helper to perform this bounded mapping.",
+    "architecture_observations": [
+      "Canonical host: https://uazo.github.io/cromite/filters/",
+      "Fallback host: https://raw.githubusercontent.com/uazo/cromite/pages/",
+      "Mapping is strictly filename-based; no arbitrary prefixing allowed.",
+      "Experimental identity (master branch) must remain distinct from pages-list.",
+      "Existing 'MaybeSplitCombinedAdblockList' is host-specific to ABP domains and should not be used for Cromite mapping."
+    ],
+    "proposed_changes": [
+      {
+        "file": "components/adblock/core/subscription/subscription_config.h",
+        "change": "Add declaration for 'GURL GetCromiteFallbackUrl(const GURL& canonical_url);'."
+      },
+      {
+        "file": "components/adblock/core/subscription/subscription_config.cc",
+        "change": "Implement 'GetCromiteFallbackUrl' using strict filename extraction and host replacement."
+      }
+    ],
+    "patch": "--- a/components/adblock/core/subscription/subscription_config.h\n+++ b/components/adblock/core/subscription/subscription_config.h\n@@ -105,6 +105,9 @@\n     const std::vector<std::string_view>& MaybeSplitCombinedAdblockList(\n         const GURL& filter_list);\n \n+// Returns the raw.githubusercontent.com/uazo/cromite/pages/ fallback for a\n+// canonical uazo.github.io/cromite/filters/ URL. Returns empty GURL if invalid.\n+GURL GetCromiteFallbackUrl(const GURL& canonical_url);\n }\n \n }  // namespace adblock\n\n--- a/components/adblock/core/subscription/subscription_config.cc\n+++ b/components/adblock/core/subscription/subscription_config.cc\n@@ -315,4 +315,21 @@\n   return *EMPTY_VALUE;\n }\n \n+GURL GetCromiteFallbackUrl(const GURL& canonical_url) {\n+  static const GURL kCanonicalHost(\"https://uazo.github.io/cromite/filters/\");\n+  static const GURL kFallbackHost(\"https://raw.githubusercontent.com/uazo/cromite/pages/\");\n+  \n+  if (!canonical_url.scheme().empty() && \n+      canonical_url.host() == kCanonicalHost.host() &&\n+      canonical_url.path().starts_with(\"/filters/\")) {\n+    \n+    std::string filename = base::TrimString(canonical_url.path(), \"/\", base::TRIM_LEADING);\n+    filename = filename.substr(filename.find_last_of('/') + 1);\n+    \n+    return GURL(kFallbackHost.spec() + filename);\n+  }\n+  return GURL();\n+}\n+\n }  // namespace adblock",
+    "risks": [
+      "Incorrect path parsing could lead to mapping non-filter files.",
+      "Strict host checking is required to prevent accidental mapping of experimental/master URLs."
+    ],
+    "tests": [
+      "Test mapping: https://uazo.github.io/cromite/filters/easylist.txt -> https://raw.githubusercontent.com/uazo/cromite/pages/easylist.txt",
+      "Test non-mapping: https://raw.githubusercontent.com/uazo/cromite/master/... -> empty GURL",
+      "Test invalid host: https://example.com/filters/test.txt -> empty GURL"
+    ]
+  },
+  "isError": false
+}

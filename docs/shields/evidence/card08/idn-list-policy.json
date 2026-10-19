@@ -1,0 +1,7 @@
+{
+  "observed": "Existing BadBlock Lite document rule blocks punycode hosts after removing the temporary exception",
+  "rule": "||xn--$document,domain=~xn----7sbb3acajbee5aggvnq.xn--90ais|~xn--80a2abbdd.xn--j1amh|~xn--gckvb8fzb.com",
+  "source": "frozen badblock_lite.txt line 14980",
+  "handling": "No interstitial bypass clicked; isolate IDN scope using Standard with the owned custom list, then restore Balanced",
+  "saved_domain_records_unchanged": true
+}

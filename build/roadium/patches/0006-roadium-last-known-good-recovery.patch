@@ -1,0 +1,1760 @@
+diff --git a/components/adblock/android/adblock_controller_jni.cc b/components/adblock/android/adblock_controller_jni.cc
+index 5ea5d29..c07fbb7 100644
+--- a/components/adblock/android/adblock_controller_jni.cc
++++ b/components/adblock/android/adblock_controller_jni.cc
+@@ -284,11 +284,12 @@ JNI_AdblockController_GetDiagnosticSnapshot(JNIEnv* env,
+              d.active_privileged.value_or(false)));
+     item.Set(
+         "active_source",
+-        state == adblock::Subscription::InstallationState::Preloaded
++        !has_active_data ? "none; no valid data"
++        : state == adblock::Subscription::InstallationState::Preloaded
+             ? "bundled: Cromite pages 338336d9e640489c648d47d606cb0030064c4e0f"
+             : (d.last_success_source.empty() ? "not recorded"
+                                              : d.last_success_source));
+-    item.Set("installed_at", time(metadata->GetLastInstallationTime(url)));
++    item.Set("installed_at", time(subscription->GetInstallationTime()));
+     item.Set("successful_requests", metadata->GetDownloadSuccessCount(url));
+     item.Set("consecutive_failures", metadata->GetDownloadErrorCount(url));
+     item.Set("stage", static_cast<int>(d.stage));
+@@ -299,6 +300,7 @@ JNI_AdblockController_GetDiagnosticSnapshot(JNIEnv* env,
+     item.Set("primary_failure", d.primary_failure);
+     item.Set("fallback_attempted", d.fallback_attempted);
+     item.Set("fallback_outcome", d.fallback_outcome);
++    item.Set("recovery", d.recovery);
+     item.Set("last_success", time(d.last_success));
+     item.Set("last_success_source", d.last_success_source.empty() ? "not recorded" : d.last_success_source);
+     if (d.rules) item.Set("rules", counts(*d.rules));
+diff --git a/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java b/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
+index 81ceb27..a56d538 100644
+--- a/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
++++ b/components/adblock/android/java/src/org/chromium/components/adblock/ShieldsDiagnostics.java
+@@ -112,6 +112,7 @@ public final class ShieldsDiagnostics {
+                 + "; downloaded " + (sub.optInt("stage") == 0 ? "not recorded" : yesNo(sub.optBoolean("downloaded")))
+                 + ", parsed " + (sub.optInt("stage") == 0 ? "not recorded" : yesNo(sub.optBoolean("parsed")))
+                 + "\nLatest source: " + sub.optString("source", "not recorded")
++                + "\nStorage recovery: " + sub.optString("recovery", "not recorded")
+                 + "\nActive data source: " + sub.optString("active_source", sub.optString("last_success_source", "not recorded"))
+                 + "\nSuccessful requests: " + sub.optLong("successful_requests") + " (includes HEAD)"
+                 + "\nRecorded consecutive download failures: " + sub.optLong("consecutive_failures");
+diff --git a/components/adblock/core/subscription/BUILD.gn b/components/adblock/core/subscription/BUILD.gn
+index 9438201..ad057f2 100644
+--- a/components/adblock/core/subscription/BUILD.gn
++++ b/components/adblock/core/subscription/BUILD.gn
+@@ -53,6 +53,7 @@ source_set("subscription") {
+     "subscription_persistent_metadata.h",
+     "subscription_persistent_metadata_impl.cc",
+     "subscription_persistent_metadata_impl.h",
++    "subscription_persistent_storage.cc",
+     "subscription_persistent_storage.h",
+     "subscription_persistent_storage_impl.cc",
+     "subscription_persistent_storage_impl.h",
+@@ -60,6 +61,8 @@ source_set("subscription") {
+     "subscription_service.h",
+     "subscription_service_impl.cc",
+     "subscription_service_impl.h",
++    "subscription_storage_transaction.cc",
++    "subscription_storage_transaction.h",
+     "subscription_update_result.h",
+     "subscription_validator.h",
+     "subscription_validator_impl.cc",
+@@ -219,6 +222,7 @@ test("roadium_shields_unit_tests") {
+     "../../test/shields_bundles_unittest.cc",
+     "../../test/shields_defaults_unittest.cc",
+     "../../test/shields_diagnostics_unittest.cc",
++    "../../test/shields_recovery_unittest.cc",
+     "../../test/shields_transport_unittest.cc",
+   ]
+   deps = [
+diff --git a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
+index 36b5d58..fa880ca 100644
+--- a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
++++ b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.cc
+@@ -44,6 +44,8 @@ class FilteringConfigurationMaintainerImpl::OngoingInstallation final
+  public:
+   explicit OngoingInstallation(const GURL& url) : url_(url) {}
+ 
++  scoped_refptr<storage::Permit> permit =
++      base::MakeRefCounted<storage::Permit>(true);
+   GURL GetSourceUrl() const final { return url_; }
+   std::string GetTitle() const final { return {}; }
+   std::string GetCurrentVersion() const final { return {}; }
+@@ -91,6 +93,7 @@ FilteringConfigurationMaintainerImpl::~FilteringConfigurationMaintainerImpl() {
+   privileged_policy_->SetEnabled(false);
+   FinishAllManual(ManualOutcome::Cancelled);
+   for (const auto& pending : ongoing_installations_) {
++    pending->permit->data.store(false);
+     auto diagnostic = persistent_metadata_->GetDiagnostics(pending->GetSourceUrl());
+     diagnostic.stage = DiagnosticStage::Cancelled;
+     diagnostic.error = "Configuration stopped before activation";
+@@ -157,6 +160,11 @@ void FilteringConfigurationMaintainerImpl::OnPrivilegedFiltersChanged(
+     if (std::ranges::find(ongoing_installations_, url,
+                           &Subscription::GetSourceUrl) !=
+         ongoing_installations_.end()) {
++      for (const auto& pending : ongoing_installations_) {
++        if (pending->GetSourceUrl() == url) {
++          pending->permit->data.store(false);
++        }
++      }
+       policy_refresh_pending_.insert(url);
+     } else {
+       DownloadAndInstallSubscription(url);
+@@ -499,8 +507,8 @@ void FilteringConfigurationMaintainerImpl::OnSubscriptionDataAvailable(
+     return;
+   }
+ 
+-  storage_->StoreSubscription(
+-      std::move(raw_data),
++  storage_->StoreSubscriptionGuarded(
++      std::move(raw_data), ongoing_installation->permit,
+       base::BindOnce(
+           &FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage,
+           weak_ptr_factory_.GetWeakPtr(), ongoing_installation));
+@@ -514,10 +522,16 @@ void FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage(
+       ongoing_installations_.end()) {
+     // Installation was canceled. We must now remove the subscription from
+     // storage. Do not add it to |current_state|.
+-    if (subscription) storage_->RemoveSubscription(subscription);
++    if (subscription) {
++      storage_->DiscardSubscription(subscription);
++    }
+     UpdatePreloadedSubscriptionProvider();
+     return;
+   }
++  if (!ongoing_installation->permit->data.load() && subscription) {
++    storage_->DiscardSubscription(subscription);
++    subscription.reset();
++  }
+   ongoing_installations_.erase(ongoing_installation);
+ 
+   if (!subscription) {
+@@ -525,20 +539,34 @@ void FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage(
+     LOG(WARNING) << "[eyeo] Failed to add subscription, current number "
+                  << "of subscriptions: " << current_state_.size();
+     auto diagnostic = persistent_metadata_->GetDiagnostics(ongoing_installation->GetSourceUrl());
+-    diagnostic.stage = DiagnosticStage::Failed;
+-    diagnostic.error = "Storage or validation failed; previous filtering data retained";
++    const bool cancelled = !ongoing_installation->permit->data.load();
++    diagnostic.stage =
++        cancelled ? DiagnosticStage::Cancelled : DiagnosticStage::Failed;
++    if (cancelled) {
++      diagnostic.error =
++          "Current policy changed before activation; previous filtering data "
++          "retained";
++    } else {
++      if (diagnostic.error.empty()) {
++        diagnostic.error = "Storage or validation failed";
++      }
++      diagnostic.error += "; previous filtering data retained";
++      persistent_metadata_->IncrementDownloadErrorCount(
++          ongoing_installation->GetSourceUrl());
++    }
+     if (diagnostic.fallback_attempted) {
+-      diagnostic.fallback_outcome = "storage failed";
++      diagnostic.fallback_outcome = cancelled ? "cancelled" : "storage failed";
+     }
+     persistent_metadata_->SetDiagnostics(ongoing_installation->GetSourceUrl(), diagnostic);
+-    FinishManual(ongoing_installation->GetSourceUrl(), ManualOutcome::Failed);
++    FinishManual(ongoing_installation->GetSourceUrl(),
++                 cancelled ? ManualOutcome::Cancelled : ManualOutcome::Failed);
+     UpdatePreloadedSubscriptionProvider();
+     RefreshAfterPolicyChange(ongoing_installation->GetSourceUrl());
+     return;
+   }
+   // Remove any subscription that already exists with the same URL
+   bool subscription_existed =
+-      UninstallSubscriptionInternal(subscription->GetSourceUrl());
++      UninstallSubscriptionInternal(subscription->GetSourceUrl(), true);
+   // Add the new subscription
+   current_state_.push_back(subscription);
+   if (subscription_existed) {
+@@ -552,6 +580,12 @@ void FilteringConfigurationMaintainerImpl::SubscriptionAddedToStorage(
+   // Record completion only once the accepted subscription is in current_state_.
+   const auto identity = ongoing_installation->GetSourceUrl();
+   auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
++  persistent_metadata_->IncrementDownloadSuccessCount(identity);
++  persistent_metadata_->SetLastInstallationTime(identity);
++  persistent_metadata_->SetExpirationInterval(
++      identity, subscription->GetExpirationInterval());
++  persistent_metadata_->SetVersion(identity, subscription->GetCurrentVersion());
++  diagnostic.recovery = "current";
+   diagnostic.stage = DiagnosticStage::Activated;
+   diagnostic.downloaded = true;
+   diagnostic.parsed = true;
+@@ -600,14 +634,19 @@ void FilteringConfigurationMaintainerImpl::UninstallSubscription(
+ }
+ 
+ bool FilteringConfigurationMaintainerImpl::UninstallSubscriptionInternal(
+-    const GURL& subscription_url) {
++    const GURL& subscription_url,
++    bool retire) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   DCHECK(IsInitialized());
+   bool subscription_removed = false;
+   auto it = std::ranges::find(current_state_, subscription_url,
+                                &Subscription::GetSourceUrl);
+   if (it != current_state_.end()) {
+-    storage_->RemoveSubscription(*it);
++    if (retire) {
++      storage_->RetireSubscription(*it);
++    } else {
++      storage_->RemoveSubscription(*it);
++    }
+     current_state_.erase(it);
+     subscription_removed = true;
+   }
+@@ -615,6 +654,7 @@ bool FilteringConfigurationMaintainerImpl::UninstallSubscriptionInternal(
+   auto ongoing_installation_it = std::ranges::find(
+       ongoing_installations_, subscription_url, &Subscription::GetSourceUrl);
+   if (ongoing_installation_it != ongoing_installations_.end()) {
++    (*ongoing_installation_it)->permit->data.store(false);
+     ongoing_installations_.erase(ongoing_installation_it);
+     auto diagnostic = persistent_metadata_->GetDiagnostics(subscription_url);
+     diagnostic.stage = DiagnosticStage::Cancelled;
+@@ -658,6 +698,22 @@ void FilteringConfigurationMaintainerImpl::
+     UpdatePreloadedSubscriptionProvider() {
+   preloaded_subscription_provider_->UpdateSubscriptions(
+       GetReadySubscriptions(), configuration_->GetFilterLists());
++  const auto ready = GetReadySubscriptions();
++  const auto bundled =
++      preloaded_subscription_provider_->GetCurrentPreloadedSubscriptions();
++  for (const auto& url : configuration_->GetFilterLists()) {
++    if (std::ranges::find(ready, url) != ready.end()) {
++      continue;
++    }
++    const bool has_bundle = std::ranges::any_of(
++        bundled, [&](const auto& sub) { return sub->GetSourceUrl() == url; });
++    auto diagnostic = persistent_metadata_->GetDiagnostics(url);
++    diagnostic.recovery =
++        has_bundle ? "bundled baseline" : "unavailable; update scheduled";
++    diagnostic.active_rules.reset();
++    diagnostic.active_privileged.reset();
++    persistent_metadata_->SetDiagnostics(url, diagnostic);
++  }
+ }
+ 
+ std::vector<GURL> FilteringConfigurationMaintainerImpl::GetReadySubscriptions()
+diff --git a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h
+index 594ada1..da7d817 100644
+--- a/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h
++++ b/components/adblock/core/subscription/filtering_configuration_maintainer_impl.h
+@@ -107,7 +107,8 @@ class FilteringConfigurationMaintainerImpl
+       scoped_refptr<InstalledSubscription> subscription);
+   void OnHeadRequestDone(const std::string version);
+   void UninstallSubscription(const GURL& subscription_url);
+-  bool UninstallSubscriptionInternal(const GURL& subscription_url);
++  bool UninstallSubscriptionInternal(const GURL& subscription_url,
++                                     bool retire = false);
+   void SetCustomFilters();
+   void UpdatePreloadedSubscriptionProvider();
+   std::vector<GURL> GetReadySubscriptions() const;
+diff --git a/components/adblock/core/subscription/subscription_persistent_metadata.h b/components/adblock/core/subscription/subscription_persistent_metadata.h
+index 23fe33d..1c2ea55 100644
+--- a/components/adblock/core/subscription/subscription_persistent_metadata.h
++++ b/components/adblock/core/subscription/subscription_persistent_metadata.h
+@@ -41,6 +41,7 @@ struct SubscriptionDiagnostics {
+   std::string primary_failure;
+   bool fallback_attempted = false;
+   std::string fallback_outcome;
++  std::string recovery;
+   base::Time last_success;
+   std::string last_success_source;
+   std::optional<RuleStatistics> rules;
+diff --git a/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc b/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
+index 6b69716..2e1c59a 100644
+--- a/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
++++ b/components/adblock/core/subscription/subscription_persistent_metadata_impl.cc
+@@ -208,6 +208,7 @@ void SubscriptionPersistentMetadataImpl::SetDiagnostics(
+   data.error.resize(std::min(data.error.size(), size_t{160}));
+   data.primary_failure.resize(
+       std::min(data.primary_failure.size(), size_t{160}));
++  data.recovery.resize(std::min(data.recovery.size(), size_t{64}));
+   data.fallback_outcome.resize(
+       std::min(data.fallback_outcome.size(), size_t{32}));
+   data.source.resize(std::min(data.source.size(), size_t{2048}));
+@@ -249,6 +250,7 @@ void SubscriptionPersistentMetadataImpl::UpdatePrefs() {
+       details.Set("primary_failure", diagnostic.primary_failure);
+       details.Set("fallback_attempted", diagnostic.fallback_attempted);
+       details.Set("fallback_outcome", diagnostic.fallback_outcome);
++      details.Set("recovery", diagnostic.recovery);
+       details.Set("last_success", TimeToValue(diagnostic.last_success));
+       details.Set("last_success_source", diagnostic.last_success_source);
+       if (diagnostic.rules) details.Set("rules", StatisticsToDict(*diagnostic.rules));
+@@ -304,6 +306,9 @@ void SubscriptionPersistentMetadataImpl::LoadFromPrefs() {
+       }
+       diagnostic.fallback_attempted =
+           details->FindBool("fallback_attempted").value_or(false);
++      if (const auto* recovery = details->FindString("recovery")) {
++        diagnostic.recovery = recovery->substr(0, 64);
++      }
+       if (const auto* outcome = details->FindString("fallback_outcome")) {
+         diagnostic.fallback_outcome = outcome->substr(0, 32);
+       }
+diff --git a/components/adblock/core/subscription/subscription_persistent_storage.cc b/components/adblock/core/subscription/subscription_persistent_storage.cc
+new file mode 100644
+index 0000000..67b8495
+--- /dev/null
++++ b/components/adblock/core/subscription/subscription_persistent_storage.cc
+@@ -0,0 +1,20 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++#include "components/adblock/core/subscription/subscription_persistent_storage.h"
++
++namespace adblock {
++void SubscriptionPersistentStorage::StoreSubscriptionGuarded(
++    std::unique_ptr<FlatbufferData> data,
++    scoped_refptr<storage::Permit> permit,
++    StoreCallback callback) {
++  StoreSubscription(std::move(data), std::move(callback));
++}
++void SubscriptionPersistentStorage::RetireSubscription(
++    scoped_refptr<InstalledSubscription> subscription) {
++  RemoveSubscription(std::move(subscription));
++}
++void SubscriptionPersistentStorage::DiscardSubscription(
++    scoped_refptr<InstalledSubscription> subscription) {
++  RemoveSubscription(std::move(subscription));
++}
++}  // namespace adblock
+diff --git a/components/adblock/core/subscription/subscription_persistent_storage.h b/components/adblock/core/subscription/subscription_persistent_storage.h
+index fb1fe03..8d2cbfc 100644
+--- a/components/adblock/core/subscription/subscription_persistent_storage.h
++++ b/components/adblock/core/subscription/subscription_persistent_storage.h
+@@ -25,6 +25,7 @@
+ #include "base/memory/scoped_refptr.h"
+ #include "components/adblock/core/common/flatbuffer_data.h"
+ #include "components/adblock/core/subscription/installed_subscription.h"
++#include "components/adblock/core/subscription/subscription_storage_transaction.h"
+ 
+ namespace adblock {
+ 
+@@ -44,12 +45,23 @@ class SubscriptionPersistentStorage {
+   // flatbuffer parsed from |raw_data|.
+   // |on_finished| gets called after the store to disk and parsing has finished,
+   // nullptr argument signifies there was an error.
+-  // |raw_data| is assumed to be valid against the current flatbuffer schema, it
+-  // is not validated internally for performance reasons. Validate flatbuffers
+-  // downloaded from the Internet externally.
++  // The production store validates the complete current-schema FlatBuffers
++  // before persistence, and verifies the stored candidate again before commit.
+   virtual void StoreSubscription(std::unique_ptr<FlatbufferData> raw_data,
+                                  StoreCallback on_finished) = 0;
+ 
++  // Guarded production store. Existing test doubles can retain the simple API.
++  virtual void StoreSubscriptionGuarded(std::unique_ptr<FlatbufferData> data,
++                                        scoped_refptr<storage::Permit> permit,
++                                        StoreCallback callback);
++  // An accepted update retires its old in-memory mapping but retains recovery
++  // data. A cancelled candidate rolls back only its own publication.
++  virtual void RetireSubscription(
++      scoped_refptr<InstalledSubscription> subscription);
++  virtual void DiscardSubscription(
++      scoped_refptr<InstalledSubscription> subscription);
++
++  // Explicit unsubscribe removes recovery data as well.
+   // Removes |subscription|'s file from disk.
+   virtual void RemoveSubscription(
+       scoped_refptr<InstalledSubscription> subscription) = 0;
+diff --git a/components/adblock/core/subscription/subscription_persistent_storage_impl.cc b/components/adblock/core/subscription/subscription_persistent_storage_impl.cc
+index 534380b..b9c3db3 100644
+--- a/components/adblock/core/subscription/subscription_persistent_storage_impl.cc
++++ b/components/adblock/core/subscription/subscription_persistent_storage_impl.cc
+@@ -52,8 +52,12 @@ GURL UrlFromFlatbufferData(const FlatbufferData& flatbuffer) {
+ SubscriptionPersistentStorageImpl::SubscriptionPersistentStorageImpl(
+     base::FilePath base_storage_dir,
+     std::unique_ptr<SubscriptionValidator> validator,
+-    SubscriptionPersistentMetadata* persistent_metadata)
++    SubscriptionPersistentMetadata* persistent_metadata,
++    storage::Boundary boundary)
+     : base_storage_dir_(std::move(base_storage_dir)),
++      storage_runner_(base::ThreadPool::CreateSequencedTaskRunner(
++          {base::MayBlock(), base::TaskShutdownBehavior::BLOCK_SHUTDOWN})),
++      boundary_(std::move(boundary)),
+       validator_(std::move(validator)),
+       persistent_metadata_(persistent_metadata) {}
+ 
+@@ -61,103 +65,15 @@ SubscriptionPersistentStorageImpl::~SubscriptionPersistentStorageImpl() {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+ }
+ 
+-// static
+-SubscriptionPersistentStorageImpl::LoadedBuffer
+-SubscriptionPersistentStorageImpl::WriteSubscription(
+-    const base::FilePath& storage_dir,
+-    std::unique_ptr<FlatbufferData> raw_data,
+-    SubscriptionValidator::StoreTrustedSignatureThreadSafeCallback
+-        store_signature) {
+-  // To avoid conflict between existing subscription files, generate a new
+-  // unique path.
+-  base::FilePath subscription_path = storage_dir.AppendASCII(
+-      base::UnguessableToken::Create().ToString() + ".fb");
+-  // UnguessableToken is a 128-bit, cryptographically-safe random number,
+-  // conflicts are less likely than disk failure. The DCHECK is to express
+-  // intent.
+-  DCHECK(!base::PathExists(subscription_path));
+-  if (!base::WriteFile(
+-          subscription_path,
+-          std::string_view(reinterpret_cast<const char*>(raw_data->data()),
+-                           raw_data->size()))) {
+-    // Disk write failed.
+-    return std::make_pair(nullptr, base::FilePath{});
+-  }
+-  auto buffer = std::make_unique<MemoryMappedFlatbufferData>(subscription_path);
+-  if (!buffer->data()) {
+-    // Creating the memory-mapped region failed.
+-    // TODO(DPD-1278) revert to in-memory buffer?
+-    return std::make_pair(nullptr, base::FilePath{});
+-  }
+-  std::move(store_signature).Run(*buffer, subscription_path);
+-  return std::make_pair(std::move(buffer), std::move(subscription_path));
+-}
+-
+-// static
+-std::vector<SubscriptionPersistentStorageImpl::LoadedBuffer>
+-SubscriptionPersistentStorageImpl::ReadSubscriptionsFromDirectory(
+-    const base::FilePath& storage_dir,
+-    SubscriptionValidator::IsSignatureValidThreadSafeCallback
+-        is_signature_valid) {
+-  LOG(INFO) << "[eyeo] Reading subscriptions from directory " << storage_dir;
+-  TRACE_EVENT0("eyeo", "ReadSubscriptionsFromDirectory");
+-  // Does nothing if directory already exists:
+-  base::CreateDirectory(storage_dir);
+-
+-  std::vector<SubscriptionPersistentStorageImpl::LoadedBuffer> result;
+-  base::FileEnumerator enumerator(storage_dir, false /* recursive */,
+-                                  base::FileEnumerator::FILES);
+-  // Iterate through |storage_dir| and try to load all files within.
+-  for (base::FilePath flatbuffer_path = enumerator.Next();
+-       !flatbuffer_path.empty(); flatbuffer_path = enumerator.Next()) {
+-    std::string contents;
+-
+-    TRACE_EVENT_BEGIN1("eyeo", "ReadFileToString", "path",
+-                       flatbuffer_path.AsUTF8Unsafe());
+-    if (!base::ReadFileToString(flatbuffer_path, &contents)) {
+-      // File could not be read.
+-      base::DeleteFile(flatbuffer_path);
+-      LOG(INFO) << "[eyeo] Deleting " << flatbuffer_path.BaseName().AsUTF8Unsafe()
+-                << "reason: File could not be read";
+-      continue;
+-    }
+-    TRACE_EVENT_END1("eyeo", "ReadFileToString", "path",
+-                     flatbuffer_path.AsUTF8Unsafe());
+-    TRACE_EVENT_BEGIN0("eyeo", "VerifySubscriptionBuffer");
+-    if (!is_signature_valid.Run(InMemoryFlatbufferData(std::move(contents)),
+-                                flatbuffer_path)) {
+-      LOG(INFO) << "[eyeo] Deleting " << flatbuffer_path.BaseName().AsUTF8Unsafe()
+-                << "reason: This is not a valid subscription file";
+-      // This is not a valid subscription file, remove it.
+-      base::DeleteFile(flatbuffer_path);
+-      continue;
+-    }
+-    TRACE_EVENT_END0("eyeo", "VerifySubscriptionBuffer");
+-    auto buffer = std::make_unique<MemoryMappedFlatbufferData>(flatbuffer_path);
+-    if (!buffer->data()) {
+-      LOG(INFO) << "[eyeo] Could not create mapped memory region to file content for "
+-                << flatbuffer_path.BaseName().AsUTF8Unsafe();
+-      // Could not create mapped memory region to file content.
+-      // TODO(mpawlowski) revert to in-memory buffer?
+-      continue;
+-    }
+-    LOG(INFO) << "[eyeo] Loaded " << flatbuffer_path.BaseName().AsUTF8Unsafe();
+-    result.emplace_back(std::move(buffer), std::move(flatbuffer_path));
+-  }
+-  LOG(INFO) << "[eyeo] Finished reading and validating subscriptions. Loaded "
+-             << result.size() << " subscriptions.";
+-  return result;
+-}
+-
+ void SubscriptionPersistentStorageImpl::LoadSubscriptions(
+     LoadCallback on_loaded) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   TRACE_EVENT_ASYNC_BEGIN0(
+       "eyeo", "SubscriptionPersistentStorageImpl::LoadSubscription",
+       TRACE_ID_LOCAL(this));
+-  base::ThreadPool::PostTaskAndReplyWithResult(
+-      FROM_HERE, {base::MayBlock()},
+-      base::BindOnce(&ReadSubscriptionsFromDirectory, base_storage_dir_,
++  storage_runner_->PostTaskAndReplyWithResult(
++      FROM_HERE,
++      base::BindOnce(&storage::Load, base_storage_dir_,
+                      validator_->IsSignatureValid()),
+       base::BindOnce(&SubscriptionPersistentStorageImpl::LoadComplete,
+                      weak_ptr_factory.GetWeakPtr(), std::move(on_loaded)));
+@@ -167,23 +83,62 @@ void SubscriptionPersistentStorageImpl::StoreSubscription(
+     std::unique_ptr<FlatbufferData> raw_data,
+     StoreCallback on_finished) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+-  base::ThreadPool::PostTaskAndReplyWithResult(
+-      FROM_HERE, {base::MayBlock()},
+-      base::BindOnce(&WriteSubscription, base_storage_dir_, std::move(raw_data),
+-                     validator_->StoreTrustedSignature()),
++  StoreSubscriptionGuarded(std::move(raw_data),
++                           base::MakeRefCounted<storage::Permit>(true),
++                           std::move(on_finished));
++}
++
++void SubscriptionPersistentStorageImpl::StoreSubscriptionGuarded(
++    std::unique_ptr<FlatbufferData> data,
++    scoped_refptr<storage::Permit> permit,
++    StoreCallback callback) {
++  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++  const auto identity = data ? storage::ValidatedIdentity(*data) : std::nullopt;
++  if (!identity) {
++    std::move(callback).Run(nullptr);
++    return;
++  }
++  storage_runner_->PostTaskAndReplyWithResult(
++      FROM_HERE,
++      base::BindOnce(&storage::Commit, base_storage_dir_, std::move(data),
++                     persistent_metadata_->GetDiagnostics(*identity),
++                     validator_->IsSignatureValid(), std::move(permit),
++                     boundary_),
+       base::BindOnce(&SubscriptionPersistentStorageImpl::SubscriptionStored,
+-                     weak_ptr_factory.GetWeakPtr(), std::move(on_finished)));
++                     weak_ptr_factory.GetWeakPtr(), *identity,
++                     std::move(callback)));
+ }
+ 
+ void SubscriptionPersistentStorageImpl::RemoveSubscription(
+     scoped_refptr<InstalledSubscription> subscription) {
++  Remove(std::move(subscription), false);
++}
++
++void SubscriptionPersistentStorageImpl::DiscardSubscription(
++    scoped_refptr<InstalledSubscription> subscription) {
++  Remove(std::move(subscription), true);
++}
++
++void SubscriptionPersistentStorageImpl::RetireSubscription(
++    scoped_refptr<InstalledSubscription> subscription) {
++  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++  backing_file_mapping_.erase(subscription);
++}
++
++void SubscriptionPersistentStorageImpl::Remove(
++    scoped_refptr<InstalledSubscription> subscription,
++    bool discard) {
++  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+   auto it = backing_file_mapping_.find(subscription);
+-  DCHECK(it != backing_file_mapping_.end())
+-      << "Attempted to remove subscription not governed by this "
+-         "SubscriptionPersistentStorageImpl";
++  if (it == backing_file_mapping_.end()) {
++    return;
++  }
+   validator_->RemoveStoredSignature().Run(it->second);
++  storage_runner_->PostTask(
++      FROM_HERE,
++      base::BindOnce(&storage::Remove, base_storage_dir_,
++                     subscription->GetSourceUrl(), it->second, discard));
+   backing_file_mapping_.erase(it);
+-  subscription->MarkForPermanentRemoval();
+ }
+ 
+ void SubscriptionPersistentStorageImpl::LoadComplete(
+@@ -191,18 +146,33 @@ void SubscriptionPersistentStorageImpl::LoadComplete(
+     std::vector<LoadedBuffer> loaded_buffers) {
+   std::vector<scoped_refptr<InstalledSubscription>> loaded_subscriptions;
+   for (LoadedBuffer& loaded_buffer : loaded_buffers) {
+-    const auto url = UrlFromFlatbufferData(*loaded_buffer.first);
++    const auto url = UrlFromFlatbufferData(*loaded_buffer.data);
+     const auto last_installation_time =
+-        persistent_metadata_->GetLastInstallationTime(url);
++        loaded_buffer.installed.is_null()
++            ? persistent_metadata_->GetLastInstallationTime(url)
++            : loaded_buffer.installed;
++    auto diagnostic = persistent_metadata_->GetDiagnostics(url);
++    diagnostic.recovery = loaded_buffer.recovery;
++    if (loaded_buffer.recovery != "legacy validated") {
++      diagnostic.last_success_source =
++          loaded_buffer.diagnostics.last_success_source;
++      diagnostic.last_success = loaded_buffer.installed;
++      diagnostic.active_rules = loaded_buffer.diagnostics.active_rules;
++      diagnostic.active_privileged =
++          loaded_buffer.diagnostics.active_privileged;
++    }
++    persistent_metadata_->SetDiagnostics(url, diagnostic);
+     auto installed_subscription =
+         base::MakeRefCounted<InstalledSubscriptionImpl>(
+-            std::move(loaded_buffer.first),
++            std::move(loaded_buffer.data),
+             persistent_metadata_->IsAutoInstalled(url)
+                 ? Subscription::InstallationState::AutoInstalled
+                 : Subscription::InstallationState::Installed,
+             last_installation_time);
+     backing_file_mapping_[installed_subscription] =
+-        std::move(loaded_buffer.second);
++        std::move(loaded_buffer.path);
++    persistent_metadata_->SetVersion(
++        url, installed_subscription->GetCurrentVersion());
+     loaded_subscriptions.push_back(installed_subscription);
+   }
+   TRACE_EVENT_ASYNC_END0("eyeo",
+@@ -212,32 +182,30 @@ void SubscriptionPersistentStorageImpl::LoadComplete(
+ }
+ 
+ void SubscriptionPersistentStorageImpl::SubscriptionStored(
++    const GURL& identity,
+     StoreCallback on_finished,
+     LoadedBuffer storage_result) {
+-  if (!storage_result.first) {
++  if (!storage_result.data) {
+     // There was an error storing the subscription.
++    auto diagnostic = persistent_metadata_->GetDiagnostics(identity);
++    diagnostic.error = storage_result.error;
++    persistent_metadata_->SetDiagnostics(identity, diagnostic);
+     std::move(on_finished).Run(nullptr);
+     return;
+   }
+ 
+-  const auto url = UrlFromFlatbufferData(*storage_result.first);
++  const auto url = UrlFromFlatbufferData(*storage_result.data);
+   const auto last_installation_time = base::Time::Now();
+   auto installed_subscription = base::MakeRefCounted<InstalledSubscriptionImpl>(
+-      std::move(storage_result.first),
++      std::move(storage_result.data),
+       persistent_metadata_->IsAutoInstalled(url)
+           ? Subscription::InstallationState::AutoInstalled
+           : Subscription::InstallationState::Installed,
+       last_installation_time);
+-  persistent_metadata_->IncrementDownloadSuccessCount(url);
+-  persistent_metadata_->SetLastInstallationTime(url);
+-  persistent_metadata_->SetExpirationInterval(
+-      url, installed_subscription->GetExpirationInterval());
+-  const auto parsed_version = installed_subscription->GetCurrentVersion();
+-  if (!parsed_version.empty()) {
+-    persistent_metadata_->SetVersion(url, parsed_version);
+-  }
++  // Publication is durable before this callback. The maintainer records success
++  // only after its current-generation/cancellation check and active-state swap.
+   backing_file_mapping_[installed_subscription] =
+-      std::move(storage_result.second);
++      std::move(storage_result.path);
+   std::move(on_finished).Run(installed_subscription);
+ }
+ 
+diff --git a/components/adblock/core/subscription/subscription_persistent_storage_impl.h b/components/adblock/core/subscription/subscription_persistent_storage_impl.h
+index 80b79b3..0b0536b 100644
+--- a/components/adblock/core/subscription/subscription_persistent_storage_impl.h
++++ b/components/adblock/core/subscription/subscription_persistent_storage_impl.h
+@@ -24,6 +24,7 @@
+ #include "base/memory/raw_ptr.h"
+ #include "base/memory/weak_ptr.h"
+ #include "base/sequence_checker.h"
++#include "base/task/sequenced_task_runner.h"
+ #include "components/adblock/core/common/flatbuffer_data.h"
+ #include "components/adblock/core/subscription/subscription_persistent_metadata.h"
+ #include "components/adblock/core/subscription/subscription_persistent_storage.h"
+@@ -37,7 +38,8 @@ class SubscriptionPersistentStorageImpl final
+   SubscriptionPersistentStorageImpl(
+       base::FilePath base_storage_dir,
+       std::unique_ptr<SubscriptionValidator> validator,
+-      SubscriptionPersistentMetadata* persistent_metadata);
++      SubscriptionPersistentMetadata* persistent_metadata,
++      storage::Boundary boundary = {});
+   ~SubscriptionPersistentStorageImpl() final;
+ 
+   void LoadSubscriptions(LoadCallback on_loaded) final;
+@@ -46,27 +48,29 @@ class SubscriptionPersistentStorageImpl final
+   void RemoveSubscription(
+       scoped_refptr<InstalledSubscription> subscription) final;
+ 
++  void StoreSubscriptionGuarded(std::unique_ptr<FlatbufferData> data,
++                                scoped_refptr<storage::Permit> permit,
++                                StoreCallback callback) final;
++  void RetireSubscription(
++      scoped_refptr<InstalledSubscription> subscription) final;
++  void DiscardSubscription(
++      scoped_refptr<InstalledSubscription> subscription) final;
++
+  private:
+   using SubscriptionFileMapping =
+       std::map<scoped_refptr<InstalledSubscription>, base::FilePath>;
+-  using LoadedBuffer =
+-      std::pair<std::unique_ptr<FlatbufferData>, base::FilePath>;
+-  static LoadedBuffer WriteSubscription(
+-      const base::FilePath& storage_dir,
+-      std::unique_ptr<FlatbufferData> raw_data,
+-      SubscriptionValidator::StoreTrustedSignatureThreadSafeCallback
+-          store_signature);
+-  static std::vector<LoadedBuffer> ReadSubscriptionsFromDirectory(
+-      const base::FilePath& storage_dir,
+-      SubscriptionValidator::IsSignatureValidThreadSafeCallback
+-          is_signature_valid);
++  using LoadedBuffer = storage::Generation;
+   void LoadComplete(LoadCallback on_initialized,
+                     std::vector<LoadedBuffer> loaded_buffers);
+-  void SubscriptionStored(StoreCallback on_finished,
++  void SubscriptionStored(const GURL& identity,
++                          StoreCallback on_finished,
+                           LoadedBuffer storage_result);
++  void Remove(scoped_refptr<InstalledSubscription> subscription, bool discard);
+ 
+   SEQUENCE_CHECKER(sequence_checker_);
+   base::FilePath base_storage_dir_;
++  scoped_refptr<base::SequencedTaskRunner> storage_runner_;
++  storage::Boundary boundary_;
+   std::unique_ptr<SubscriptionValidator> validator_;
+   raw_ptr<SubscriptionPersistentMetadata> persistent_metadata_;
+   // Maps Subscriptions to files that they access.
+diff --git a/components/adblock/core/subscription/subscription_storage_transaction.cc b/components/adblock/core/subscription/subscription_storage_transaction.cc
+new file mode 100644
+index 0000000..347d61c
+--- /dev/null
++++ b/components/adblock/core/subscription/subscription_storage_transaction.cc
+@@ -0,0 +1,581 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++
++#include "components/adblock/core/subscription/subscription_storage_transaction.h"
++
++#include <algorithm>
++#include <map>
++#include <set>
++#include <string>
++#include <utility>
++
++#include "base/files/file.h"
++#include "base/files/file_enumerator.h"
++#include "base/files/file_util.h"
++#include "base/json/json_reader.h"
++#include "base/json/json_writer.h"
++#include "base/strings/string_number_conversions.h"
++#include "base/strings/string_util.h"
++#include "base/unguessable_token.h"
++#include "build/build_config.h"
++#include "components/adblock/core/common/adblock_constants.h"
++#include "components/adblock/core/schema/filter_list_schema_generated.h"
++#include "components/adblock/core/subscription/subscription_config.h"
++#include "crypto/sha2.h"
++
++#if BUILDFLAG(IS_POSIX)
++#include <fcntl.h>
++#include <unistd.h>
++
++#include "base/files/scoped_file.h"
++#include "base/posix/eintr_wrapper.h"
++#endif
++
++namespace adblock::storage {
++Permit::Permit(bool allowed) : data(allowed) {}
++
++namespace {
++// Conversion expands indexes beyond the 32 MiB plaintext transport ceiling.
++// Bound each persisted generation independently without imposing that input
++// ceiling on the larger binary representation.
++constexpr size_t kMaximumBytes = 128 * 1024 * 1024;
++constexpr size_t kMaximumRecordBytes = 16 * 1024;
++
++std::string Hash(base::span<const uint8_t> bytes) {
++  return base::HexEncodeLower(crypto::SHA256Hash(bytes));
++}
++std::string Prefix(const GURL& identity) {
++  return "roadium-" + Hash(base::as_byte_span(identity.spec()));
++}
++base::FilePath RecordPath(const base::FilePath& directory,
++                          const GURL& identity,
++                          bool previous) {
++  return directory.AppendASCII(Prefix(identity) +
++                               (previous ? ".previous.json" : ".current.json"));
++}
++bool Hex(std::string_view text, size_t length) {
++  return text.size() == length &&
++         std::ranges::all_of(text, base::IsHexDigit<char>);
++}
++bool LegacyName(std::string_view name) {
++  return name.ends_with(".fb") && Hex(name.substr(0, name.size() - 3), 32);
++}
++bool GenerationName(std::string_view name) {
++  return name.size() == 108 && name.starts_with("roadium-") &&
++         Hex(name.substr(8, 64), 64) && name[72] == '-' &&
++         Hex(name.substr(73, 32), 32) && name.ends_with(".fb");
++}
++bool RecordName(std::string_view name) {
++  return name.starts_with("roadium-") && name.size() > 72 &&
++         Hex(name.substr(8, 64), 64) &&
++         (name.substr(72) == ".current.json" ||
++          name.substr(72) == ".previous.json");
++}
++bool SafeFile(const base::FilePath& directory, std::string_view name) {
++  return (GenerationName(name) || LegacyName(name)) &&
++         !base::IsLink(directory.AppendASCII(name));
++}
++bool SyncDirectory(const base::FilePath& directory) {
++#if BUILDFLAG(IS_POSIX)
++  base::ScopedFD fd(HANDLE_EINTR(
++      open(directory.value().c_str(), O_RDONLY | O_DIRECTORY | O_CLOEXEC)));
++  return fd.is_valid() && HANDLE_EINTR(fsync(fd.get())) == 0;
++#else
++  // Atomic replacement is available elsewhere, but Android/POSIX directory
++  // durability is the supported Card 05 contract.
++  return true;
++#endif
++}
++bool Publish(const base::FilePath& directory,
++             const base::FilePath& path,
++             const base::DictValue& record) {
++  std::string json;
++  // A fixed owned pending name bounds interrupted metadata writes. No generic
++  // temporary-file sweep, and no attempt to infer a commit from pending bytes.
++  const auto pending = path.AddExtensionASCII("pending");
++  if (base::IsLink(path) || base::IsLink(pending) ||
++      !base::JSONWriter::Write(record, &json) ||
++      json.size() > kMaximumRecordBytes) {
++    return false;
++  }
++  {
++    base::File file(pending,
++                    base::File::FLAG_CREATE_ALWAYS | base::File::FLAG_WRITE);
++    if (!file.IsValid() || !file.WriteAndCheck(0, base::as_byte_span(json)) ||
++        !file.Flush()) {
++      file.Close();
++      base::DeleteFile(pending);
++      return false;
++    }
++  }
++  if (!base::ReplaceFile(pending, path, nullptr)) {
++    base::DeleteFile(pending);
++    return false;
++  }
++  return SyncDirectory(directory);
++}
++
++bool Valid(const FlatbufferData& data, const GURL& expected = GURL()) {
++  if (!data.data() || !data.size() || data.size() > kMaximumBytes) {
++    return false;
++  }
++  flatbuffers::Verifier verifier(data.data(), data.size());
++  if (!flat::VerifySubscriptionBuffer(verifier)) {
++    return false;
++  }
++  const auto* sub = flat::GetSubscription(data.data());
++  const auto* metadata = sub->metadata();
++  if (!metadata || !metadata->url() ||
++      !metadata->flatbuffers_schema_version() ||
++      metadata->flatbuffers_schema_version()->str() != CurrentSchemaVersion()) {
++    return false;
++  }
++  const GURL identity(metadata->url()->str());
++  if (!identity.is_valid() || metadata->url()->str() != identity.spec() ||
++      (!expected.is_empty() && identity != expected)) {
++    return false;
++  }
++  // Old and recovered privileged bytes never grant a custom identity trust.
++  if (!config::AllowPrivilegedFilters(identity) &&
++      ((sub->snippet() && sub->snippet()->size()) ||
++       (sub->inline_css() && sub->inline_css()->size()))) {
++    return false;
++  }
++  // A one-rule list is valid. Empty custom rules are held in memory and never
++  // reach this store. Require an actual supported index, not an arbitrary size
++  // or percentage threshold that would reject small legitimate lists.
++  return (sub->url_subresource_block() &&
++          sub->url_subresource_block()->size()) ||
++         (sub->url_subresource_allow() &&
++          sub->url_subresource_allow()->size()) ||
++         (sub->url_popup_block() && sub->url_popup_block()->size()) ||
++         (sub->url_popup_allow() && sub->url_popup_allow()->size()) ||
++         (sub->url_document_allow() && sub->url_document_allow()->size()) ||
++         (sub->url_elemhide_allow() && sub->url_elemhide_allow()->size()) ||
++         (sub->url_generichide_allow() &&
++          sub->url_generichide_allow()->size()) ||
++         (sub->url_genericblock_allow() &&
++          sub->url_genericblock_allow()->size()) ||
++         (sub->url_csp_block() && sub->url_csp_block()->size()) ||
++         (sub->url_csp_allow() && sub->url_csp_allow()->size()) ||
++         (sub->url_rewrite_block() && sub->url_rewrite_block()->size()) ||
++         (sub->url_rewrite_allow() && sub->url_rewrite_allow()->size()) ||
++         (sub->elemhide() && sub->elemhide()->size()) ||
++         (sub->elemhide_emulation() && sub->elemhide_emulation()->size()) ||
++         (sub->elemhide_exception() && sub->elemhide_exception()->size()) ||
++         (sub->remove() && sub->remove()->size()) ||
++         (sub->inline_css() && sub->inline_css()->size()) ||
++         (sub->snippet() && sub->snippet()->size());
++}
++GURL Identity(const FlatbufferData& data) {
++  return GURL(flat::GetSubscription(data.data())->metadata()->url()->str());
++}
++std::optional<base::DictValue> ReadRecord(const base::FilePath& directory,
++                                          const base::FilePath& path) {
++  std::string json;
++  if (base::IsLink(path) ||
++      !base::ReadFileToStringWithMaxSize(path, &json, kMaximumRecordBytes)) {
++    return {};
++  }
++  auto record = base::JSONReader::ReadDict(json, base::JSON_PARSE_RFC);
++  if (!record || record->FindInt("format") != 1) {
++    return {};
++  }
++  const auto* url = record->FindString("identity");
++  const auto* name = record->FindString("file");
++  const auto* digest = record->FindString("sha256");
++  const auto* schema = record->FindString("schema");
++  if (!url || !name || !digest || !schema || !GURL(*url).is_valid() ||
++      GURL(*url).spec() != *url || !SafeFile(directory, *name) ||
++      !Hex(*digest, 64) ||
++      (GenerationName(*name) && !name->starts_with(Prefix(GURL(*url)) + "-")) ||
++      (path != RecordPath(directory, GURL(*url), false) &&
++       path != RecordPath(directory, GURL(*url), true))) {
++    return {};
++  }
++  return record;
++}
++Generation ReadGeneration(const base::FilePath& directory,
++                          const base::DictValue& record,
++                          std::string recovery) {
++  Generation result;
++  if (*record.FindString("schema") != CurrentSchemaVersion()) {
++    return result;
++  }
++  const auto path = directory.AppendASCII(*record.FindString("file"));
++  std::string bytes;
++  if (!base::ReadFileToStringWithMaxSize(path, &bytes, kMaximumBytes)) {
++    return result;
++  }
++  auto data = std::make_unique<InMemoryFlatbufferData>(std::move(bytes));
++  if (Hash(data->span()) != *record.FindString("sha256") ||
++      !Valid(*data, GURL(*record.FindString("identity")))) {
++    return result;
++  }
++  auto mapped = std::make_unique<MemoryMappedFlatbufferData>(path);
++  if (!mapped->data() || Hash(mapped->span()) != *record.FindString("sha256")) {
++    return result;
++  }
++  result.data = std::move(mapped);
++  result.path = path;
++  result.recovery = std::move(recovery);
++  result.diagnostics.last_success_source =
++      record.FindString("source") ? record.FindString("source")->substr(0, 2048)
++                                  : "";
++  result.diagnostics.active_privileged = record.FindBool("privileged");
++  if (auto accepted = record.FindInt("accepted"); accepted && *accepted > 0) {
++    RuleStatistics rules;
++    rules.accepted = *accepted;
++    rules.parser_rejected =
++        std::max(0, record.FindInt("parser_rejected").value_or(0));
++    rules.unsupported_commands =
++        std::max(0, record.FindInt("unsupported_commands").value_or(0));
++    rules.prohibited_privilege =
++        std::max(0, record.FindInt("prohibited_privilege").value_or(0));
++    rules.unsafe_arguments =
++        std::max(0, record.FindInt("unsafe_arguments").value_or(0));
++    rules.unsupported_options =
++        std::max(0, record.FindInt("unsupported_options").value_or(0));
++    result.diagnostics.active_rules = rules;
++  }
++  if (const auto* time = record.FindString("installed")) {
++    int64_t micros;
++    if (base::StringToInt64(*time, &micros)) {
++      result.installed =
++          base::Time::FromDeltaSinceWindowsEpoch(base::Microseconds(micros));
++    }
++  }
++  return result;
++}
++base::DictValue MakeRecord(const Generation& generation) {
++  auto record =
++      base::DictValue()
++          .Set("format", 1)
++          .Set("identity", Identity(*generation.data).spec())
++          .Set("file", generation.path.BaseName().AsUTF8Unsafe())
++          .Set("sha256", Hash(generation.data->span()))
++          .Set("schema", CurrentSchemaVersion())
++          .Set("source",
++               generation.diagnostics.last_success_source.substr(0, 2048))
++          .Set("installed", base::NumberToString(
++                                generation.installed.ToDeltaSinceWindowsEpoch()
++                                    .InMicroseconds()));
++  if (generation.diagnostics.active_privileged) {
++    record.Set("privileged", *generation.diagnostics.active_privileged);
++  }
++  if (generation.diagnostics.active_rules) {
++    const auto& rules = *generation.diagnostics.active_rules;
++    record.Set("accepted", rules.accepted);
++    record.Set("parser_rejected", rules.parser_rejected);
++    record.Set("unsupported_commands", rules.unsupported_commands);
++    record.Set("prohibited_privilege", rules.prohibited_privilege);
++    record.Set("unsafe_arguments", rules.unsafe_arguments);
++    record.Set("unsupported_options", rules.unsupported_options);
++  }
++  return record;
++}
++
++std::map<GURL, Generation> Legacy(
++    const base::FilePath& directory,
++    SubscriptionValidator::IsSignatureValidThreadSafeCallback signature) {
++  std::map<GURL, Generation> result;
++  base::FileEnumerator enumerator(directory, false,
++                                  base::FileEnumerator::FILES);
++  for (auto path = enumerator.Next(); !path.empty(); path = enumerator.Next()) {
++    if (!LegacyName(path.BaseName().AsUTF8Unsafe()) || base::IsLink(path)) {
++      continue;
++    }
++    std::string bytes;
++    if (!base::ReadFileToStringWithMaxSize(path, &bytes, kMaximumBytes)) {
++      continue;
++    }
++    auto data = std::make_unique<InMemoryFlatbufferData>(std::move(bytes));
++    if (!Valid(*data) || !signature.Run(*data, path)) {
++      continue;
++    }
++    const auto url = Identity(*data);
++    auto& selected = result[url];
++    // Deterministic migration only. Existing metadata never established which
++    // duplicate was committed; choose latest mtime, then filename as tie-break.
++    const auto modified = enumerator.GetInfo().GetLastModifiedTime();
++    if (selected.data &&
++        (modified < selected.installed ||
++         (modified == selected.installed && path < selected.path))) {
++      continue;
++    }
++    selected.data = std::move(data);
++    selected.path = path;
++    selected.installed = modified;
++    selected.recovery = "legacy validated";
++  }
++  return result;
++}
++
++// Never infer trust from an orphan's bytes or scan an arbitrary directory tree.
++// Only this exact generation grammar is owned. Preserve all files referenced by
++// structurally valid records, even if their bytes/schema cannot currently load.
++void Prune(
++    const base::FilePath& directory,
++    SubscriptionValidator::IsSignatureValidThreadSafeCallback signature = {}) {
++  std::set<std::string> retained;
++  std::vector<base::FilePath> candidates;
++  std::vector<base::FilePath> legacy;
++  std::set<std::string> recorded_prefixes;
++  base::FileEnumerator enumerator(directory, false,
++                                  base::FileEnumerator::FILES);
++  for (auto path = enumerator.Next(); !path.empty(); path = enumerator.Next()) {
++    const auto name = path.BaseName().AsUTF8Unsafe();
++    if (RecordName(name)) {
++      recorded_prefixes.insert(name.substr(0, 72));
++      if (auto record = ReadRecord(directory, path)) {
++        retained.insert(*record->FindString("file"));
++      }
++    } else if (LegacyName(name) && !base::IsLink(path)) {
++      legacy.push_back(path);
++    } else if (GenerationName(name) && !base::IsLink(path)) {
++      candidates.push_back(path);
++    } else if (name.ends_with(".pending") &&
++               RecordName(std::string_view(name).substr(0, name.size() - 8)) &&
++               !base::IsLink(path)) {
++      base::DeleteFile(path);
++    }
++  }
++  if (signature) {
++    for (const auto& path : legacy) {
++      if (retained.contains(path.BaseName().AsUTF8Unsafe())) {
++        continue;
++      }
++      std::string bytes;
++      if (!base::ReadFileToStringWithMaxSize(path, &bytes, kMaximumBytes)) {
++        continue;
++      }
++      InMemoryFlatbufferData data(std::move(bytes));
++      if (Valid(data) && signature.Run(data, path) &&
++          recorded_prefixes.contains(Prefix(Identity(data)))) {
++        base::DeleteFile(path);
++      }
++    }
++  }
++  for (const auto& path : candidates) {
++    if (!retained.contains(path.BaseName().AsUTF8Unsafe())) {
++      base::DeleteFile(path);
++    }
++  }
++}
++bool Continue(const Boundary& boundary, std::string_view name) {
++  return !boundary || boundary.Run(name);
++}
++Generation Failure(std::string error) {
++  Generation result;
++  result.error = std::move(error);
++  return result;
++}
++}  // namespace
++
++std::optional<GURL> ValidatedIdentity(const FlatbufferData& data) {
++  return Valid(data) ? std::optional<GURL>(Identity(data)) : std::nullopt;
++}
++
++std::vector<Generation> Load(
++    const base::FilePath& directory,
++    SubscriptionValidator::IsSignatureValidThreadSafeCallback
++        legacy_signature) {
++  base::CreateDirectory(directory);
++  auto selected = Legacy(directory, legacy_signature);
++  std::set<GURL> recorded;
++  std::set<std::string> recorded_prefixes;
++  base::FileEnumerator enumerator(directory, false,
++                                  base::FileEnumerator::FILES);
++  for (auto path = enumerator.Next(); !path.empty(); path = enumerator.Next()) {
++    if (!RecordName(path.BaseName().AsUTF8Unsafe())) {
++      continue;
++    }
++    recorded_prefixes.insert(path.BaseName().AsUTF8Unsafe().substr(0, 72));
++    auto record = ReadRecord(directory, path);
++    if (record) {
++      recorded.insert(GURL(*record->FindString("identity")));
++    }
++  }
++  std::erase_if(selected, [&](const auto& item) {
++    return recorded_prefixes.contains(Prefix(item.first));
++  });
++  for (const auto& url : recorded) {
++    selected.erase(
++        url);  // Never resurrect legacy data behind an existing record.
++    for (bool previous : {false, true}) {
++      auto record = ReadRecord(directory, RecordPath(directory, url, previous));
++      if (!record) {
++        continue;
++      }
++      auto generation =
++          ReadGeneration(directory, *record, previous ? "previous" : "current");
++      if (generation.data) {
++        selected.emplace(url, std::move(generation));
++        break;
++      }
++    }
++  }
++  Prune(directory, legacy_signature);
++  std::vector<Generation> result;
++  for (auto& [url, generation] : selected) {
++    result.push_back(std::move(generation));
++  }
++  return result;
++}
++
++Generation Commit(
++    const base::FilePath& directory,
++    std::unique_ptr<FlatbufferData> data,
++    SubscriptionDiagnostics diagnostics,
++    SubscriptionValidator::IsSignatureValidThreadSafeCallback legacy_signature,
++    scoped_refptr<Permit> permit,
++    Boundary boundary) {
++  if (!data || !Valid(*data)) {
++    return Failure("Candidate validation failed");
++  }
++  if (!permit->data.load()) {
++    return Failure("Storage activation cancelled");
++  }
++  if (!base::CreateDirectory(directory)) {
++    return Failure("Storage directory unavailable");
++  }
++  const auto url = Identity(*data);
++  Generation selected;
++  const bool has_record = base::PathExists(RecordPath(directory, url, false)) ||
++                          base::PathExists(RecordPath(directory, url, true));
++  for (bool previous : {false, true}) {
++    if (auto record =
++            ReadRecord(directory, RecordPath(directory, url, previous))) {
++      selected =
++          ReadGeneration(directory, *record, previous ? "previous" : "current");
++      if (selected.data) {
++        break;
++      }
++    }
++  }
++  if (!selected.data && !has_record) {
++    auto legacy = Legacy(directory, legacy_signature);
++    if (auto it = legacy.find(url); it != legacy.end()) {
++      selected = std::move(it->second);
++    }
++  }
++  Generation* prior = selected.data ? &selected : nullptr;
++  Generation candidate;
++  candidate.path = directory.AppendASCII(
++      Prefix(url) + "-" + base::UnguessableToken::Create().ToString() + ".fb");
++  candidate.installed = base::Time::Now();
++  candidate.diagnostics.last_success_source = diagnostics.source;
++  candidate.diagnostics.active_privileged = diagnostics.parsed_privileged;
++  candidate.diagnostics.active_rules = data->GetRuleStatistics();
++  candidate.recovery = "current";
++  {
++    base::File file(candidate.path,
++                    base::File::FLAG_CREATE | base::File::FLAG_WRITE);
++    if (!file.IsValid() || !file.WriteAndCheck(0, data->span()) ||
++        !file.Flush()) {
++      file.Close();
++      base::DeleteFile(candidate.path);
++      return Failure("Candidate write or flush failed");
++    }
++  }
++  if (!SyncDirectory(directory)) {
++    base::DeleteFile(candidate.path);
++    return Failure("Candidate directory sync failed");
++  }
++  if (!Continue(boundary, "candidate persisted")) {
++    return Failure("Interrupted before publication");
++  }
++  candidate.data = std::make_unique<MemoryMappedFlatbufferData>(candidate.path);
++  if (!candidate.data->data() || !Valid(*candidate.data, url) ||
++      Hash(candidate.data->span()) != Hash(data->span())) {
++    base::DeleteFile(candidate.path);
++    return Failure("Persisted candidate failed validation");
++  }
++  if (!permit->data.load()) {
++    base::DeleteFile(candidate.path);
++    return Failure("Storage activation cancelled");
++  }
++  if (prior) {
++    base::File prior_file(prior->path,
++                          base::File::FLAG_OPEN | base::File::FLAG_WRITE);
++    if (!prior_file.IsValid() || !prior_file.Flush() ||
++        !SyncDirectory(directory)) {
++      base::DeleteFile(candidate.path);
++      return Failure("Previous generation flush failed");
++    }
++  }
++  if (prior && !Publish(directory, RecordPath(directory, url, true),
++                        MakeRecord(*prior))) {
++    base::DeleteFile(candidate.path);
++    return Failure("Previous record publication failed");
++  }
++  if (!Continue(boundary, "previous published")) {
++    return Failure("Interrupted before current publication");
++  }
++  if (!permit->data.load()) {
++    base::DeleteFile(candidate.path);
++    return Failure("Storage activation cancelled");
++  }
++  if (!Publish(directory, RecordPath(directory, url, false),
++               MakeRecord(candidate))) {
++    // A directory-sync failure can occur after rename. Keep the flushed
++    // candidate if a record now references it; old/previous is still a valid
++    // recovery point.
++    Prune(directory, legacy_signature);
++    return Failure("Current record publication or directory sync failed");
++  }
++  if (!Continue(boundary, "current published")) {
++    return Failure("Interrupted after current publication");
++  }
++  Prune(directory, legacy_signature);
++  if (!Continue(boundary, "obsolete cleaned")) {
++    return Failure("Interrupted after obsolete cleanup");
++  }
++  return candidate;
++}
++
++void Remove(const base::FilePath& directory,
++            const GURL& identity,
++            const base::FilePath& file,
++            bool discard_candidate) {
++  if (discard_candidate) {
++    auto current =
++        ReadRecord(directory, RecordPath(directory, identity, false));
++    if (current &&
++        directory.AppendASCII(*current->FindString("file")) == file) {
++      auto previous =
++          ReadRecord(directory, RecordPath(directory, identity, true));
++      if (previous) {
++        if (!Publish(directory, RecordPath(directory, identity, false),
++                     *previous)) {
++          return;
++        }
++      } else {
++        base::DeleteFile(RecordPath(directory, identity, false));
++        SyncDirectory(directory);
++      }
++    }
++  } else {
++    for (bool previous : {false, true}) {
++      const auto path = RecordPath(directory, identity, previous);
++      if (auto record = ReadRecord(directory, path)) {
++        const auto retained =
++            directory.AppendASCII(*record->FindString("file"));
++        if (LegacyName(retained.BaseName().AsUTF8Unsafe())) {
++          base::DeleteFile(retained);
++        }
++      }
++      if (!base::IsLink(path)) {
++        base::DeleteFile(path);
++      }
++    }
++    SyncDirectory(directory);
++    // Legacy data is removed only through an exact already-validated mapping.
++    if (file.DirName() == directory &&
++        LegacyName(file.BaseName().AsUTF8Unsafe()) && !base::IsLink(file)) {
++      base::DeleteFile(file);
++    }
++  }
++  Prune(directory);
++}
++}  // namespace adblock::storage
+diff --git a/components/adblock/core/subscription/subscription_storage_transaction.h b/components/adblock/core/subscription/subscription_storage_transaction.h
+new file mode 100644
+index 0000000..c8fd3b0
+--- /dev/null
++++ b/components/adblock/core/subscription/subscription_storage_transaction.h
+@@ -0,0 +1,67 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++
++#ifndef COMPONENTS_ADBLOCK_CORE_SUBSCRIPTION_SUBSCRIPTION_STORAGE_TRANSACTION_H_
++#define COMPONENTS_ADBLOCK_CORE_SUBSCRIPTION_SUBSCRIPTION_STORAGE_TRANSACTION_H_
++
++#include <atomic>
++#include <memory>
++#include <vector>
++
++#include "base/files/file_path.h"
++#include "base/functional/callback.h"
++#include "base/memory/ref_counted.h"
++#include "components/adblock/core/subscription/subscription_persistent_metadata.h"
++#include "components/adblock/core/subscription/subscription_validator.h"
++
++namespace adblock::storage {
++
++// A cancellation signal, not a callback into the main sequence. File operations
++// use a single sequenced runner; a newer publication cannot be overtaken.
++class Permit : public base::RefCountedThreadSafe<Permit> {
++ public:
++  explicit Permit(bool allowed);
++  std::atomic_bool data;
++
++ private:
++  friend class base::RefCountedThreadSafe<Permit>;
++  ~Permit() = default;
++};
++
++struct Generation {
++  std::unique_ptr<FlatbufferData> data;
++  base::FilePath path;
++  SubscriptionDiagnostics diagnostics;
++  base::Time installed;
++  std::string recovery;
++  std::string error;
++};
++
++// Optional per-instance fault observer for deterministic tests. Not exposed to
++// Java, preferences, switches, network content or the release UI. Returning
++// false simulates an interruption at the named boundary, without performing
++// cleanup.
++using Boundary = base::RepeatingCallback<bool(std::string_view)>;
++
++std::optional<GURL> ValidatedIdentity(const FlatbufferData& data);
++
++std::vector<Generation> Load(
++    const base::FilePath& directory,
++    SubscriptionValidator::IsSignatureValidThreadSafeCallback legacy_signature);
++Generation Commit(
++    const base::FilePath& directory,
++    std::unique_ptr<FlatbufferData> data,
++    SubscriptionDiagnostics diagnostics,
++    SubscriptionValidator::IsSignatureValidThreadSafeCallback legacy_signature,
++    scoped_refptr<Permit> permit,
++    Boundary boundary = {});
++// Explicit removal clears both generations. Discarding a cancelled candidate
++// rolls back only if that exact file is still current, preserving newer work.
++void Remove(const base::FilePath& directory,
++            const GURL& identity,
++            const base::FilePath& file,
++            bool discard_candidate);
++
++}  // namespace adblock::storage
++
++#endif
+diff --git a/components/adblock/test/shields_recovery_unittest.cc b/components/adblock/test/shields_recovery_unittest.cc
+new file mode 100644
+index 0000000..6136bc3
+--- /dev/null
++++ b/components/adblock/test/shields_recovery_unittest.cc
+@@ -0,0 +1,395 @@
++// Copyright 2026 Roadium Browser contributors.
++// SPDX-License-Identifier: GPL-3.0-only
++
++#include <sstream>
++#include <variant>
++
++#include "base/files/file_enumerator.h"
++#include "base/files/file_util.h"
++#include "base/files/scoped_temp_dir.h"
++#include "base/functional/bind.h"
++#include "base/json/json_reader.h"
++#include "base/json/json_writer.h"
++#include "base/no_destructor.h"
++#include "base/test/bind.h"
++#include "base/test/task_environment.h"
++#include "components/adblock/core/common/adblock_constants.h"
++#include "components/adblock/core/common/adblock_prefs.h"
++#include "components/adblock/core/configuration/persistent_filtering_configuration.h"
++#include "components/adblock/core/converter/flatbuffer_converter.h"
++#include "components/adblock/core/subscription/installed_subscription_impl.h"
++#include "components/adblock/core/subscription/subscription_collection_impl.h"
++#include "components/adblock/core/subscription/subscription_persistent_metadata_impl.h"
++#include "components/adblock/core/subscription/subscription_persistent_storage_impl.h"
++#include "components/adblock/core/subscription/subscription_storage_transaction.h"
++#include "components/adblock/core/subscription/subscription_validator_impl.h"
++#include "components/prefs/testing_pref_service.h"
++#include "testing/gtest/include/gtest/gtest.h"
++
++namespace adblock {
++namespace {
++const GURL& Identity() {
++  static const base::NoDestructor<GURL> url(
++      "https://uazo.github.io/cromite/filters/easylist.txt");
++  return *url;
++}
++auto NoLegacy() {
++  return base::BindRepeating(
++      [](const FlatbufferData&, const base::FilePath&) { return false; });
++}
++std::unique_ptr<FlatbufferData> Data(std::string version,
++                                     const GURL& identity = Identity()) {
++  std::istringstream text("[Adblock Plus 2.0]\n! Version: " + version +
++                          "\n||ads.recovery.invalid^\nrecovery.invalid##.ad\n");
++  auto result = base::MakeRefCounted<FlatbufferConverter>()->Convert(
++      text, identity, false);
++  auto* data = std::get_if<std::unique_ptr<FlatbufferData>>(&result);
++  return data ? std::move(*data) : nullptr;
++}
++scoped_refptr<InstalledSubscription> Installed(
++    storage::Generation& generation) {
++  return base::MakeRefCounted<InstalledSubscriptionImpl>(
++      std::move(generation.data), Subscription::InstallationState::Installed,
++      generation.installed);
++}
++class ShieldsRecoveryTest : public testing::Test {
++ public:
++  void SetUp() override { ASSERT_TRUE(directory.CreateUniqueTempDir()); }
++  storage::Generation Commit(std::string version,
++                             storage::Boundary boundary = {}) {
++    SubscriptionDiagnostics d;
++    d.source =
++        "https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++        "easylist.txt";
++    d.parsed_privileged = false;
++    return storage::Commit(directory.GetPath(), Data(version), d, NoLegacy(),
++                           base::MakeRefCounted<storage::Permit>(true),
++                           boundary);
++  }
++  std::vector<storage::Generation> Load() {
++    return storage::Load(directory.GetPath(), NoLegacy());
++  }
++  base::FilePath Record(bool previous = false) {
++    base::FileEnumerator files(directory.GetPath(), false,
++                               base::FileEnumerator::FILES);
++    for (auto path = files.Next(); !path.empty(); path = files.Next()) {
++      if (path.BaseName().AsUTF8Unsafe().ends_with(
++              previous ? ".previous.json" : ".current.json")) {
++        return path;
++      }
++    }
++    return {};
++  }
++  void Check(std::string version, std::string origin) {
++    auto loaded = Load();
++    ASSERT_EQ(1u, loaded.size());
++    EXPECT_EQ(origin, loaded[0].recovery);
++    auto installed = Installed(loaded[0]);
++    EXPECT_EQ(version, installed->GetCurrentVersion());
++    EXPECT_EQ(Identity(), installed->GetSourceUrl());
++    SubscriptionCollectionImpl collection({installed}, "test");
++    EXPECT_TRUE(collection.FindBySubresourceFilter(
++        GURL("https://ads.recovery.invalid/ad.js"),
++        {GURL("https://recovery.invalid/")}, ContentType::Script, SiteKey(),
++        FilterCategory::Blocking));
++    EXPECT_FALSE(
++        installed->GetElemhideData(GURL("https://recovery.invalid/"), false)
++            .elemhide_selectors.empty());
++  }
++  size_t Generations() {
++    size_t count = 0;
++    base::FileEnumerator files(directory.GetPath(), false,
++                               base::FileEnumerator::FILES);
++    for (auto path = files.Next(); !path.empty(); path = files.Next()) {
++      if (path.MatchesExtension(FILE_PATH_LITERAL(".fb"))) {
++        ++count;
++      }
++    }
++    return count;
++  }
++  base::test::TaskEnvironment tasks;
++  base::ScopedTempDir directory;
++};
++
++TEST_F(ShieldsRecoveryTest, AtomicPublicationSurvivesEveryInterruptedBoundary) {
++  for (std::string boundary : {"candidate persisted", "previous published",
++                               "current published", "obsolete cleaned"}) {
++    SCOPED_TRACE(boundary);
++    ASSERT_TRUE(Commit("203001010001").data);
++    auto result =
++        Commit("203001010002",
++               base::BindLambdaForTesting([&](std::string_view reached) {
++                 return reached != boundary;
++               }));
++    EXPECT_FALSE(result.data);
++    Check(boundary == "candidate persisted" || boundary == "previous published"
++              ? "203001010001"
++              : "203001010002",
++          "current");
++    EXPECT_LE(Generations(), 2u);
++  }
++}
++TEST_F(ShieldsRecoveryTest, CorruptCurrentRecoversPreviousWithRealFiltering) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  auto latest = Commit("203001010002");
++  ASSERT_TRUE(latest.data);
++  latest.data.reset();
++  tasks.RunUntilIdle();
++  ASSERT_TRUE(base::WriteFile(latest.path, "broken"));
++  Check("203001010001", "previous");
++  auto loaded = Load();
++  EXPECT_EQ(
++      "https://raw.githubusercontent.com/uazo/cromite/pages/filters/"
++      "easylist.txt",
++      loaded[0].diagnostics.last_success_source);
++  EXPECT_EQ(false, loaded[0].diagnostics.active_privileged);
++}
++TEST_F(ShieldsRecoveryTest, CorruptCurrentRecordRecoversPrevious) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  ASSERT_TRUE(Commit("203001010002").data);
++  ASSERT_TRUE(base::WriteFile(Record(), "{truncated"));
++  Check("203001010001", "previous");
++}
++TEST_F(ShieldsRecoveryTest, InvalidCandidatesCannotReplaceValidData) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  for (std::string bytes : {"", "<html>error</html>", "ABP2truncated"}) {
++    auto result = storage::Commit(
++        directory.GetPath(), std::make_unique<InMemoryFlatbufferData>(bytes),
++        {}, NoLegacy(), base::MakeRefCounted<storage::Permit>(true));
++    EXPECT_FALSE(result.data);
++    Check("203001010001", "current");
++  }
++}
++TEST_F(ShieldsRecoveryTest, WrongIdentityAndSchemaRecordsFallBack) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  ASSERT_TRUE(Commit("203001010002").data);
++  std::string text;
++  ASSERT_TRUE(base::ReadFileToString(Record(), &text));
++  auto record = base::JSONReader::ReadDict(text, base::JSON_PARSE_RFC);
++  ASSERT_TRUE(record);
++  auto invalid = record->Clone();
++  invalid.Set("schema", "incompatible");
++  ASSERT_TRUE(base::JSONWriter::Write(invalid, &text));
++  ASSERT_TRUE(base::WriteFile(Record(), text));
++  Check("203001010001", "previous");
++  invalid = record->Clone();
++  invalid.Set("identity", "https://untrusted.invalid/list.txt");
++  ASSERT_TRUE(base::JSONWriter::Write(invalid, &text));
++  ASSERT_TRUE(base::WriteFile(Record(), text));
++  Check("203001010001", "previous");
++}
++TEST_F(ShieldsRecoveryTest, BothInvalidYieldsNoFalseOperationalState) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  ASSERT_TRUE(Commit("203001010002").data);
++  ASSERT_TRUE(base::WriteFile(Record(), "invalid"));
++  ASSERT_TRUE(base::WriteFile(Record(true), "invalid"));
++  EXPECT_TRUE(Load().empty());
++}
++TEST_F(ShieldsRecoveryTest,
++       UnpublishedOrphanNeverActivatesOrDeletesUnownedFile) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  const auto unrelated = directory.GetPath().AppendASCII("unrelated.txt");
++  ASSERT_TRUE(base::WriteFile(unrelated, "keep"));
++  EXPECT_FALSE(Commit("203001010002",
++                      base::BindLambdaForTesting([](std::string_view boundary) {
++                        return boundary != "candidate persisted";
++                      }))
++                   .data);
++  Check("203001010001", "current");
++  EXPECT_EQ(1u, Generations());
++  EXPECT_TRUE(base::PathExists(unrelated));
++}
++TEST_F(ShieldsRecoveryTest, CurrentRenameFailureRetainsOldData) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  const auto path = Record();
++  auto boundary = base::BindLambdaForTesting([&](std::string_view reached) {
++    if (reached == "previous published") {
++      EXPECT_TRUE(base::DeleteFile(path));
++      EXPECT_TRUE(base::CreateDirectory(path));
++    }
++    return true;
++  });
++  EXPECT_FALSE(Commit("203001010002", boundary).data);
++  Check("203001010001", "previous");
++}
++TEST_F(ShieldsRecoveryTest, PreviousPublicationFailureRetainsCurrent) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  ASSERT_TRUE(Commit("203001010002").data);
++  const auto previous = Record(true);
++  ASSERT_TRUE(base::DeleteFile(previous));
++  ASSERT_TRUE(base::CreateDirectory(previous));
++  EXPECT_FALSE(Commit("203001010003").data);
++  Check("203001010002", "current");
++}
++TEST_F(ShieldsRecoveryTest,
++       MissingStorageDirectoryFailsWithoutInventingSuccess) {
++  const auto blocked = directory.GetPath().AppendASCII("file-not-directory");
++  ASSERT_TRUE(base::WriteFile(blocked, "keep"));
++  EXPECT_FALSE(storage::Commit(blocked, Data("203001010001"), {}, NoLegacy(),
++                               base::MakeRefCounted<storage::Permit>(true))
++                   .data);
++}
++TEST_F(ShieldsRecoveryTest, CancellationBeforeAndDuringCommitPreservesCurrent) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  auto permit = base::MakeRefCounted<storage::Permit>(false);
++  EXPECT_FALSE(storage::Commit(directory.GetPath(), Data("203001010002"), {},
++                               NoLegacy(), permit)
++                   .data);
++  permit->data.store(true);
++  EXPECT_FALSE(storage::Commit(
++                   directory.GetPath(), Data("203001010002"), {}, NoLegacy(),
++                   permit,
++                   base::BindLambdaForTesting([&](std::string_view boundary) {
++                     if (boundary == "previous published") {
++                       permit->data.store(false);
++                     }
++                     return true;
++                   }))
++                   .data);
++  Check("203001010001", "current");
++}
++TEST_F(ShieldsRecoveryTest, DiscardCannotRollBackNewerPublication) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  auto cancelled = Commit("203001010002");
++  ASSERT_TRUE(cancelled.data);
++  auto newest = Commit("203001010003");
++  ASSERT_TRUE(newest.data);
++  storage::Remove(directory.GetPath(), Identity(), cancelled.path, true);
++  Check("203001010003", "current");
++}
++TEST_F(ShieldsRecoveryTest,
++       DiscardCurrentRestoresPreviousButUnsubscribeRemovesBoth) {
++  ASSERT_TRUE(Commit("203001010001").data);
++  auto cancelled = Commit("203001010002");
++  ASSERT_TRUE(cancelled.data);
++  storage::Remove(directory.GetPath(), Identity(), cancelled.path, true);
++  Check("203001010001", "current");
++  storage::Remove(directory.GetPath(), Identity(), cancelled.path, false);
++  EXPECT_TRUE(Load().empty());
++  EXPECT_EQ(0u, Generations());
++}
++TEST_F(ShieldsRecoveryTest, RepeatedUpdatesKeepTwoGenerationsAndLatestVersion) {
++  for (int i = 10; i < 22; ++i) {
++    ASSERT_TRUE(Commit("2030010100" + std::to_string(i)).data);
++    Check("2030010100" + std::to_string(i), "current");
++    EXPECT_LE(Generations(), 2u);
++  }
++}
++TEST_F(ShieldsRecoveryTest,
++       LegacySignatureRequiredAndFirstUpdateRetainsLegacy) {
++  const auto path =
++      directory.GetPath().AppendASCII("00000000000000000000000000000001.fb");
++  auto original = Data("203001010001");
++  ASSERT_TRUE(base::WriteFile(path, original->span()));
++  EXPECT_TRUE(Load().empty());
++  auto signature = base::BindRepeating(
++      [](const FlatbufferData&, const base::FilePath&) { return true; });
++  auto loaded = storage::Load(directory.GetPath(), signature);
++  ASSERT_EQ(1u, loaded.size());
++  EXPECT_EQ("legacy validated", loaded[0].recovery);
++  auto latest =
++      storage::Commit(directory.GetPath(), Data("203001010002"), {}, signature,
++                      base::MakeRefCounted<storage::Permit>(true));
++  ASSERT_TRUE(latest.data);
++  latest.data.reset();
++  tasks.RunUntilIdle();
++  ASSERT_TRUE(base::WriteFile(latest.path, "broken"));
++  Check("203001010001", "previous");
++  storage::Remove(directory.GetPath(), Identity(), latest.path, false);
++  EXPECT_TRUE(storage::Load(directory.GetPath(), signature).empty());
++  EXPECT_FALSE(base::PathExists(path));
++}
++TEST_F(ShieldsRecoveryTest,
++       RealPersistentStoreRecoversWithoutPreferenceSignature) {
++  TestingPrefServiceSimple prefs;
++  common::prefs::RegisterProfilePrefs(prefs.registry());
++  SubscriptionPersistentMetadataImpl metadata(&prefs);
++  auto create = [&] {
++    return std::make_unique<SubscriptionPersistentStorageImpl>(
++        directory.GetPath(),
++        std::make_unique<SubscriptionValidatorImpl>(&prefs,
++                                                    CurrentSchemaVersion()),
++        &metadata);
++  };
++  auto store = create();
++  scoped_refptr<InstalledSubscription> first, second;
++  store->StoreSubscription(Data("203001010001"),
++                           base::BindLambdaForTesting(
++                               [&](scoped_refptr<InstalledSubscription> data) {
++                                 first = std::move(data);
++                               }));
++  tasks.RunUntilIdle();
++  ASSERT_TRUE(first);
++  store->StoreSubscription(Data("203001010002"),
++                           base::BindLambdaForTesting(
++                               [&](scoped_refptr<InstalledSubscription> data) {
++                                 second = std::move(data);
++                               }));
++  tasks.RunUntilIdle();
++  ASSERT_TRUE(second);
++  store->RetireSubscription(first);
++  EXPECT_EQ(0, metadata.GetDownloadSuccessCount(Identity()));
++  first.reset();
++  second.reset();
++  store.reset();
++  tasks.RunUntilIdle();
++  EXPECT_TRUE(prefs.GetDict(common::prefs::kSubscriptionSignatures).empty());
++  store = create();
++  std::vector<scoped_refptr<InstalledSubscription>> reloaded;
++  store->LoadSubscriptions(base::BindLambdaForTesting(
++      [&](std::vector<scoped_refptr<InstalledSubscription>> loaded) {
++        reloaded = std::move(loaded);
++      }));
++  tasks.RunUntilIdle();
++  ASSERT_EQ(1u, reloaded.size());
++  EXPECT_EQ("203001010002", reloaded[0]->GetCurrentVersion());
++  EXPECT_EQ("current", metadata.GetDiagnostics(Identity()).recovery);
++  EXPECT_EQ(2u, Generations());
++}
++
++TEST_F(ShieldsRecoveryTest,
++       ProductionGuardAndRetireDiscardPreservePriorVersion) {
++  TestingPrefServiceSimple prefs;
++  common::prefs::RegisterProfilePrefs(prefs.registry());
++  SubscriptionPersistentMetadataImpl metadata(&prefs);
++  SubscriptionPersistentStorageImpl store(
++      directory.GetPath(),
++      std::make_unique<SubscriptionValidatorImpl>(&prefs,
++                                                  CurrentSchemaVersion()),
++      &metadata);
++  scoped_refptr<InstalledSubscription> first, second;
++  store.StoreSubscription(Data("203001010001"),
++                          base::BindLambdaForTesting(
++                              [&](scoped_refptr<InstalledSubscription> data) {
++                                first = std::move(data);
++                              }));
++  tasks.RunUntilIdle();
++  ASSERT_TRUE(first);
++  int callbacks = 0;
++  store.StoreSubscriptionGuarded(
++      Data("203001010002"), base::MakeRefCounted<storage::Permit>(false),
++      base::BindLambdaForTesting(
++          [&](scoped_refptr<InstalledSubscription> data) {
++            ++callbacks;
++            EXPECT_FALSE(data);
++          }));
++  tasks.RunUntilIdle();
++  EXPECT_EQ(1, callbacks);
++  Check("203001010001", "current");
++  store.StoreSubscription(Data("203001010002"),
++                          base::BindLambdaForTesting(
++                              [&](scoped_refptr<InstalledSubscription> data) {
++                                second = std::move(data);
++                              }));
++  tasks.RunUntilIdle();
++  ASSERT_TRUE(second);
++  store.RetireSubscription(first);
++  store.DiscardSubscription(second);
++  tasks.RunUntilIdle();
++  Check("203001010001", "current");
++  EXPECT_EQ(0, metadata.GetDownloadSuccessCount(Identity()));
++  EXPECT_EQ(1u, Generations());
++  EXPECT_TRUE(prefs.GetDict(common::prefs::kSubscriptionSignatures).empty());
++}
++}  // namespace
++}  // namespace adblock

@@ -1,0 +1,117 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt",
+    "version": "0",
+    "requests": 3,
+    "consecutive_failures": 1,
+    "diagnostics": {
+      "active_rules": {
+        "accepted": 0,
+        "parser_rejected": 0,
+        "prohibited_privilege": 17,
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      },
+      "downloaded": false,
+      "error": "ERR_CONNECTION_REFUSED",
+      "last_success": "13436407172983886",
+      "last_success_source": "https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt",
+      "parsed": false,
+      "source": "https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt",
+      "stage": 5
+    }
+  },
+  {
+    "url": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+    "version": "202610130952",
+    "requests": 3,
+    "consecutive_failures": 1,
+    "diagnostics": {
+      "active_rules": {
+        "accepted": 2492,
+        "parser_rejected": 48,
+        "prohibited_privilege": 1915,
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      },
+      "downloaded": false,
+      "error": "ERR_CONNECTION_REFUSED",
+      "last_success": "13436407173543293",
+      "last_success_source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+      "parsed": false,
+      "source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+      "stage": 5
+    }
+  },
+  {
+    "url": "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+    "version": "04October2026v1",
+    "requests": 3,
+    "consecutive_failures": 1,
+    "diagnostics": {
+      "active_rules": {
+        "accepted": 14664,
+        "parser_rejected": 873,
+        "prohibited_privilege": 0,
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      },
+      "downloaded": false,
+      "error": "ERR_CONNECTION_REFUSED",
+      "last_success": "13436407173271164",
+      "last_success_source": "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+      "parsed": false,
+      "source": "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+      "stage": 5
+    }
+  },
+  {
+    "url": "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+    "version": "0",
+    "requests": 3,
+    "consecutive_failures": 1,
+    "diagnostics": {
+      "active_rules": {
+        "accepted": 102259,
+        "parser_rejected": 0,
+        "prohibited_privilege": 0,
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      },
+      "downloaded": false,
+      "error": "ERR_CONNECTION_REFUSED",
+      "last_success": "13436407173701934",
+      "last_success_source": "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+      "parsed": false,
+      "source": "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+      "stage": 5
+    }
+  },
+  {
+    "url": "https://uazo.github.io/cromite/filters/easylist.txt",
+    "version": "202610130952",
+    "requests": 3,
+    "consecutive_failures": 1,
+    "diagnostics": {
+      "active_rules": {
+        "accepted": 81698,
+        "parser_rejected": 5,
+        "prohibited_privilege": 37,
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      },
+      "downloaded": false,
+      "error": "ERR_CONNECTION_REFUSED",
+      "last_success": "13436407173606129",
+      "last_success_source": "https://uazo.github.io/cromite/filters/easylist.txt",
+      "parsed": false,
+      "source": "https://uazo.github.io/cromite/filters/easylist.txt",
+      "stage": 5
+    }
+  }
+]

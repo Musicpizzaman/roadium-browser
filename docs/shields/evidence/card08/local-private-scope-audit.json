@@ -1,0 +1,31 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The current `IDS_ROADIUM_SHIELDS_SITE_SCOPE` string incorrectly claims temporary exceptions only cover regular tabs. Analysis of `AdblockChromeContentBrowserClient::GetBrowserContextForEyeoFactories` confirms that the backend always returns the `GetOriginalProfile()`, meaning the filtering context is shared across both regular and private tabs. I recommend updating the help text to accurately reflect that exceptions apply to all views (including private tabs) and that other open tabs require a reload to apply changes.\",\n  \"architecture_observations\": [\n    \"`GetBrowserContextForEyeoFactories` remaps any context to the original profile, ensuring a shared filtering state.\",\n    \"Private tabs (OffTheRecord) are not isolated from the adblock filtering logic.\",\n    \"Temporary exceptions are stored in a separate memory vector on the original profile's configuration.\",\n    \"UI controls only trigger reloads for the current tab; existing tabs remain in their previous state until reloaded.\"\n  ],\n  \"proposed_changes\": [\n    {\n      \"file\": \"chrome/browser/adblock/android/adblock_strings.grd\",\n      \"change\": \"Update `IDS_ROADIUM_SHIELDS_SITE_SCOPE` to include private tabs and clarify the reload requirement for other tabs.\"\n    }\n  ],\n  \"patch\": \"--- a/chrome/browser/adblock/android/adblock_strings.grd\\n+++ b/chrome/browser/adblock/android/adblock_strings.grd\\n@@ -215,7 +215,7 @@\\n       <message name=\\\"IDS_ROADIUM_SHIELDS_SITE_PANEL_TITLE\\\" desc=\\\"Shields per-site panel: panel title\\\">Shields</message>\\n-      <message name=\\\"IDS_ROADIUM_SHIELDS_SITE_SCOPE\\\" desc=\\\"Shields per-site panel: scope\\\">Applies to this host and its subdomains. Temporary exceptions cover regular tabs until the browser restarts. Closing a tab does not end the exception.</message>\\n+      <message name=\\\"IDS_ROADIUM_SHIELDS_SITE_SCOPE\\\" desc=\\\"Shields per-site panel: scope\\\">Applies to this host and its subdomains. Temporary exceptions cover all tabs (including private) until the browser restarts. Other open tabs must be reloaded to apply changes. Closing a tab does not end the exception.</message>\\n       <message name=\\\"IDS_ROADIUM_SHIELDS_SITE_GLOBAL_PAUSED\\\" desc=\\\"Shields per-site panel: global paused\\\">Protection is paused globally. Removing a site exception will not enable global protection.</message>\",\n  \"risks\": [\n    \"Minimal risk; this is a documentation/UI string correction.\"\n  ],\n  \"tests\": [\n    \"Verify the updated string appears correctly in the Shields per-site panel in the Android UI.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The current `IDS_ROADIUM_SHIELDS_SITE_SCOPE` string incorrectly claims temporary exceptions only cover regular tabs. Analysis of `AdblockChromeContentBrowserClient::GetBrowserContextForEyeoFactories` confirms that the backend always returns the `GetOriginalProfile()`, meaning the filtering context is shared across both regular and private tabs. I recommend updating the help text to accurately reflect that exceptions apply to all views (including private tabs) and that other open tabs require a reload to apply changes.",
+    "architecture_observations": [
+      "`GetBrowserContextForEyeoFactories` remaps any context to the original profile, ensuring a shared filtering state.",
+      "Private tabs (OffTheRecord) are not isolated from the adblock filtering logic.",
+      "Temporary exceptions are stored in a separate memory vector on the original profile's configuration.",
+      "UI controls only trigger reloads for the current tab; existing tabs remain in their previous state until reloaded."
+    ],
+    "proposed_changes": [
+      {
+        "file": "chrome/browser/adblock/android/adblock_strings.grd",
+        "change": "Update `IDS_ROADIUM_SHIELDS_SITE_SCOPE` to include private tabs and clarify the reload requirement for other tabs."
+      }
+    ],
+    "patch": "--- a/chrome/browser/adblock/android/adblock_strings.grd\n+++ b/chrome/browser/adblock/android/adblock_strings.grd\n@@ -215,7 +215,7 @@\n       <message name=\"IDS_ROADIUM_SHIELDS_SITE_PANEL_TITLE\" desc=\"Shields per-site panel: panel title\">Shields</message>\n-      <message name=\"IDS_ROADIUM_SHIELDS_SITE_SCOPE\" desc=\"Shields per-site panel: scope\">Applies to this host and its subdomains. Temporary exceptions cover regular tabs until the browser restarts. Closing a tab does not end the exception.</message>\n+      <message name=\"IDS_ROADIUM_SHIELDS_SITE_SCOPE\" desc=\"Shields per-site panel: scope\">Applies to this host and its subdomains. Temporary exceptions cover all tabs (including private) until the browser restarts. Other open tabs must be reloaded to apply changes. Closing a tab does not end the exception.</message>\n       <message name=\"IDS_ROADIUM_SHIELDS_SITE_GLOBAL_PAUSED\" desc=\"Shields per-site panel: global paused\">Protection is paused globally. Removing a site exception will not enable global protection.</message>",
+    "risks": [
+      "Minimal risk; this is a documentation/UI string correction."
+    ],
+    "tests": [
+      "Verify the updated string appears correctly in the Shields per-site panel in the Android UI."
+    ]
+  },
+  "isError": false
+}

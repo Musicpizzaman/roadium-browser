@@ -1,0 +1,43 @@
+Ad blocking: Enabled
+Advanced filtering: Disabled
+EasyList: loaded in the active engine
+Anti-circumvention: loaded in the active engine. Privileged scriptlets: not eligible
+Tap for local update errors and conversion counts.
+
+No manual check requested in this session
+
+Roadium Card04 controlled list
+https://uazo.github.io/cromite/filters/easylist.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 203001010004
+Stored version: 203001010004
+Last installation: 10/15/26 9:23:45 PM
+Last successful activation/update: 10/15/26 9:23:45 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylist.txt
+Active data source: https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylist.txt
+Successful requests: 5 (includes HEAD)
+Recorded consecutive download failures: 0
+Primary failure: HTTP 503
+Fallback: activated
+Latest error: none recorded
+Latest conversion: 2 accepted; rejected — parser 0, unsupported commands 0, privilege 0, arguments 0, unsupported options/no operation 0
+
+Roadium Card04 controlled list
+https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
+Engine: loaded in the active engine
+State: Installed
+Loaded version: 203001010004
+Stored version: 203001010004
+Last installation: 10/15/26 9:23:45 PM
+Last successful activation/update: 10/15/26 9:23:45 PM
+Latest attempt: activated; downloaded Yes, parsed Yes
+Latest source: https://raw.githubusercontent.com/uazo/cromite/pages/filters/abp-filters-anti-cv.txt
+Active data source: https://raw.githubusercontent.com/uazo/cromite/pages/filters/abp-filters-anti-cv.txt
+Successful requests: 5 (includes HEAD)
+Recorded consecutive download failures: 0
+Primary failure: HTTP 503
+Fallback: activated
+Latest error: none recorded
+Latest conversion: 2 accepted; rejected — parser 0, unsupported commands 0, privilege 1, arguments 0, unsupported options/no operation 0

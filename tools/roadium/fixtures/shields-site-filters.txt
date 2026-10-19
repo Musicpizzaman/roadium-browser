@@ -1,0 +1,6 @@
+[Adblock Plus 2.0]
+! Title: Owned Card08 fixture
+! Version: 202610180801
+! Expires: 1 days
+||ads.card08.invalid^$script,image
+##.card08-cosmetic

@@ -1,0 +1,20 @@
+{
+  "fixture": "http://127.0.0.1:8765/card03.html",
+  "action": "advertising",
+  "state": {
+    "href": "http://127.0.0.1:8765/card03.html",
+    "ready": "complete",
+    "probeType": "string",
+    "probeString": "fixture-value",
+    "probeIsUndefined": false,
+    "unsupportedClicks": 0,
+    "cosmeticDisplay": "block"
+  },
+  "advertising": "fetch failed: TypeError",
+  "advertisingFailures": [
+    {
+      "errorText": "net::ERR_INTERNET_DISCONNECTED",
+      "blockedReason": null
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "source_checkouts": [
+    "isolated Card06 partial source",
+    "verified x64 full Chromium source",
+    "verified ARM64 full Chromium source"
+  ],
+  "files": {
+    "components/adblock/core/subscription/BUILD.gn": "0e3effb542158f013fdd18a193ecc9d005a3edf328edfa12ebda60cde86fc05c",
+    "components/adblock/core/subscription/subscription_config.cc": "3506fd5460ab095d6a429d62a1431b8385a398376daba33ab2beab630df724f4",
+    "components/adblock/test/shields_youtube_rules.inc": "f69df488ca609b2dba49e2f81017e47e0c652ce16d21caf9b9dcde35e578e253",
+    "components/adblock/test/shields_youtube_unittest.cc": "92784d3a9f349bb3ee8a959aa191feec0272cef8d22b10e8f2a649319a81a58a"
+  }
+}

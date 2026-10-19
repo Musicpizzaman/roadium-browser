@@ -1,0 +1,23 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The PR introduces a robust offline integrity and regression verification suite for the Roadium project. It implements strict path validation (preventing directory traversal), cryptographic hash verification for patches and snapshots, and a multi-stage release gate that enforces binding between reviewed plans and final artifacts. The inclusion of negative control tests and a dedicated CI workflow ensures that the verification logic itself is sound and that the release process cannot be bypassed by manual attestations or tampered artifacts.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"The `test_native_audit_identity` test uses a hardcoded `inventory` object; while sufficient for logic verification, it doesn't test the actual `youtube_inventory` collection logic which is imported but not fully mocked in that specific test.\"\n  ],\n  \"recommended_changes\": [\n    \"Consider adding a timeout to the `inside()` method's `resolve()` call if the filesystem is networked, though unlikely in this context.\",\n    \"Ensure `siso.py` and `ninja` are consistently available in the `depot_tools` path across all runner environments.\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The PR introduces a robust offline integrity and regression verification suite for the Roadium project. It implements strict path validation (preventing directory traversal), cryptographic hash verification for patches and snapshots, and a multi-stage release gate that enforces binding between reviewed plans and final artifacts. The inclusion of negative control tests and a dedicated CI workflow ensures that the verification logic itself is sound and that the release process cannot be bypassed by manual attestations or tampered artifacts.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [],
+    "security_issues": [],
+    "test_gaps": [
+      "The `test_native_audit_identity` test uses a hardcoded `inventory` object; while sufficient for logic verification, it doesn't test the actual `youtube_inventory` collection logic which is imported but not fully mocked in that specific test."
+    ],
+    "recommended_changes": [
+      "Consider adding a timeout to the `inside()` method's `resolve()` call if the filesystem is networked, though unlikely in this context.",
+      "Ensure `siso.py` and `ninja` are consistently available in the `depot_tools` path across all runner environments."
+    ]
+  },
+  "isError": false
+}

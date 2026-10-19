@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "user": 11,
+  "profile": "new disposable ShieldsRelease722 only",
+  "previous_version_code": 801003718,
+  "installed_version_code": 801003728,
+  "apk_sha256": "875fa10ae04ac4d5e5004182cc1218f736daab23247456e74b7cbe450a3aefd9",
+  "global_opt_out_preserved": true,
+  "advanced_opt_out_preserved": true,
+  "saved_host_preserved": true,
+  "custom_rule_preserved": true,
+  "subscriptions_preserved": true,
+  "homepage_preserved": true,
+  "launch_status": "ok",
+  "screenshot": "installed-update-settings.png",
+  "physical_car": false,
+  "limits": "Installed x64 upgrade/launch/settings smoke only; not live media, OEM geometry or 720p acceptance"
+}

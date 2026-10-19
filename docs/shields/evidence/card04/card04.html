@@ -1,0 +1,37 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roadium Card04 controlled scriptlet fixture</title>
+<style>body{font:24px system-ui;margin:32px}button{font:inherit;padding:16px}</style>
+<h1>Advanced filtering verification</h1>
+<p>This local page observes one supported property-read scriptlet.</p>
+<p class="card04-ad">Ordinary cosmetic-filter fixture.</p>
+<button id="unsupported-probe">Unsupported command control</button>
+<pre id="result">Fixture loading</pre>
+<script>
+window.roadiumProbe = 'fixture-value';
+window.roadiumUnsupportedClicks = 0;
+document.getElementById('unsupported-probe').addEventListener('click', () => {
+  window.roadiumUnsupportedClicks++;
+});
+window.card04Snapshot = () => ({
+  href: location.href,
+  ready: document.readyState,
+  probeType: typeof window.roadiumProbe,
+  probeString: String(window.roadiumProbe),
+  probeIsUndefined: window.roadiumProbe === undefined,
+  unsupportedClicks: window.roadiumUnsupportedClicks,
+  cosmeticDisplay: getComputedStyle(document.querySelector('.card04-ad')).display
+});
+window.card04AdvertisingProbe = async () => {
+  try {
+    await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?roadium_fixture=4', {
+      mode:'no-cors', cache:'no-store', credentials:'omit', signal:AbortSignal.timeout(10000)
+    });
+    return 'fetch completed; downloaded code was not executed';
+  } catch (error) {
+    return 'fetch failed: ' + error.name;
+  }
+};
+document.getElementById('result').textContent = 'Use the controlled developer probe to read page state.';
+</script>

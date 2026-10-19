@@ -1,0 +1,164 @@
+{
+  "upstream_revision": "338336d9e640489c648d47d606cb0030064c4e0f",
+  "mapped": [
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/abp-filters-anti-cv.txt",
+      "verified_header": "[Adblock Plus 3.1]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/abpindo.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/abpindo.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/abpvn.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/abpvn.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/badblock_lite.txt",
+      "verified_header": "! Title: \u26a1\ufe0f BadBlock Lite (ABP)"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+      "verified_header": "! Title: 1Hosts (Lite)"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/bulgarian_list.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/bulgarian_list.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/dandelion_sprouts_nordic_filters.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/dandelion_sprouts_nordic_filters.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/easylist.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylist.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/easylistchina.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylistchina.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/easylistczechslovak.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylistczechslovak.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/easylistdutch.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylistdutch.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/easylistgermany.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylistgermany.txt",
+      "verified_header": "[Adblock Plus 1.1]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/easylistitaly.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylistitaly.txt",
+      "verified_header": "[Adblock Plus 1.1]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/easylistlithuania.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylistlithuania.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/easylistpolish.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylistpolish.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/easylistportuguese.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylistportuguese.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/easylistspanish.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/easylistspanish.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/fanboy-notifications.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/fanboy-notifications.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/fanboy-social.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/fanboy-social.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/global-filters.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/global-filters.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/hufilter.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/hufilter.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/indianlist.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/indianlist.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/israellist.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/israellist.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/japanese-filters.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/japanese-filters.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/koreanlist.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/koreanlist.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/latvianlist.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/latvianlist.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/liste_ar.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/liste_ar.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/liste_fr.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/liste_fr.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/rolist.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/rolist.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/ruadlist.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/ruadlist.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    },
+    {
+      "canonical": "https://uazo.github.io/cromite/filters/turkish-filters.txt",
+      "fallback": "https://raw.githubusercontent.com/uazo/cromite/pages/filters/turkish-filters.txt",
+      "verified_header": "[Adblock Plus 2.0]"
+    }
+  ],
+  "unmapped": [
+    "easyprivacy.txt"
+  ],
+  "experimental": "Raw master experimental identity retained without invented pages mapping"
+}

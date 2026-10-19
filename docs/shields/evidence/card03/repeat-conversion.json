@@ -1,0 +1,40 @@
+[
+  {
+    "file": "easylist.fb",
+    "sha256": "0dd8cfbf16b64b283f5cf3fd6d79c5279c8c916875e76b1d94508e5bc70eebfc",
+    "bytes": 8184160,
+    "identical": true,
+    "allow_privileged": false,
+    "statistics": {
+      "rules": {
+        "accepted": 81698,
+        "parser_rejected": 5,
+        "prohibited_privilege": 37,
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      },
+      "url": "https://uazo.github.io/cromite/filters/easylist.txt",
+      "version": "202610130952"
+    }
+  },
+  {
+    "file": "anticv.fb",
+    "sha256": "d9fc6dd71d2456012d5577ea163cf0e58cec6c86d0f11583b520adf89e1e647f",
+    "bytes": 690616,
+    "identical": true,
+    "allow_privileged": true,
+    "statistics": {
+      "rules": {
+        "accepted": 3861,
+        "parser_rejected": 48,
+        "prohibited_privilege": 0,
+        "unsafe_arguments": 28,
+        "unsupported_commands": 518,
+        "unsupported_options": 0
+      },
+      "url": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+      "version": "202610130952"
+    }
+  }
+]

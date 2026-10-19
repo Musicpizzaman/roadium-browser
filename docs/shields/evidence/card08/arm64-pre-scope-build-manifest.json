@@ -1,0 +1,152 @@
+{
+  "project": "Roadium Browser",
+  "architecture": "arm64",
+  "package": "io.github.musicpizzaman.roadium",
+  "version": "153.0.8010.37",
+  "version_code": 801003712,
+  "roadium_version_code_offset": 10,
+  "baseline_source_tree": "56400c5406d8f83533c151e122b19f3f745c0892",
+  "cromite_commit": "11507ac1061b5ea227806f5e84db5a57df6ccf6a",
+  "source_patch_sha256": "23cc1cff8a4a3022e66fdecc83b29ab6019bff294ff7bf9c1bc0da51d1dcaee2",
+  "source_patches": [
+    {
+      "path": "build/roadium/patches/0001-roadium-aaos-foundation.patch",
+      "sha256": "3f0fedee04363332ccfe8fb2bbd2ba1f4ed8127e187f04c5bd2104a33debd0df"
+    },
+    {
+      "path": "build/roadium/patches/0002-roadium-shields-diagnostics.patch",
+      "sha256": "9a4a39651200f465f52ffa1e3d0ccade4a035a07fc0a97cd0f0b5745535eff58"
+    },
+    {
+      "path": "build/roadium/patches/0003-roadium-bundled-filters.patch",
+      "sha256": "eb4f85d293ea50d4e69cb25f633f86d1539a8caae71752d44ebbdc3662513df4"
+    },
+    {
+      "path": "build/roadium/patches/0004-roadium-advanced-filtering.patch",
+      "sha256": "fa0e7a57e72696158efca236c66666b52dda20449a6a4ab77c7344d2d46f2b69"
+    },
+    {
+      "path": "build/roadium/patches/0005-roadium-approved-filter-fallback.patch",
+      "sha256": "ebdbd3da426e96ab7ab49aaf4e04c1c3512c4edd23e1c0d35455304052f96552"
+    },
+    {
+      "path": "build/roadium/patches/0006-roadium-last-known-good-recovery.patch",
+      "sha256": "8a878985e390b893f7987f800e9824838ae570389ef420c7cbf5046ce5738004"
+    },
+    {
+      "path": "build/roadium/patches/0007-roadium-youtube-compatibility.patch",
+      "sha256": "9c01a74974f2bde3024a0430c57cff8e2e9e49ef269a1a3c131a271fae619e72"
+    },
+    {
+      "path": "build/roadium/patches/0008-roadium-protection-presets.patch",
+      "sha256": "1802559fa9a5123f2568963d52909679f2fd4d08621981bd0861ab75b6ca8b53"
+    },
+    {
+      "path": "build/roadium/patches/0009-roadium-site-controls.patch",
+      "sha256": "9ce466049f7e15202937c4ea7c99334d0fd609066f118ffb9aecbb9fc6eb9211"
+    }
+  ],
+  "source_overlay_tree": "09d16afbd1c8100046797b74f182ffcc98eb65f6",
+  "compiler_exit": 0,
+  "build_attempt": "run.287bkN05",
+  "started_utc": "2026-10-18T20:19:06Z",
+  "native_toolchain_min_sdk": 29,
+  "target_sdk": 36,
+  "required_automotive": true,
+  "picture_in_picture": false,
+  "signing": "APK verified with diagnostic development certificate; AAB status recorded per artifact",
+  "bundle_modules": {
+    "base": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "on_demand": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "stack_unwinder": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "xr": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    },
+    "chrome": {
+      "min_sdk": 31,
+      "target_sdk": 36
+    }
+  },
+  "bundletool_validation": "passed",
+  "bundletool_exit": 0,
+  "packaged_abi": "arm64-v8a",
+  "artifacts": [
+    {
+      "file": "ChromePublic.apk",
+      "bundled_filters": {
+        "revision": "338336d9e640489c648d47d606cb0030064c4e0f",
+        "resources": {
+          "IDR_ADBLOCK_FLATBUFFER_EASYLIST": [
+            "assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FLATBUFFER_ANTICV": [
+            "assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_BUNDLED_MANIFEST": [
+            "assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FILTER_NOTICES": [
+            "assets/resources.pak+40064988+"
+          ]
+        },
+        "manifest_sha256": "ae9962a71715c6a4e4eb29a38121ebdeea9c39d68db313c90488bf9b1fe0e59b",
+        "notices_sha256": "b74bcf5e169f438b8e61ef6a81e281ebcac1e68784d0d8c0f3b86c31d90fd4d4"
+      },
+      "native_abis": [
+        "arm64-v8a"
+      ],
+      "native_library_count": 7,
+      "apk_signature_verification": "passed",
+      "apk_signature_v2": true,
+      "certificate_sha256": "32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0",
+      "min_sdk": 31,
+      "target_sdk": 36,
+      "bytes": 325653253,
+      "sha256": "801ce038286c48d8947b8646f3e67ad1c0a05f3f9207f8aaf53815d3fdb1f9a3",
+      "zip_crc": "passed"
+    },
+    {
+      "file": "ChromePublic.aab",
+      "bundled_filters": {
+        "revision": "338336d9e640489c648d47d606cb0030064c4e0f",
+        "resources": {
+          "IDR_ADBLOCK_FLATBUFFER_EASYLIST": [
+            "base/assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FLATBUFFER_ANTICV": [
+            "base/assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_BUNDLED_MANIFEST": [
+            "base/assets/resources.pak+40064988+"
+          ],
+          "IDR_ADBLOCK_FILTER_NOTICES": [
+            "base/assets/resources.pak+40064988+"
+          ]
+        },
+        "manifest_sha256": "ae9962a71715c6a4e4eb29a38121ebdeea9c39d68db313c90488bf9b1fe0e59b",
+        "notices_sha256": "b74bcf5e169f438b8e61ef6a81e281ebcac1e68784d0d8c0f3b86c31d90fd4d4"
+      },
+      "native_abis": [
+        "arm64-v8a"
+      ],
+      "native_library_count": 7,
+      "jar_signing_entries": [],
+      "jar_signature_status": "unsigned",
+      "bytes": 142681552,
+      "sha256": "04d31f0370456f70a8d847812638ba285f42ff94cdc83b69b90dca833c858710",
+      "zip_crc": "passed"
+    }
+  ],
+  "emulator_runtime_verification": "pending",
+  "physical_car_verification": "pending"
+}

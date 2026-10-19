@@ -1,0 +1,22 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"summary\": \"The patch correctly addresses the issue where legacy Unicode records were being falsely matched as active punycode exceptions. By introducing an `isAscii` check before calling `canonicalHost`, the system now correctly ignores non-ASCII entries during the matching logic while preserving them in the underlying list. This aligns with the architectural requirement to prevent silent reinterpretation of legacy records. The test suite is updated to verify that Unicode identities are preserved but not claimed as active exceptions, while ensuring valid ASCII punycode and uppercase identities continue to function correctly.\",\n  \"approved\": true,\n  \"bugs\": [],\n  \"architecture_issues\": [],\n  \"security_issues\": [],\n  \"test_gaps\": [\n    \"No regression test for mixed ASCII/Unicode lists to ensure no cross-contamination of matching logic.\"\n  ],\n  \"recommended_changes\": [\n    \"Consider using `String.matches(\"\n  ]\n}"
+    }
+  ],
+  "structuredContent": {
+    "summary": "The patch correctly addresses the issue where legacy Unicode records were being falsely matched as active punycode exceptions. By introducing an `isAscii` check before calling `canonicalHost`, the system now correctly ignores non-ASCII entries during the matching logic while preserving them in the underlying list. This aligns with the architectural requirement to prevent silent reinterpretation of legacy records. The test suite is updated to verify that Unicode identities are preserved but not claimed as active exceptions, while ensuring valid ASCII punycode and uppercase identities continue to function correctly.",
+    "approved": true,
+    "bugs": [],
+    "architecture_issues": [],
+    "security_issues": [],
+    "test_gaps": [
+      "No regression test for mixed ASCII/Unicode lists to ensure no cross-contamination of matching logic."
+    ],
+    "recommended_changes": [
+      "Consider using `String.matches("
+    ]
+  },
+  "isError": false
+}

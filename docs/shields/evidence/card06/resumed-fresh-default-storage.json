@@ -1,0 +1,103 @@
+{
+  "directory": "/data/user/11/io.github.musicpizzaman.roadium/app_chrome/Default/adblock_subscriptions",
+  "records": [
+    {
+      "file": "roadium-8fdf8d45533ca8eb481f8c8123f47a036f755dda37780c168c5dcd11c4526e53.current.json",
+      "sha256": "094ab6287dcd307862aa7691f55ca1765a00fd6ac4edc5a713bc9f5036439cd8",
+      "record": {
+        "accepted": 14664,
+        "file": "roadium-8fdf8d45533ca8eb481f8c8123f47a036f755dda37780c168c5dcd11c4526e53-60BBDD487269B527090761A0BFD12594.fb",
+        "format": 1,
+        "identity": "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+        "installed": "13436768826950790",
+        "parser_rejected": 873,
+        "privileged": false,
+        "prohibited_privilege": 0,
+        "schema": "Apu+MU09OCFx11xibV1gU0afrAVCmbvSp8K2NKDV2Yc=",
+        "sha256": "4cb9f5cee64d7d417a2d747e9e4b0906cfa87310f0be426711da0a4399bf4660",
+        "source": "https://uazo.github.io/cromite/filters/badblock_lite.txt",
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      }
+    },
+    {
+      "file": "roadium-268d17ec8ad46666c88cd85c0c4e64015fa48e672f35bbf97b64dc254c34fb97.current.json",
+      "sha256": "2acc7f9a0365cd64d7da0360557b6900b89c3f68ac7d6f19726432cfda55855d",
+      "record": {
+        "accepted": 3861,
+        "file": "roadium-268d17ec8ad46666c88cd85c0c4e64015fa48e672f35bbf97b64dc254c34fb97-7E96B54CF2CF847576BD52881D95DB93.fb",
+        "format": 1,
+        "identity": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+        "installed": "13436768827122630",
+        "parser_rejected": 48,
+        "privileged": true,
+        "prohibited_privilege": 0,
+        "schema": "Apu+MU09OCFx11xibV1gU0afrAVCmbvSp8K2NKDV2Yc=",
+        "sha256": "d9fc6dd71d2456012d5577ea163cf0e58cec6c86d0f11583b520adf89e1e647f",
+        "source": "https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt",
+        "unsafe_arguments": 28,
+        "unsupported_commands": 518,
+        "unsupported_options": 0
+      }
+    },
+    {
+      "file": "roadium-1322d63b4ff84d557972c5f7f029c1cf1c4c6e943afa8ede159cd1aabb2e4fdd.current.json",
+      "sha256": "c6cbafed39eb146f0ab03170f68b45fd0e08045a351a9813e3779ce1117856c2",
+      "record": {
+        "accepted": 81698,
+        "file": "roadium-1322d63b4ff84d557972c5f7f029c1cf1c4c6e943afa8ede159cd1aabb2e4fdd-D9C54D00E9A345E60C8C916DF91FC32D.fb",
+        "format": 1,
+        "identity": "https://uazo.github.io/cromite/filters/easylist.txt",
+        "installed": "13436768827392921",
+        "parser_rejected": 5,
+        "privileged": false,
+        "prohibited_privilege": 37,
+        "schema": "Apu+MU09OCFx11xibV1gU0afrAVCmbvSp8K2NKDV2Yc=",
+        "sha256": "0dd8cfbf16b64b283f5cf3fd6d79c5279c8c916875e76b1d94508e5bc70eebfc",
+        "source": "https://uazo.github.io/cromite/filters/easylist.txt",
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      }
+    },
+    {
+      "file": "roadium-9aac271cc07b7d5149e21508e36d7013f234b682c04cab170b774fe7856f4ad5.current.json",
+      "sha256": "f6127a30a93bea5ea255cd902c0745e884ff59cbdb692a2457db75e069014a14",
+      "record": {
+        "accepted": 102259,
+        "file": "roadium-9aac271cc07b7d5149e21508e36d7013f234b682c04cab170b774fe7856f4ad5-B4C173FEC16A1987AC366922F9D34A5D.fb",
+        "format": 1,
+        "identity": "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+        "installed": "13436768827740529",
+        "parser_rejected": 0,
+        "privileged": false,
+        "prohibited_privilege": 0,
+        "schema": "Apu+MU09OCFx11xibV1gU0afrAVCmbvSp8K2NKDV2Yc=",
+        "sha256": "275b8cde59a0f649f7797289841d2b818e9ef15c86408c4c33871f2cc3a111ba",
+        "source": "https://uazo.github.io/cromite/filters/badmojr-1Hosts-master-Lite-adblock.txt",
+        "unsafe_arguments": 0,
+        "unsupported_commands": 0,
+        "unsupported_options": 0
+      }
+    }
+  ],
+  "files": [
+    {
+      "file": "roadium-8fdf8d45533ca8eb481f8c8123f47a036f755dda37780c168c5dcd11c4526e53-60BBDD487269B527090761A0BFD12594.fb",
+      "sha256": "4cb9f5cee64d7d417a2d747e9e4b0906cfa87310f0be426711da0a4399bf4660"
+    },
+    {
+      "file": "roadium-268d17ec8ad46666c88cd85c0c4e64015fa48e672f35bbf97b64dc254c34fb97-7E96B54CF2CF847576BD52881D95DB93.fb",
+      "sha256": "d9fc6dd71d2456012d5577ea163cf0e58cec6c86d0f11583b520adf89e1e647f"
+    },
+    {
+      "file": "roadium-1322d63b4ff84d557972c5f7f029c1cf1c4c6e943afa8ede159cd1aabb2e4fdd-D9C54D00E9A345E60C8C916DF91FC32D.fb",
+      "sha256": "0dd8cfbf16b64b283f5cf3fd6d79c5279c8c916875e76b1d94508e5bc70eebfc"
+    },
+    {
+      "file": "roadium-9aac271cc07b7d5149e21508e36d7013f234b682c04cab170b774fe7856f4ad5-B4C173FEC16A1987AC366922F9D34A5D.fb",
+      "sha256": "275b8cde59a0f649f7797289841d2b818e9ef15c86408c4c33871f2cc3a111ba"
+    }
+  ]
+}

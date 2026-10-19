@@ -1,0 +1,18 @@
+{
+  "format": 1,
+  "vehicle": "2024 Chevrolet Blazer EV (user identified)",
+  "source": "User-provided About-screen photograph, October 18, 2026; not copied into repository",
+  "android_version": "12",
+  "android_security_patch_level": "2024-04-05",
+  "kernel_version_visible": "5.4.254-qgki-ga9e7a955a2b6-dirty",
+  "kernel_build_date_visible": "Tue Jun 18 09:53:24 EDT 2024",
+  "oem_build_prefix_visible": "aegean_orange-user 12",
+  "full_oem_build": "Photographed; exact full identifier not independently transcribed",
+  "api_level": 31,
+  "api_level_basis": "Android 12 corresponds to API 31; not an adb measurement",
+  "native_panel_resolution": "not measured",
+  "available_app_window_bounds": "not measured",
+  "installed_roadium_version": "not established by this About-screen photograph",
+  "geometry_root_cause": "not established",
+  "fullscreen_and_720p_status": "implementation and vehicle acceptance remain open"
+}
